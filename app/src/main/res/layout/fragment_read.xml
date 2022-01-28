@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="lyric"
+            type="net.techandgraphics.hymn.models.Lyric" />
+
+        <variable
+            name="adapter"
+            type="net.techandgraphics.hymn.ui.fragments.read.ReadAdapter" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+            <com.google.android.material.appbar.SubtitleCollapsingToolbarLayout
+                android:id="@+id/collapsingToolbarLayout"
+                setTextHymnInfo="@{lyric}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleTextAppearance="@android:color/transparent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:subtitle="@string/app_name">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/view_circle"
+                    setImageView="@{lyric.categoryId}"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
+                    tools:src="@drawable/seed_time_and_harvest" />
+
+                  <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/Theme.AppCompat.Light" />
+
+            </com.google.android.material.appbar.SubtitleCollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adapter="@{adapter}"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:spanCount="1"
+            tools:itemCount="4"
+            android:paddingBottom="60dp"
+            tools:listitem="@layout/fragment_read_item" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:tint="@android:color/white"
+            android:backgroundTint="@color/mellon"
+            android:src="@drawable/ic_share"
+            app:layout_anchor="@+id/appBarLayout"
+            app:layout_anchorGravity="end|bottom" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

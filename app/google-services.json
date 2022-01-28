@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "456131909594",
+    "project_id": "hymn-book-2893a",
+    "storage_bucket": "hymn-book-2893a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456131909594:android:2c98d7b9ef71f6d13692e3",
+        "android_client_info": {
+          "package_name": "net.techandgraphics.hymn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456131909594-90ukvo642ngmsmf1188sdsfdkdb33e17.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.techandgraphics.hymn",
+            "certificate_hash": "fbf3e62c00c5403f3101aa91fa2a1a468a185d60"
+          }
+        },
+        {
+          "client_id": "456131909594-8e793ha6pppjcfq6suabss4tnkq97sda.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2fPxhXTO8XEtNnpALu0DkEiPCLEoN9cg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456131909594-8e793ha6pppjcfq6suabss4tnkq97sda.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
