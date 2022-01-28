@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="search"
+            type="net.techandgraphics.hymn.models.Search" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView4"
+            setTag="@{search.tag}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/shape_round"
+            android:backgroundTint="#3EAAAAAA"
+            android:gravity="center"
+            android:minWidth="130dp"
+            android:maxLines="1"
+            android:paddingVertical="8dp"
+            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/androidx_startup" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/buttonDelete"
+            android:layout_width="35dp"
+            android:foreground="?attr/actionBarItemBackground"
+            android:layout_height="35dp"
+            android:background="@drawable/shape_circle"
+            android:backgroundTint="@color/mellon"
+            android:clickable="true"
+            android:focusable="true"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView4"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView4"
+            app:layout_constraintTop_toTopOf="@+id/appCompatTextView4" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
