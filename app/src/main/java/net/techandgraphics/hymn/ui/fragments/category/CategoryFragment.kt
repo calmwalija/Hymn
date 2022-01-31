@@ -10,8 +10,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentCategoryBinding
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
-import net.techandgraphics.hymn.utils.Utils
-import net.techandgraphics.hymn.utils.Utils.share
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 
 
@@ -28,12 +26,12 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
         binding.lyric = args.lyric
 
 
-        categoryAdapter = CategoryAdapter(itemClickListener = {
+        categoryAdapter = CategoryAdapter(click = {
             CategoryFragmentDirections.actionCategoryFragmentToReadFragment(it).apply {
                 findNavController().navigate(this)
             }
-        }, share = {
-            Utils.createDynamicLink(requireParentFragment(), it)
+        }, favorite = {
+            viewModel.update(it.copy(favorite = !it.favorite))
         }).also { it.stateRestorationPolicy() }
 
         viewModel.getLyricsByCategory(args.lyric).observe(viewLifecycleOwner) {
@@ -46,6 +44,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
         with(binding.recyclerView) {
             setHasFixedSize(true)
             adapter = categoryAdapter
+            itemAnimator = null
         }
 
 

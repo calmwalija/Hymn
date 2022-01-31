@@ -3,8 +3,6 @@ package net.techandgraphics.hymn.ui.fragments.about
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -20,18 +18,17 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         bind = FragmentAboutBinding.bind(view)
 
         bind.tag.setOnClickListener {
-            requireActivity().startActivity(
-                Intent(Intent.ACTION_VIEW)
-                    .setData(Uri.parse("https://techandgraphics.net"))
-            )
+            Utils.openWebsite(requireActivity(), "https://techandgraphics.net")
         }
 
 
         bind.zonse.setOnClickListener {
-            requireActivity().startActivity(
-                Intent(Intent.ACTION_VIEW)
-                    .setData(Uri.parse("https://zonse.live"))
-            )
+            Utils.openWebsite(requireActivity(), "https://zonse.live")
+        }
+
+
+        bind.paypal.setOnClickListener {
+            Utils.openWebsite(requireActivity(), "https://paypal.me/samlungu")
         }
 
 

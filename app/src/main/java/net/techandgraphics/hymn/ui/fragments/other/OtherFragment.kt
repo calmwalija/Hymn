@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentOtherBinding
@@ -19,7 +20,9 @@ class OtherFragment : Fragment(R.layout.fragment_other) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding = FragmentOtherBinding.bind(view)
-        adapter = OtherAdapter()
+        val fontSize =
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).getInt("font", 1)
+        adapter = OtherAdapter(fontSize + 14)
         binding.adapter = adapter
 
         viewModel.observeOther().observe(viewLifecycleOwner) { adapter.submitList(it) }

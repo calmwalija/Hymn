@@ -73,7 +73,12 @@ class Repository @Inject constructor(
     val observeTopPickCategories = db.lyricDao.observeTopPickCategories()
     val observeRecentLyrics = db.lyricDao.observeRecentLyrics()
     val observeOther = db.otherDao.observeOther()
+    val observeFavoriteLyrics = db.lyricDao.observeFavoriteLyrics()
+
     fun getLyricsById(lyric: Lyric) = db.lyricDao.getLyricsById(lyric.number)
+    fun findLyricById(id: Int) = db.lyricDao.findLyricById(id)
+    fun observeSortBy(sortBy:String) = db.lyricDao.observeSortBy(sortBy)!!
+    suspend fun clearFavorite() = db.lyricDao.clearFavorite()
 
 
     suspend fun update(lyric: Lyric) = db.lyricDao.update(lyric)

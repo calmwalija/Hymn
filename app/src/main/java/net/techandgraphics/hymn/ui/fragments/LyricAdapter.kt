@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.fragments.main
+package net.techandgraphics.hymn.ui.fragments
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentMainItemBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils.HYMN_DIFF_UTIL
-import net.techandgraphics.hymn.ui.fragments.main.MainAdapter.HymnLyricViewHolder
+import net.techandgraphics.hymn.ui.fragments.LyricAdapter.HymnLyricViewHolder
 
-class MainAdapter(
-    private val itemClickListener: (Lyric) -> Unit,
+class LyricAdapter(
+    private val click: (Lyric) -> Unit,
     private val share: (Lyric) -> Unit
 ) : ListAdapter<Lyric, HymnLyricViewHolder>(HYMN_DIFF_UTIL) {
 
@@ -37,7 +37,7 @@ class MainAdapter(
 
 
         init {
-            binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
+            binding.root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
             binding.buttonShare.setOnClickListener { share.invoke(currentList[absoluteAdapterPosition]) }
         }
     }

@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:padding="16dp">
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -23,8 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@{other.groupName}"
             android:gravity="center"
-            android:textSize="30sp"
-            style="@style/TextAppearance.AppCompat.Large"
+             style="@style/TextAppearance.AppCompat.Title"
              app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +31,7 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView6"
+            android:id="@+id/stanza"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
