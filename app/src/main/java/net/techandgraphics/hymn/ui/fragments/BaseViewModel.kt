@@ -28,11 +28,14 @@ class BaseViewModel @Inject constructor(
     }
 
     fun observeHymnLyrics() = flatMapLatest.asLiveData()
+    fun observeSortBy(sortBy: String) = repository.observeSortBy(sortBy).asLiveData()
     fun observeCategories() = repository.observeCategories.asLiveData()
     fun observeTopPickCategories() = repository.observeTopPickCategories.asLiveData()
     fun observeRecentLyrics() = repository.observeRecentLyrics.asLiveData()
     fun observeSearch() = repository.observeSearch.asLiveData()
     fun observeOther() = repository.observeOther.asLiveData()
+    fun findLyricById(id: Int) = repository.findLyricById(id).asLiveData()
+    fun observeFavoriteLyrics() = repository.observeFavoriteLyrics.asLiveData()
 
 
     fun getLyricsById(lyric: Lyric) = repository.getLyricsById(lyric).asLiveData()
@@ -42,15 +45,12 @@ class BaseViewModel @Inject constructor(
         repository.insert(listOf(search))
     }
 
+    fun clearFavorite() =
+        viewModelScope.launch { repository.clearFavorite() }
+
+
     fun update(lyric: Lyric) =
-        viewModelScope.launch {
-            repository.update(
-                lyric.copy(
-                    timestamp = System.currentTimeMillis(),
-                    topPickHit = lyric.topPickHit.plus(1)
-                )
-            )
-        }
+        viewModelScope.launch { repository.update(lyric) }
 
     fun delete(search: Search) = viewModelScope.launch {
         repository.delete(search)

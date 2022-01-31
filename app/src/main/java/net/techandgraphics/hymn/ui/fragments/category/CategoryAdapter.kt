@@ -9,8 +9,8 @@ import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils
 
 class CategoryAdapter(
-    private val itemClickListener: (Lyric) -> Unit,
-    private val share: (Lyric) -> Unit
+    private val click: (Lyric) -> Unit,
+    private val favorite: (Lyric) -> Unit
 ) : ListAdapter<Lyric, CategoryAdapter.ViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
 
 
@@ -31,8 +31,8 @@ class CategoryAdapter(
         }
 
         init {
-            binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
-            binding.buttonShare.setOnClickListener { share.invoke(currentList[absoluteAdapterPosition]) }
+            binding.root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
+            binding.buttonFav.setOnClickListener { favorite.invoke(currentList[absoluteAdapterPosition]) }
 
         }
     }

@@ -19,7 +19,7 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView"
+            android:id="@+id/stanza"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="16dp"

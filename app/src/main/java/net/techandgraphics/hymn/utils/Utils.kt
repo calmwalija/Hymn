@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import net.techandgraphics.hymn.models.Lyric
@@ -82,7 +82,7 @@ object Utils {
     fun createDynamicLink(fragment: Fragment, lyric: Lyric) {
         toast(fragment.requireContext(), "Processing, just a moment please ...")
         FirebaseDynamicLinks.getInstance().createDynamicLink()
-            .setLink(Uri.parse(Constant.DEEP_LINK))
+            .setLink(Uri.parse(String.format("%s?id=%d", Constant.DEEP_LINK, lyric.lyricId)))
             .setDomainUriPrefix(Constant.DOMAIN_URI_PREFIX)
             .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
             .setSocialMetaTagParameters(
@@ -110,5 +110,10 @@ object Utils {
                 )
             }
     }
+
+    fun openWebsite(activity: Activity, url: String) = activity.startActivity(
+        Intent(Intent.ACTION_VIEW)
+            .setData(Uri.parse(url))
+    )
 
 }

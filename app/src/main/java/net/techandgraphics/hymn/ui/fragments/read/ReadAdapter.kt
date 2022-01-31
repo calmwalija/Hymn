@@ -10,7 +10,9 @@ import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils
 import net.techandgraphics.hymn.ui.fragments.read.ReadAdapter.PreviewFragmentViewHolder
 
-class ReadAdapter : ListAdapter<Lyric, PreviewFragmentViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
+class ReadAdapter(
+    val fontSize: Int
+) : ListAdapter<Lyric, PreviewFragmentViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
 
     private var hasChorus = false
 
@@ -32,6 +34,7 @@ class ReadAdapter : ListAdapter<Lyric, PreviewFragmentViewHolder>(DiffUtils.HYMN
         private val binding: FragmentReadItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(lyric: Lyric, position: Int) = binding.apply {
+
             this.lyric = lyric.copy(
                 categoryName = if (lyric.chorus == 0) {
                     (if (position == 0) 1 else (position + if (hasChorus) 0 else 1)).toString()
@@ -43,7 +46,9 @@ class ReadAdapter : ListAdapter<Lyric, PreviewFragmentViewHolder>(DiffUtils.HYMN
 
             executePendingBindings()
 
-            appCompatTextView.setTypeface(
+            stanza.textSize = fontSize.toFloat()
+
+            stanza.setTypeface(
                 null,
                 if (lyric.chorus == 1) Typeface.ITALIC else Typeface.NORMAL
             )

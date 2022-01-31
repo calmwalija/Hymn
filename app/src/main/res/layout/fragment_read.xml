@@ -81,7 +81,8 @@
             android:backgroundTint="@color/mellon"
             android:src="@drawable/ic_share"
             app:layout_anchor="@+id/appBarLayout"
-            app:layout_anchorGravity="end|bottom" />
+            app:layout_anchorGravity="end|bottom"
+            android:contentDescription="@string/share" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

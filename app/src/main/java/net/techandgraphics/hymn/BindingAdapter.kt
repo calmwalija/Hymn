@@ -38,3 +38,8 @@ fun setTextHymnCount(textView: AppCompatTextView, count: Int) {
 fun setTag(textView: AppCompatTextView, content: String) {
     "#$content".also { textView.text = it }
 }
+
+@BindingAdapter("favorite")
+fun favorite(view: AppCompatImageView, favorite: Boolean) {
+    view.setImageResource(if (favorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite)
+}

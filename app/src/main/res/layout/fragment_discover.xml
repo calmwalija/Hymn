@@ -35,7 +35,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
             app:spanCount="2"
-            tools:itemCount="6"
+            tools:itemCount="4"
             tools:listitem="@layout/fragment_discover_top_pick_item" />
 
 

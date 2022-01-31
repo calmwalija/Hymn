@@ -8,7 +8,9 @@ import net.techandgraphics.hymn.databinding.FragmentOtherItemBinding
 import net.techandgraphics.hymn.models.Other
 import net.techandgraphics.hymn.ui.diffs.DiffUtils
 
-class OtherAdapter : ListAdapter<Other, OtherAdapter.ViewHolder>(DiffUtils.OTHER_DIFF_UTIL) {
+class OtherAdapter(
+    val fontSize: Int
+) : ListAdapter<Other, OtherAdapter.ViewHolder>(DiffUtils.OTHER_DIFF_UTIL) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(FragmentOtherItemBinding.inflate(LayoutInflater.from(parent.context)))
@@ -23,6 +25,7 @@ class OtherAdapter : ListAdapter<Other, OtherAdapter.ViewHolder>(DiffUtils.OTHER
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(other: Other) = binding.apply {
             this.other = other
+            stanza.textSize = fontSize.toFloat()
             executePendingBindings()
         }
 

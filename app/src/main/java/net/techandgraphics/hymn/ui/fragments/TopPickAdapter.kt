@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.fragments.discover
+package net.techandgraphics.hymn.ui.fragments
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils
 
-class DiscoverTopPickAdapter(
-    private val itemClickListener: (Lyric) -> Unit
-) : ListAdapter<Lyric, DiscoverTopPickAdapter.ViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
+class TopPickAdapter(
+    private val click: (Lyric) -> Unit
+) : ListAdapter<Lyric, TopPickAdapter.ViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,7 +29,7 @@ class DiscoverTopPickAdapter(
              executePendingBindings()
         }
         init {
-            binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
+            binding.root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
         }
     }
 }

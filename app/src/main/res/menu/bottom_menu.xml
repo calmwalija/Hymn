@@ -12,7 +12,6 @@
         android:icon="@drawable/ic_dashboard"
         android:title="Discover" />
 
-
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/ic_search"
@@ -20,14 +19,14 @@
 
 
     <item
-        android:id="@+id/otherFragment"
-        android:icon="@drawable/ic_layers"
-        android:title="Other" />
+        android:id="@+id/favoriteFragment"
+        android:icon="@drawable/ic_favorite_fill"
+        android:title="Favorite" />
 
     <item
-        android:id="@+id/aboutFragment"
-        android:icon="@drawable/ic_info"
-        android:title="About" />
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_more_vert"
+        android:title="More" />
 
 
 </menu>

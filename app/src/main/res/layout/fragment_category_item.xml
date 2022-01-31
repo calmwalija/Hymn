@@ -44,7 +44,7 @@
             tools:text="12 hymns" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/buttonShare"
+            android:id="@+id/buttonFav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/actionBarItemBackground"
@@ -53,7 +53,9 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="15dp"
-            android:src="@drawable/ic_share"
+            favorite="@{lyric.favorite}"
+            android:tint="?attr/colorPrimaryDark"
+            tools:src="@drawable/ic_favorite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

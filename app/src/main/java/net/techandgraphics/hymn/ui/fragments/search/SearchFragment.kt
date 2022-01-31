@@ -2,6 +2,7 @@ package net.techandgraphics.hymn.ui.fragments.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,11 +12,9 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentSearchBinding
 import net.techandgraphics.hymn.models.Search
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
-import net.techandgraphics.hymn.ui.fragments.main.MainAdapter
-import net.techandgraphics.hymn.utils.Utils
+import net.techandgraphics.hymn.ui.fragments.favorite.FavoriteAdapter
 import net.techandgraphics.hymn.utils.Utils.onAddTextChangedListener
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
-import net.techandgraphics.hymn.utils.Utils.share
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 
 @AndroidEntryPoint
@@ -23,14 +22,14 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel by viewModels<BaseViewModel>()
-    private lateinit var mainAdapter: MainAdapter
+    private lateinit var favoriteAdapter: FavoriteAdapter
     private lateinit var searchTagAdapter: SearchTagAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
         binding.searchEt.requestFocus()
 
-        mainAdapter = MainAdapter(itemClickListener = {
+        favoriteAdapter = FavoriteAdapter(click = {
             SearchFragmentDirections.actionSearchFragmentToReadFragment(it).apply {
                 findNavController().navigate(this)
             }
@@ -46,8 +45,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     viewModel.insert(it)
                 }
         },
-            share = {
-                Utils.createDynamicLink(requireParentFragment(), it)
+            favorite = {
+                viewModel.update(it.copy(favorite = !it.favorite))
             }).also { it.stateRestorationPolicy() }
 
         searchTagAdapter = SearchTagAdapter({
@@ -59,11 +58,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         ).also { it.stateRestorationPolicy() }
 
         binding.searchEt.onAddTextChangedListener {
+            binding.recyclerViewAll.isVisible = it.isBlank().not()
+            binding.animationView.isVisible = it.isBlank()
             viewModel.searchQuery.value = it
         }
 
         viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
-            mainAdapter.submitList(it)
+            favoriteAdapter.submitList(it)
         }
 
         viewModel.observeSearch().observe(viewLifecycleOwner) {
@@ -72,7 +73,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.mainAdapter = mainAdapter
+        binding.favoriteAdapter = favoriteAdapter
         binding.searchAdapter = searchTagAdapter
 
     }

@@ -1,15 +1,20 @@
 package net.techandgraphics.hymn.ui.fragments.read
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentReadBinding
+import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.utils.Constant
 import net.techandgraphics.hymn.utils.Utils
@@ -21,13 +26,42 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
     private lateinit var readAdapter: ReadAdapter
     private val viewModel: BaseViewModel by viewModels()
     private lateinit var binding: FragmentReadBinding
+    private lateinit var menu: Menu
+    private lateinit var lyric: Lyric
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.read_menu, menu)
+        this.menu = menu
+        favorite(args.lyric)
+    }
+
+    private fun favorite(lyric: Lyric) {
+        menu.getItem(0).icon = ContextCompat.getDrawable(
+            requireContext(),
+            if (lyric.favorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite
+        )
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.favorite) {
+            lyric = lyric.copy(favorite = !lyric.favorite, timestamp = lyric.timestamp)
+            viewModel.update(lyric)
+            favorite(lyric)
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentReadBinding.bind(view)
         binding.lyric = args.lyric
+        lyric = args.lyric
+        setHasOptionsMenu(true)
 
-        readAdapter = ReadAdapter().also { binding.adapter = it }
+        val fontSize =
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).getInt("font", 1)
+
+        readAdapter = ReadAdapter(fontSize + 14).also { binding.adapter = it }
 
 
         (requireActivity() as AppCompatActivity).apply {
@@ -67,7 +101,13 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
             readAdapter.submitList(it)
         }
 
-        viewModel.update(args.lyric)
+        viewModel.update(
+            args.lyric.copy(
+                topPickHit = args.lyric.topPickHit.plus(1),
+                timestamp = System.currentTimeMillis()
+            )
+        )
+        binding.recyclerView.itemAnimator = null
         binding.recyclerView.setHasFixedSize(true)
     }
 }
