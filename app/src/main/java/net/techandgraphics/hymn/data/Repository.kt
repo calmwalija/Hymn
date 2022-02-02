@@ -22,7 +22,7 @@ class Repository @Inject constructor(
 ) {
 
 
-    suspend fun jsonLyricToDB() {
+    suspend fun jsonLyricToDB(): Boolean {
         if (db.lyricDao.observeLyrics().first().isEmpty()) {
 
             var ofType = object : TypeToken<List<Lyric>>() {}.type
@@ -48,14 +48,6 @@ class Repository @Inject constructor(
                 db.lyricDao.insert(data)
                 db.searchDao.insert(Constant.searchTag)
 
-                for (i in 0 until 20) {
-                    data.filter { it.number == Random.nextInt(3, lyric.size - 1) }
-                        .map { it.copy(timestamp = System.currentTimeMillis(), topPickHit = 2) }
-                        .apply {
-                            db.lyricDao.updateList(this)
-                        }
-                }
-
             }
 
 
@@ -65,6 +57,8 @@ class Repository @Inject constructor(
             ) as List<Other>).also { db.otherDao.insert(it) }
 
         }
+
+        return false
     }
 
 

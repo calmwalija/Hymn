@@ -10,6 +10,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentCategoryBinding
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
+import net.techandgraphics.hymn.utils.Tag
+import net.techandgraphics.hymn.utils.Utils
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 
 
@@ -32,6 +34,13 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
             }
         }, favorite = {
             viewModel.update(it.copy(favorite = !it.favorite))
+            requireContext().apply {
+                Utils.toast(
+                    this,
+                    if (it.favorite) getString(R.string.add_favorite, it.number) else
+                        getString(R.string.remove_favorite, it.number)
+                )
+            }
         }).also { it.stateRestorationPolicy() }
 
         viewModel.getLyricsByCategory(args.lyric).observe(viewLifecycleOwner) {
@@ -47,6 +56,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
             itemAnimator = null
         }
 
+        Tag.screenView(viewModel.firebaseAnalytics, Tag.CATEGORY)
 
     }
 }

@@ -2,13 +2,16 @@ package net.techandgraphics.hymn.ui.fragments.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SeekBarPreference
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
+import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
 
 
@@ -37,6 +40,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<SeekBarPreference>("font")?.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _, p1 ->
+                val newValue = p1.toString().toInt()
+                viewModel.firebaseAnalytics.logEvent(Tag.FONT, bundleOf(Pair(Tag.FONT, newValue)))
+                true
+            }
+
 
         findPreference<Preference>("rate")?.setOnPreferenceClickListener {
             Utils.openWebsite(requireActivity(), url)
@@ -55,7 +65,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .setNegativeButton("no", null)
                 .setPositiveButton("yes") { _, _ ->
                     viewModel.clearFavorite()
-                    Utils.toast(requireContext(),"Favorite hymn list deleted.")
+                    viewModel.firebaseAnalytics.logEvent(
+                        Tag.CLEAR_FAV, bundleOf(Pair(Tag.CLEAR_FAV, Tag.CLEAR_FAV))
+                    )
+                    Utils.toast(requireContext(), "Favorite hymn list deleted.")
                 }
                 .show()
             true

@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentOtherBinding
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
+import net.techandgraphics.hymn.utils.Tag
 
 @AndroidEntryPoint
 class OtherFragment : Fragment(R.layout.fragment_other) {
@@ -26,6 +27,7 @@ class OtherFragment : Fragment(R.layout.fragment_other) {
         binding.adapter = adapter
 
         viewModel.observeOther().observe(viewLifecycleOwner) { adapter.submitList(it) }
+        Tag.screenView(viewModel.firebaseAnalytics, Tag.OTHER)
 
     }
 }

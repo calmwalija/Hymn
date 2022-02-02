@@ -7,8 +7,10 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,6 +19,7 @@ import net.techandgraphics.hymn.databinding.FragmentReadBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.utils.Constant
+import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
 
 @AndroidEntryPoint
@@ -44,10 +47,36 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.favorite) {
-            lyric = lyric.copy(favorite = !lyric.favorite, timestamp = lyric.timestamp)
-            viewModel.update(lyric)
-            favorite(lyric)
+        when (item.itemId) {
+            R.id.favorite -> {
+                lyric = lyric.copy(favorite = !lyric.favorite, timestamp = lyric.timestamp)
+                viewModel.update(lyric)
+                favorite(lyric)
+
+
+                if (lyric.favorite) {
+                    viewModel.firebaseAnalytics.logEvent(
+                        Tag.ADD_FAVORITE,
+                        bundleOf(Pair(Tag.ADD_FAVORITE, lyric.number))
+                    )
+                    requireContext().apply {
+                        Utils.toast(this, getString(R.string.add_favorite, lyric.number))
+                    }
+                } else {
+                    requireContext().apply {
+                        Utils.toast(this, getString(R.string.remove_favorite, lyric.number))
+                    }
+                    viewModel.firebaseAnalytics.logEvent(
+                        Tag.REMOVE_FAV,
+                        bundleOf(Pair(Tag.REMOVE_FAV, lyric.number))
+                    )
+                }
+
+            }
+            R.id.font_size -> ReadFragmentDirections
+                .actionReadFragmentToSettingsFragment().also {
+                    findNavController().navigate(it)
+                }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -94,7 +123,11 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
         }
 
         binding.fabShare.setOnClickListener {
-            Utils.createDynamicLink(requireParentFragment(), args.lyric)
+            Utils.createDynamicLink(
+                requireParentFragment(),
+                args.lyric,
+                viewModel.firebaseAnalytics
+            )
         }
 
         viewModel.getLyricsById(args.lyric).observe(viewLifecycleOwner) {
@@ -109,5 +142,13 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
         )
         binding.recyclerView.itemAnimator = null
         binding.recyclerView.setHasFixedSize(true)
+
+
+        viewModel.apply {
+            firebaseAnalytics.logEvent(Tag.TITLE, bundleOf(Pair(Tag.TITLE, args.lyric.title)))
+            firebaseAnalytics.logEvent(Tag.NUMBER, bundleOf(Pair(Tag.NUMBER, args.lyric.number)))
+            Tag.screenView(firebaseAnalytics, Tag.READ)
+        }
+
     }
 }

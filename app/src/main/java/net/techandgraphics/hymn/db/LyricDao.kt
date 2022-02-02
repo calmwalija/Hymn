@@ -23,6 +23,7 @@ interface LyricDao {
     @Query(
         """ SELECT * FROM lyric WHERE  
                content LIKE'%' || :query || '%'  OR 
+               title LIKE'%' || :query || '%'  OR 
                number LIKE'%' || :query || '%'  OR 
                categoryName  LIKE'%' || :query || '%'  
                 GROUP BY number ORDER BY lyricId ASC"""
@@ -32,10 +33,10 @@ interface LyricDao {
     @Query("SELECT * FROM lyric GROUP BY categoryName ORDER BY categoryName ASC")
     fun observeCategories(): Flow<List<Lyric>>
 
-    @Query("SELECT * FROM lyric GROUP BY categoryName ORDER BY topPickHit DESC LIMIT 6")
+    @Query("SELECT * FROM lyric WHERE  topPickHit > 0 GROUP BY categoryName ORDER BY topPickHit DESC LIMIT 6")
     fun observeTopPickCategories(): Flow<List<Lyric>>
 
-    @Query("SELECT * FROM lyric GROUP BY number ORDER BY timestamp DESC , lyricId LIMIT 6")
+    @Query("SELECT * FROM lyric  WHERE topPickHit > 0 GROUP BY number ORDER BY timestamp DESC , lyricId LIMIT 6")
     fun observeRecentLyrics(): Flow<List<Lyric>>
 
     @Query("SELECT * FROM lyric WHERE number=:number ORDER BY lyricId ASC")

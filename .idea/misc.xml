@@ -19,6 +19,7 @@
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_more_vert.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_nb_logo.xml" value="0.31794871794871793" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_paypal_logo.xml" value="0.31794871794871793" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_rate.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_settings.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_share.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_tag_logo.xml" value="0.225" />
@@ -27,7 +28,7 @@
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_circle.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_round.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_round_stroke.xml" value="0.225" />
-        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/activity_main.xml" value="0.15" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_about.xml" value="0.25" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_category.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_category_item.xml" value="0.25" />

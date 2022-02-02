@@ -66,5 +66,13 @@
             app:spanCount="2"
             tools:listitem="@layout/fragment_discover_category_item" />
 
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/recent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="appCompatTextView2,recyclerView_top_pick"
+            tools:layout_editor_absoluteX="132dp"
+            tools:layout_editor_absoluteY="6dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

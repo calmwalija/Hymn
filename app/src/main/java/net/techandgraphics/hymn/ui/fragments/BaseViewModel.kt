@@ -3,8 +3,11 @@ package net.techandgraphics.hymn.ui.fragments
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.Repository
@@ -14,11 +17,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BaseViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    val firebaseAnalytics: FirebaseAnalytics
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch { repository.jsonLyricToDB() }
+    private val _whenRead = MutableStateFlow(true)
+    val whenRead: StateFlow<Boolean> = _whenRead.asStateFlow()
+
+    fun onLoad() = viewModelScope.launch {
+        _whenRead.value = repository.jsonLyricToDB()
     }
 
     val searchQuery = MutableStateFlow("")
