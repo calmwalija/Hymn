@@ -41,6 +41,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonDelete"
+            android:contentDescription="Delete search tag"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/shape_circle"

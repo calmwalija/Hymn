@@ -16,6 +16,7 @@ import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.ui.fragments.SwipeDecorator
 import net.techandgraphics.hymn.ui.fragments.TopPickAdapter
+import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 
 @AndroidEntryPoint
@@ -28,7 +29,11 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     private fun removeFavorite(lyric: Lyric) {
         viewModel.update(lyric.copy(favorite = !lyric.favorite))
-        Snackbar.make(requireView(), "Hymn removed from favorite.", Snackbar.LENGTH_SHORT)
+        Snackbar.make(
+            requireView(),
+            requireContext().getString(R.string.remove_favorite, lyric.number),
+            Snackbar.LENGTH_SHORT
+        )
             .setAction("undo") {
                 viewModel.update(lyric.copy(favorite = true))
             }.show()
@@ -67,7 +72,11 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         bind.favoriteAdapter = favoriteAdapter
         bind.recyclerViewRecent.itemAnimator = null
 
-        viewModel.observeTopPickCategories().observe(viewLifecycleOwner) { topPick.submitList(it) }
+        viewModel.observeTopPickCategories().observe(viewLifecycleOwner) {
+            topPick.submitList(it)
+            bind.recent.isVisible = it.isEmpty().not() && it.size > 3
+        }
+
         viewModel.observeFavoriteLyrics().observe(viewLifecycleOwner) {
             bind.noFav.isVisible = it.isEmpty()
             bind.fav.isVisible = it.isEmpty().not()
@@ -75,6 +84,8 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         }
 
         onItemTouchHelper()
+        Tag.screenView(viewModel.firebaseAnalytics, Tag.FAVORITE)
+
     }
 
 }

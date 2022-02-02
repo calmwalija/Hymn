@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -19,6 +21,7 @@ import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.prefs.UserPrefs
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.ui.fragments.LyricAdapter
+import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 import javax.inject.Inject
@@ -47,6 +50,9 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
                 if (pendingDynamicLink != null)
                     pendingDynamicLink.link?.let {
                         it.getQueryParameter("id")?.toInt()?.let {
+                            viewModel.firebaseAnalytics.logEvent(
+                                Tag.LINK_OPEN, bundleOf(Pair(Tag.LINK_OPEN, it))
+                            )
                             viewModel.findLyricById(it).observe(viewLifecycleOwner) {
                                 MainFragmentDirections.actionLyricFragmentToReadFragment(it).also {
                                     requireActivity().intent.data = null
@@ -72,7 +78,11 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
                 it.navigateToReadFragment()
             },
                 share = {
-                    Utils.createDynamicLink(requireParentFragment(), it)
+                    Utils.createDynamicLink(
+                        requireParentFragment(),
+                        it,
+                        viewModel.firebaseAnalytics
+                    )
                 }).also { it.stateRestorationPolicy() }
 
         recentAdapter =
@@ -88,6 +98,7 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
 
         viewModel.observeRecentLyrics().observe(viewLifecycleOwner) {
             recentAdapter.submitList(it)
+            binding.recent.isVisible = it.isEmpty().not() && it.size > 3
         }
 
 
@@ -101,6 +112,7 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
                 popupMenu.inflate(R.menu.sort_by_menu)
                 popupMenu.setOnMenuItemClickListener(this@MainFragment)
                 userPrefs.getSort.asLiveData().observe(viewLifecycleOwner) { name ->
+                    viewModel.firebaseAnalytics.logEvent(Tag.SORT, bundleOf(Pair(Tag.SORT, name)))
                     when (name) {
                         SortBy.CATEGORY.name ->
                             popupMenu.menu.getItem(0).subMenu.getItem(2).isChecked = true

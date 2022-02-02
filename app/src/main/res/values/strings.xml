@@ -10,4 +10,7 @@
     <string name="developer">This app was designed and developed by Tech and Graphics in close collaboration with Zonse Media. </string>
     <string name="bank_details">National Bank of Malawi\nAccount Name : Comfort Mwalija\nAccount Number : 1004069974\nBranch : City Center</string>
     <string name="share">Share hymn</string>
+    <string name="favorite">Favorite hymn</string>
+    <string name="add_favorite">Hymn number %d has been added to favorites.</string>
+    <string name="remove_favorite">Hymn number %d has been removed from favorites.</string>
 </resources>

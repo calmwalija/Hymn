@@ -12,9 +12,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import net.techandgraphics.hymn.models.Lyric
@@ -79,7 +81,7 @@ object Utils {
     fun toast(context: Context, message: String) =
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-    fun createDynamicLink(fragment: Fragment, lyric: Lyric) {
+    fun createDynamicLink(fragment: Fragment, lyric: Lyric, firebaseAnalytics: FirebaseAnalytics) {
         toast(fragment.requireContext(), "Processing, just a moment please ...")
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse(String.format("%s?id=%d", Constant.DEEP_LINK, lyric.lyricId)))
@@ -98,6 +100,10 @@ object Utils {
                     .putExtra(Intent.EXTRA_TEXT, result.shortLink.toString())
                     .setType("text/plain")
                     .also {
+                        firebaseAnalytics.logEvent(
+                            Tag.SHARE,
+                            bundleOf(Pair(Tag.SHARE, lyric.number))
+                        )
                         fragment.startActivity(
                             Intent.createChooser(it, "Share")
                         )

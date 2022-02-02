@@ -6,13 +6,19 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentAboutBinding
+import net.techandgraphics.hymn.ui.fragments.BaseViewModel
+import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
 
+@AndroidEntryPoint
 class AboutFragment : Fragment(R.layout.fragment_about) {
 
     private lateinit var bind: FragmentAboutBinding
+    private val viewModel: BaseViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         bind = FragmentAboutBinding.bind(view)
@@ -39,5 +45,8 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
                     .setPrimaryClip(ClipData.newPlainText("", text))
             }
         }
+
+        Tag.screenView(viewModel.firebaseAnalytics, Tag.ABOUT)
+
     }
 }

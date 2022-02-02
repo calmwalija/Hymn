@@ -2,6 +2,7 @@ package net.techandgraphics.hymn.ui.fragments.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +14,7 @@ import net.techandgraphics.hymn.databinding.FragmentSearchBinding
 import net.techandgraphics.hymn.models.Search
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.ui.fragments.favorite.FavoriteAdapter
+import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils.onAddTextChangedListener
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
@@ -30,11 +32,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.searchEt.requestFocus()
 
         favoriteAdapter = FavoriteAdapter(click = {
-            SearchFragmentDirections.actionSearchFragmentToReadFragment(it).apply {
-                findNavController().navigate(this)
-            }
-
-            val searchQuery = binding.searchEt.text.toString().trim()
+            val searchQuery = binding.searchEt.text.toString().trim().lowercase()
             val searchList = searchQuery.regexLowerCase().split(" ")
 
             if (searchQuery.isNotBlank())
@@ -44,6 +42,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 ).also {
                     viewModel.insert(it)
                 }
+
+            viewModel.firebaseAnalytics.logEvent(
+                Tag.KEYWORD,
+                bundleOf(Pair(Tag.KEYWORD, searchQuery))
+            )
+
+
+            SearchFragmentDirections.actionSearchFragmentToReadFragment(it).apply {
+                findNavController().navigate(this)
+            }
         },
             favorite = {
                 viewModel.update(it.copy(favorite = !it.favorite))
@@ -75,6 +83,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.favoriteAdapter = favoriteAdapter
         binding.searchAdapter = searchTagAdapter
+        Tag.screenView(viewModel.firebaseAnalytics, Tag.SEARCH)
 
     }
 }

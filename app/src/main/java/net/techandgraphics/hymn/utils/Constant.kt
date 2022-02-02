@@ -66,14 +66,13 @@ object Constant {
     )
 
     val searchTag = arrayListOf(
-        Search(query = "God", tag = "god"),
-        Search(query = "What a friend", tag = "whatafriend"),
+        Search(query = "Amazing grace", tag = "amazinggrace"),
         Search(query = "I need thee", tag = "ineedthee"),
+        Search(query = "199", tag = "199"),
         Search(query = "Holy Spirit", tag = "holyspirit"),
         Search(query = "Pass me not", tag = "passmenot"),
-        Search(query = "Jesus", tag = "jesus"),
-        Search(query = "Happy day", tag = "happyday"),
-        Search(query = "Joy", tag = "joy"),
+        Search(query = "I have promised", tag = "Ihavepromised"),
+        Search(query = "Happy day", tag = "happyday")
     )
 
 

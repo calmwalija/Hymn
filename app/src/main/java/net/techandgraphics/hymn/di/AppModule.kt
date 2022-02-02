@@ -2,6 +2,7 @@ package net.techandgraphics.hymn.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +22,10 @@ object AppModule {
     ): Database = Room.databaseBuilder(context, Database::class.java, "hymn_repo")
         .fallbackToDestructiveMigration()
         .build()
+
+    @Singleton
+    @Provides
+    fun providesFirebaseAnalytics(
+        @ApplicationContext context: Context
+    ): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 }
