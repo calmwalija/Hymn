@@ -4,17 +4,14 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.first
 import net.techandgraphics.hymn.db.Database
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.models.Other
 import net.techandgraphics.hymn.models.Search
-import net.techandgraphics.hymn.utils.Constant
 import net.techandgraphics.hymn.utils.Utils
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
 import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 class Repository @Inject constructor(
     private val db: Database,
@@ -23,12 +20,11 @@ class Repository @Inject constructor(
 
 
     suspend fun jsonLyricToDB(): Boolean {
-        if (db.lyricDao.observeLyrics().first().isEmpty()) {
-
-            var ofType = object : TypeToken<List<Lyric>>() {}.type
-            (Gson().fromJson(
-                Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
-            ) as List<Lyric>).also { lyric ->
+        var ofType = object : TypeToken<List<Lyric>>() {}.type
+        (Gson().fromJson(
+            Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
+        ) as List<Lyric>).also { lyric ->
+            if (lyric.size != db.lyricDao.count()) {
 
                 val data = lyric.map {
                     val string: List<String> = it.content.split(" ")
@@ -43,20 +39,15 @@ class Repository @Inject constructor(
 
                     it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
                 }
-
-
                 db.lyricDao.insert(data)
-                db.searchDao.insert(Constant.searchTag)
-
             }
-
-
-            ofType = object : TypeToken<List<Other>>() {}.type
-            (Gson().fromJson(
-                Utils.readJsonFromAssetToString(context, "other.json")!!, ofType
-            ) as List<Other>).also { db.otherDao.insert(it) }
-
         }
+
+
+        ofType = object : TypeToken<List<Other>>() {}.type
+        (Gson().fromJson(
+            Utils.readJsonFromAssetToString(context, "other.json")!!, ofType
+        ) as List<Other>).also { db.otherDao.insert(it) }
 
         return false
     }
@@ -71,7 +62,7 @@ class Repository @Inject constructor(
 
     fun getLyricsById(lyric: Lyric) = db.lyricDao.getLyricsById(lyric.number)
     fun findLyricById(id: Int) = db.lyricDao.findLyricById(id)
-    fun observeSortBy(sortBy:String) = db.lyricDao.observeSortBy(sortBy)!!
+    fun observeSortBy(sortBy: String) = db.lyricDao.observeSortBy(sortBy)!!
     suspend fun clearFavorite() = db.lyricDao.clearFavorite()
 
 

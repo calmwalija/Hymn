@@ -16,8 +16,8 @@ android {
         applicationId "net.techandgraphics.hymn"
         minSdk 21
         targetSdk 31
-        versionCode 3
-        versionName "1.0.1"
+        versionCode 4
+        versionName "1.0.2"
         compileSdkVersion 31
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -44,8 +44,8 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
     implementation "androidx.palette:palette-ktx:1.0.0"
 
 
@@ -114,10 +114,7 @@ dependencies {
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
 
-    implementation 'com.github.ivbaranov:materiallettericon:0.2.3'
     implementation 'com.mikhaellopez:circularimageview:4.3.0'
-    implementation "com.hendraanggrian.material:collapsingtoolbarlayout-subtitle:+"
-    implementation "jp.wasabeef:blurry:4.0.1"
 
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
