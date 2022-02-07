@@ -17,8 +17,8 @@ interface LyricDao {
     @Update
     suspend fun update(lyric: Lyric)
 
-    @Update
-    suspend fun updateList(lyric: List<Lyric>)
+    @Query("SELECT COUNT(*) FROM lyric")
+    suspend fun count(): Int
 
     @Query(
         """ SELECT * FROM lyric WHERE  

@@ -27,16 +27,16 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
 
-            <com.google.android.material.appbar.SubtitleCollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                app:toolbarId="@id/toolbar"
+                app:title="@{lyric.title}"
                 android:id="@+id/collapsingToolbarLayout"
-                setTextHymnInfo="@{lyric}"
-                android:layout_width="match_parent"
+                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleTextAppearance="@android:color/transparent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:subtitle="@string/app_name">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/view_circle"
@@ -54,7 +54,7 @@
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/Theme.AppCompat.Light" />
 
-            </com.google.android.material.appbar.SubtitleCollapsingToolbarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -79,7 +79,7 @@
             android:layout_marginEnd="16dp"
             app:tint="@android:color/white"
             android:backgroundTint="@color/mellon"
-            android:src="@drawable/ic_share"
+             android:src="@drawable/ic_share"
             app:layout_anchor="@+id/appBarLayout"
             app:layout_anchorGravity="end|bottom"
             android:contentDescription="@string/share" />

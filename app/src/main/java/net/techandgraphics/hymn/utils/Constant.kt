@@ -65,16 +65,6 @@ object Constant {
         Category(56, R.drawable.conflict_and_templation),
     )
 
-    val searchTag = arrayListOf(
-        Search(query = "Amazing grace", tag = "amazinggrace"),
-        Search(query = "I need thee", tag = "ineedthee"),
-        Search(query = "199", tag = "199"),
-        Search(query = "Holy Spirit", tag = "holyspirit"),
-        Search(query = "Pass me not", tag = "passmenot"),
-        Search(query = "I have promised", tag = "Ihavepromised"),
-        Search(query = "Happy day", tag = "happyday")
-    )
-
 
     const val DOMAIN_URI_PREFIX = "https://hymn.page.link"
     const val DEEP_LINK = "https://techandgraphics.net/"
