@@ -1,9 +1,6 @@
 package net.techandgraphics.hymn.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.fragments.main.MainFragment.Companion.SortBy
@@ -11,7 +8,7 @@ import net.techandgraphics.hymn.ui.fragments.main.MainFragment.Companion.SortBy
 @Dao
 interface LyricDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(lyric: List<Lyric>)
 
     @Update
