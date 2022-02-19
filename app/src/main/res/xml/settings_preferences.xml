@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <PreferenceCategory app:title="More">
+    <PreferenceCategory app:title="About Hymn Book App">
 
         <Preference
             app:icon="@drawable/ic_info"
@@ -16,22 +16,26 @@
             app:summary="The Lord's Prayer, The creed etc"
             app:title="Other resources" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Configurations">
+
         <SeekBarPreference
             android:defaultValue="2"
             android:max="6"
             app:icon="@drawable/ic_font"
-            app:showSeekBarValue="true"
             app:key="font"
             app:min="1"
+            app:showSeekBarValue="true"
             app:title="Change lyrics font size" />
 
-
     </PreferenceCategory>
+
 
     <PreferenceCategory app:title="Contact us">
 
         <Preference
-            app:icon="@drawable/ic_feedback"
+            app:icon="@drawable/ic_whatsapp"
             app:key="feedback"
             app:summary="Contact us, report missing hymn etc"
             app:title="Feedback" />

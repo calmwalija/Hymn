@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.fragments.favorite
+package net.techandgraphics.hymn.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -20,12 +20,17 @@ class UserPrefs @Inject constructor(
 
     companion object {
         val SORT = stringPreferencesKey("SORT")
-     }
+        val TYPE = stringPreferencesKey("TYPE")
+    }
 
 
     suspend fun setSort(sortBy: String) =
         dataStore.edit { it[SORT] = sortBy }
 
+    suspend fun setType(type: String) =
+        dataStore.edit { it[TYPE] = type }
+
     val getSort = dataStore.data.map { it[SORT] ?: SortBy.NAME.name }
+    val getType = dataStore.data.map { it[TYPE] ?: "en" }
 
 }

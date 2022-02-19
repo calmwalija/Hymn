@@ -19,6 +19,7 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.prefs.UserPrefs
+import net.techandgraphics.hymn.ui.adapters.RecentAdapter
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.ui.fragments.LyricAdapter
 import net.techandgraphics.hymn.utils.Tag
@@ -31,7 +32,7 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var lyricAdapter: LyricAdapter
-    private lateinit var recentAdapter: MainRecentAdapter
+    private lateinit var recentAdapter: RecentAdapter
     private val viewModel by viewModels<BaseViewModel>()
 
     @Inject
@@ -86,7 +87,7 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
                 }).also { it.stateRestorationPolicy() }
 
         recentAdapter =
-            MainRecentAdapter { it.navigateToReadFragment() }.also { it.stateRestorationPolicy() }
+            RecentAdapter { it.navigateToReadFragment() }.also { it.stateRestorationPolicy() }
 
         userPrefs.getSort.asLiveData().observe(viewLifecycleOwner) { name ->
             viewModel.observeSortBy(name).observe(viewLifecycleOwner) {

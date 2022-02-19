@@ -13,7 +13,7 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentSearchBinding
 import net.techandgraphics.hymn.models.Search
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
-import net.techandgraphics.hymn.ui.fragments.favorite.FavoriteAdapter
+import net.techandgraphics.hymn.ui.adapters.FavoriteAdapter
 import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils.onAddTextChangedListener
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase

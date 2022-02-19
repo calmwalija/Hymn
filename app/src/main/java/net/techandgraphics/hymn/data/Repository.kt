@@ -1,6 +1,8 @@
 package net.techandgraphics.hymn.data
 
 import android.content.Context
+import android.util.Log
+import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -8,6 +10,7 @@ import net.techandgraphics.hymn.db.Database
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.models.Other
 import net.techandgraphics.hymn.models.Search
+import net.techandgraphics.hymn.prefs.UserPrefs
 import net.techandgraphics.hymn.utils.Utils
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
 import java.util.*
@@ -17,7 +20,6 @@ class Repository @Inject constructor(
     private val db: Database,
     @ApplicationContext val context: Context
 ) {
-
 
     suspend fun jsonLyricToDB(): Boolean {
         var ofType = object : TypeToken<List<Lyric>>() {}.type
@@ -29,13 +31,22 @@ class Repository @Inject constructor(
                 val data = lyric.map {
                     val string: List<String> = it.content.split(" ")
                     val data = buildString {
-                        for (i in 0..2) {
-                            append(string[i])
+                        try {
+                            for (i in 0..2) {
+                                append(string[i])
+                            }
+                        } catch (e: Exception) {
+                            append(string[0])
                         }
                     }
 
-                    val title = it.content.substring(0, it.content.indexOf("\n")).regexLowerCase()
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                    val title = try {
+                        it.content.substring(0, it.content.indexOf("\n")).regexLowerCase()
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                    } catch (e: Exception) {
+                        it.content.regexLowerCase()
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                    }
 
                     it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
                 }

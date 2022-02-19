@@ -7,7 +7,7 @@
 
         <variable
             name="favoriteAdapter"
-            type="net.techandgraphics.hymn.ui.fragments.favorite.FavoriteAdapter" />
+            type="net.techandgraphics.hymn.ui.adapters.FavoriteAdapter" />
 
         <variable
             name="topPickAdapter"

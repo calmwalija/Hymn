@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.fragments.main
+package net.techandgraphics.hymn.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,10 +8,10 @@ import net.techandgraphics.hymn.databinding.FragmentMainRecentItemBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils.HYMN_DIFF_UTIL
 
-class MainRecentAdapter(
+class RecentAdapter(
     private val itemClickListener: (Lyric) -> Unit
 ) :
-    ListAdapter<Lyric, MainRecentAdapter.HymnLyricViewHolder>(HYMN_DIFF_UTIL) {
+    ListAdapter<Lyric, RecentAdapter.HymnLyricViewHolder>(HYMN_DIFF_UTIL) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HymnLyricViewHolder {
