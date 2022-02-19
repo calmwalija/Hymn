@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentFavoriteBinding
 import net.techandgraphics.hymn.models.Lyric
+import net.techandgraphics.hymn.ui.adapters.FavoriteAdapter
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.ui.fragments.SwipeDecorator
 import net.techandgraphics.hymn.ui.fragments.TopPickAdapter

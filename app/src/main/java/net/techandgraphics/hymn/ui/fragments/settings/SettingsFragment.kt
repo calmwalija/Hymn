@@ -1,5 +1,7 @@
 package net.techandgraphics.hymn.ui.fragments.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
@@ -18,12 +20,10 @@ import net.techandgraphics.hymn.utils.Utils
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val url = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
     private val viewModel by viewModels<BaseViewModel>()
 
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        setPreferencesFromResource(R.xml.settings_preferences, rootKey)
 
         findPreference<Preference>("about")?.setOnPreferenceClickListener {
             SettingsFragmentDirections.actionSettingsFragmentToAboutFragment().also {
@@ -49,12 +49,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
         findPreference<Preference>("rate")?.setOnPreferenceClickListener {
+            val url = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
             Utils.openWebsite(requireActivity(), url)
             true
         }
 
         findPreference<Preference>("feedback")?.setOnPreferenceClickListener {
-            Utils.openWebsite(requireActivity(), url)
+            val url = "https://api.whatsapp.com/send?phone=+265993563408"
+            startActivity(Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)))
             true
         }
 
