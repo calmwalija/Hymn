@@ -45,21 +45,21 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonFav"
+            favorite="@{lyric.favorite}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/actionBarItemBackground"
             android:clickable="true"
+            android:contentDescription="@string/favorite"
             android:focusable="true"
             android:minWidth="48dp"
-            android:contentDescription="@string/favorite"
             android:minHeight="48dp"
             android:padding="15dp"
-            favorite="@{lyric.favorite}"
             android:tint="?attr/colorPrimaryDark"
-            tools:src="@drawable/ic_favorite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_favorite" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

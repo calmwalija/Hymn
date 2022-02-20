@@ -3,7 +3,7 @@ package net.techandgraphics.hymn.db
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.models.Other
- import net.techandgraphics.hymn.models.Search
+import net.techandgraphics.hymn.models.Search
 
 @Dao
 interface OtherDao {

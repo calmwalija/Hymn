@@ -25,7 +25,7 @@
 
     <item
         android:id="@+id/settingsFragment"
-        android:icon="@drawable/ic_more_vert"
+        android:icon="@drawable/ic_more"
         android:title="More" />
 
 

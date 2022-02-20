@@ -1,10 +1,10 @@
-package net.techandgraphics.hymn.ui.fragments
+package net.techandgraphics.hymn.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
- import net.techandgraphics.hymn.databinding.FragmentDiscoverTopPickItemBinding
+import net.techandgraphics.hymn.databinding.FragmentDiscoverTopPickItemBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils
 
@@ -26,8 +26,9 @@ class TopPickAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(lyric: Lyric) = binding.apply {
             this.lyric = lyric
-             executePendingBindings()
+            executePendingBindings()
         }
+
         init {
             binding.root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
         }

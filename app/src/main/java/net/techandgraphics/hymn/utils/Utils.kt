@@ -58,7 +58,7 @@ object Utils {
     }
 
 
-    fun decodeResource(context: Context, @DrawableRes drawableRes: Int) =
+    fun decodeResource(context: Context, @DrawableRes drawableRes: Int): Bitmap =
         BitmapFactory.decodeResource(context.resources, drawableRes)
 
     fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()

@@ -7,11 +7,11 @@
 
         <variable
             name="favoriteAdapter"
-            type="net.techandgraphics.hymn.ui.adapters.FavoriteAdapter" />
+            type="net.techandgraphics.hymn.ui.fragments.favorite.FavoriteAdapter" />
 
         <variable
             name="topPickAdapter"
-            type="net.techandgraphics.hymn.ui.fragments.TopPickAdapter" />
+            type="net.techandgraphics.hymn.ui.adapters.TopPickAdapter" />
 
     </data>
 

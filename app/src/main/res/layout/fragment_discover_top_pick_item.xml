@@ -24,6 +24,7 @@
 
 
             <androidx.appcompat.widget.AppCompatTextView
+                setTag="@{lyric.topPick}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -31,7 +32,6 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:padding="10dp"
-                setTag="@{lyric.topPick}"
                 tools:text="@string/androidx_startup" />
 
 
@@ -39,7 +39,6 @@
 
 
     </LinearLayout>
-
 
 
 </layout>

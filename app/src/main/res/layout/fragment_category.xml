@@ -25,20 +25,20 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:scaleType="centerCrop"
-            tools:src="@drawable/seed_time_and_harvest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/seed_time_and_harvest" />
 
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             style="@style/TextAppearance.AppCompat.Large"
-            android:text="@{lyric.categoryName}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingHorizontal="16dp"
+            android:text="@{lyric.categoryName}"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,13 +49,13 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/number"
+            setTextHymnCount="@{counter}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:textColor="@color/white"
             android:textSize="20sp"
-            setTextHymnCount="@{counter}"
             app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +68,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +76,6 @@
             app:layout_constraintTop_toBottomOf="@+id/image"
             app:spanCount="1"
             tools:itemCount="4"
-            android:scrollbars="vertical"
             tools:listitem="@layout/fragment_category_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
