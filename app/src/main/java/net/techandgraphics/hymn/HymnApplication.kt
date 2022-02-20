@@ -15,10 +15,6 @@ class HymnApplication : Application() {
         const val NOTIFICATION_DESCRIPTION = "Hymn Channel Description"
     }
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannelCompat.Builder(

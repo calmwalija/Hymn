@@ -1,34 +1,30 @@
 package net.techandgraphics.hymn.ui.fragments.main
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.prefs.UserPrefs
+import net.techandgraphics.hymn.ui.adapters.LyricAdapter
 import net.techandgraphics.hymn.ui.adapters.RecentAdapter
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
-import net.techandgraphics.hymn.ui.fragments.LyricAdapter
+import net.techandgraphics.hymn.utils.Constant
 import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClickListener {
+class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var lyricAdapter: LyricAdapter
@@ -38,11 +34,6 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
     @Inject
     lateinit var userPrefs: UserPrefs
 
-    companion object {
-        enum class SortBy {
-            NUMBER, NAME, CATEGORY
-        }
-    }
 
     private fun setupDynamicLink() {
         Firebase.dynamicLinks
@@ -89,13 +80,10 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
         recentAdapter =
             RecentAdapter { it.navigateToReadFragment() }.also { it.stateRestorationPolicy() }
 
-        userPrefs.getSort.asLiveData().observe(viewLifecycleOwner) { name ->
-            viewModel.observeSortBy(name).observe(viewLifecycleOwner) {
-                lyricAdapter.submitList(it) {
-                    binding.recyclerViewAll.scrollToPosition(0)
-                }
-            }
+        viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
+            lyricAdapter.submitList(it)
         }
+
 
         viewModel.observeRecentLyrics().observe(viewLifecycleOwner) {
             recentAdapter.submitList(it)
@@ -108,48 +96,29 @@ class MainFragment : Fragment(R.layout.fragment_main), PopupMenu.OnMenuItemClick
             recyclerViewRecent.adapter = recentAdapter
             recyclerViewAll.itemAnimator = null
 
-            sortBy.setOnClickListener {
-                val popupMenu = PopupMenu(requireContext(), it)
-                popupMenu.inflate(R.menu.sort_by_menu)
-                popupMenu.setOnMenuItemClickListener(this@MainFragment)
-                userPrefs.getSort.asLiveData().observe(viewLifecycleOwner) { name ->
-                    viewModel.firebaseAnalytics.logEvent(Tag.SORT, bundleOf(Pair(Tag.SORT, name)))
-                    when (name) {
-                        SortBy.CATEGORY.name ->
-                            popupMenu.menu.getItem(0).subMenu.getItem(2).isChecked = true
-                        SortBy.NAME.name ->
-                            popupMenu.menu.getItem(0).subMenu.getItem(1).isChecked = true
-                        SortBy.NUMBER.name ->
-                            popupMenu.menu.getItem(0).subMenu.getItem(0).isChecked = true
-                    }
+            search.setOnClickListener {
+                viewModel.firebaseAnalytics.logEvent(
+                    Tag.SEARCH_BTN,
+                    bundleOf(Pair(Tag.SEARCH_BTN, null))
+                )
+                MainFragmentDirections.actionMainFragmentToSearchFragment().also {
+                    findNavController().navigate(it)
                 }
-                popupMenu.show()
             }
+
         }
+        onRestart()
 
         setupDynamicLink()
+
     }
 
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return when (item!!.itemId) {
-            R.id.sortByName -> {
-                item.isChecked = true
-                viewModel.viewModelScope.launch { userPrefs.setSort(SortBy.NAME.name) }
-                true
-            }
-            R.id.sortByNumber -> {
-                item.isChecked = true
-                viewModel.viewModelScope.launch { userPrefs.setSort(SortBy.NUMBER.name) }
-                true
-            }
-            R.id.sortByCategory -> {
-                item.isChecked = true
-                viewModel.viewModelScope.launch { userPrefs.setSort(SortBy.CATEGORY.name) }
-                true
-            }
-            else -> false
+    private fun onRestart() {
+        if (requireActivity().intent.getBooleanExtra(Constant.RESTART, false)) {
+            MainFragmentDirections
+                .actionMainFragmentToSettingsFragment().also {
+                    findNavController().navigate(it)
+                }
         }
     }
-
-
 }

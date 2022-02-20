@@ -5,6 +5,8 @@
       <map>
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/gradient_gray.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/gradient_lite.xml" value="0.225" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_arrow_back.xml" value="0.2" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_brightness.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_category.xml" value="0.22291666666666668" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_dashboard.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_delete.xml" value="0.225" />
@@ -12,21 +14,30 @@
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_favorite_accent.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_favorite_fill.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_feedback.xml" value="0.225" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_font.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_history.xml" value="0.225" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_home.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_info.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.18461538461538463" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_layers.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_list.xml" value="0.225" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_list_alt.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_logo.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_more_horiz.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_more_vert.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_nb_logo.xml" value="0.31794871794871793" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_paypal_logo.xml" value="0.31794871794871793" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_rate.xml" value="0.18461538461538463" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_rate_review.xml" value="0.2" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_search.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_settings.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_share.xml" value="0.18461538461538463" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_sort.xml" value="0.2" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_star.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_tag_logo.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_whatsapp.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_www.xml" value="0.225" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_zonsemedia_logo.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/layout_bg.xml" value="0.31794871794871793" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_circle.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_round.xml" value="0.225" />
@@ -67,6 +78,7 @@
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.18461538461538463" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/xml/root_preferences.xml" value="0.25" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/xml/settings_preferences.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -1,16 +1,15 @@
 package net.techandgraphics.hymn.data
 
 import android.content.Context
-import android.util.Log
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
+import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.db.Database
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.models.Other
 import net.techandgraphics.hymn.models.Search
-import net.techandgraphics.hymn.prefs.UserPrefs
 import net.techandgraphics.hymn.utils.Utils
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
 import java.util.*
@@ -20,6 +19,10 @@ class Repository @Inject constructor(
     private val db: Database,
     @ApplicationContext val context: Context
 ) {
+
+    private val version =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getString(context.getString(R.string.version_key), "en")!!
 
     suspend fun jsonLyricToDB(): Boolean {
         var ofType = object : TypeToken<List<Lyric>>() {}.type
@@ -48,6 +51,11 @@ class Repository @Inject constructor(
                             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
                     }
 
+                    title.replace("god", "God")
+                    title.replace("lord", "Lord")
+                    title.replace("jesus", "Jesus")
+                    title.replace("holy spirit", "Holy Spirit")
+
                     it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
                 }
                 db.lyricDao.insert(data)
@@ -64,21 +72,21 @@ class Repository @Inject constructor(
     }
 
 
-    fun observeHymns(query: String) = db.lyricDao.observeLyrics(query)
-    val observeCategories = db.lyricDao.observeCategories()
-    val observeTopPickCategories = db.lyricDao.observeTopPickCategories()
-    val observeRecentLyrics = db.lyricDao.observeRecentLyrics()
+    fun observeHymns(query: String) = db.lyricDao.observeLyrics(query, version)
+    val observeCategories = db.lyricDao.observeCategories(version)
+    val observeTopPickCategories = db.lyricDao.observeTopPickCategories(version)
+    val observeRecentLyrics = db.lyricDao.observeRecentLyrics(version)
     val observeOther = db.otherDao.observeOther()
     val observeFavoriteLyrics = db.lyricDao.observeFavoriteLyrics()
 
-    fun getLyricsById(lyric: Lyric) = db.lyricDao.getLyricsById(lyric.number)
-    fun findLyricById(id: Int) = db.lyricDao.findLyricById(id)
-    fun observeSortBy(sortBy: String) = db.lyricDao.observeSortBy(sortBy)!!
+    fun getLyricsById(lyric: Lyric) = db.lyricDao.getLyricsById(lyric.number, version)
+    fun findLyricById(id: Int) = db.lyricDao.findLyricById(id, version)
     suspend fun clearFavorite() = db.lyricDao.clearFavorite()
 
 
     suspend fun update(lyric: Lyric) = db.lyricDao.update(lyric)
-    fun getLyricsByCategory(lyric: Lyric) = db.lyricDao.getLyricsByCategory(lyric.categoryId)
+    fun getLyricsByCategory(lyric: Lyric) =
+        db.lyricDao.getLyricsByCategory(lyric.categoryId, version)
 
     suspend fun insert(list: List<Search>) = db.searchDao.insert(list)
     suspend fun delete(list: Search) = db.searchDao.delete(list)

@@ -2,7 +2,6 @@ package net.techandgraphics.hymn.utils
 
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.models.Category
-import net.techandgraphics.hymn.models.Search
 
 object Constant {
     val images = arrayListOf(
@@ -127,6 +126,8 @@ object Constant {
     const val DOMAIN_URI_PREFIX = "https://hymn.page.link"
     const val DEEP_LINK = "https://techandgraphics.net/"
     const val LOGO_URL = "https://techandgraphics.net/image/hymn/logo2.jpg"
+
+    const val RESTART = "RESTART"
 
 
 }

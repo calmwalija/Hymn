@@ -9,7 +9,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.techandgraphics.hymn.db.Database
-import net.techandgraphics.hymn.prefs.UserPrefs
 import javax.inject.Singleton
 
 @Module

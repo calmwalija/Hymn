@@ -28,15 +28,15 @@
 
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                app:toolbarId="@id/toolbar"
-                app:title="@{lyric.title}"
                 android:id="@+id/collapsingToolbarLayout"
-                 android:layout_width="match_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleTextAppearance="@android:color/transparent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:title="@{lyric.title}"
+                app:toolbarId="@id/toolbar">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/view_circle"
@@ -47,7 +47,7 @@
                     app:layout_collapseMode="parallax"
                     tools:src="@drawable/seed_time_and_harvest" />
 
-                  <androidx.appcompat.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -68,7 +68,6 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:spanCount="1"
             tools:itemCount="4"
-            android:paddingBottom="60dp"
             tools:listitem="@layout/fragment_read_item" />
 
 
@@ -77,12 +76,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            app:tint="@android:color/white"
             android:backgroundTint="@color/mellon"
-             android:src="@drawable/ic_share"
+            android:contentDescription="@string/share"
+            android:src="@drawable/ic_share"
             app:layout_anchor="@+id/appBarLayout"
             app:layout_anchorGravity="end|bottom"
-            android:contentDescription="@string/share" />
+            app:tint="@android:color/white" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

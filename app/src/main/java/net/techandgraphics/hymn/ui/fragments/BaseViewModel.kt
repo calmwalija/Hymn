@@ -35,7 +35,6 @@ class BaseViewModel @Inject constructor(
     }
 
     fun observeHymnLyrics() = flatMapLatest.asLiveData()
-    fun observeSortBy(sortBy: String) = repository.observeSortBy(sortBy).asLiveData()
     fun observeCategories() = repository.observeCategories.asLiveData()
     fun observeTopPickCategories() = repository.observeTopPickCategories.asLiveData()
     fun observeRecentLyrics() = repository.observeRecentLyrics.asLiveData()

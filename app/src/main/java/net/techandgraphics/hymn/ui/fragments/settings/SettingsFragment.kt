@@ -4,17 +4,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SeekBarPreference
+import androidx.preference.*
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
+import net.techandgraphics.hymn.utils.Constant
 import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -25,7 +26,74 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
 
-        findPreference<Preference>("about")?.setOnPreferenceClickListener {
+        val themeValue: Array<String> =
+            requireActivity().resources.getStringArray(R.array.theme_values)
+
+        val versionValue: Array<String> =
+            requireActivity().resources.getStringArray(R.array.version_values)
+
+        val versionEntries: Array<String> =
+            requireActivity().resources.getStringArray(R.array.version_entries)
+
+        if (requireActivity().intent.getBooleanExtra(Constant.RESTART, false)) {
+            requireActivity().intent.data = null
+            requireActivity().intent.replaceExtras(Bundle())
+            (if (PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    .getString(getString(R.string.version_key), versionValue[0]) == versionValue[0]
+            ) versionEntries[0] else versionEntries[1]).also {
+                Utils.toast(requireContext(), "$it version has been applied.")
+            }
+        }
+
+
+        findPreference<ListPreference>(getString(R.string.version_key))?.let {
+            it.summary =
+                if (it.value.toString() == versionValue[0]) versionEntries[0] else versionEntries[1]
+            it.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    it.summary =
+                        if (newValue == versionValue[0]) versionEntries[0] else versionEntries[1]
+                    if (it.value.toString() != newValue) {
+                        with(requireActivity()) {
+                            finish()
+                            startActivity(intent.putExtra(Constant.RESTART, true))
+                            overridePendingTransition(0, 0)
+                        }
+                        viewModel.firebaseAnalytics.logEvent(
+                            Tag.VERSION,
+                            bundleOf(Pair(Tag.VERSION, newValue))
+                        )
+                    }
+                    it.value.toString() != newValue
+                }
+        }
+
+
+        findPreference<ListPreference>(getString(R.string.theme_key))?.let {
+            it.summary =
+                if (it.value.toString() == themeValue[0]) "System default" else it.value.toString()
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
+            it.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                when {
+                    newValue.toString() == themeValue[1] -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                    newValue.toString() == themeValue[2] -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                    else -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    }
+                }
+                viewModel.firebaseAnalytics.logEvent(Tag.THEME, bundleOf(Pair(Tag.THEME, newValue)))
+                requireActivity().recreate()
+                true
+            }
+        }
+
+
+        findPreference<Preference>(getString(R.string.about_key))?.setOnPreferenceClickListener {
             SettingsFragmentDirections.actionSettingsFragmentToAboutFragment().also {
                 findNavController().navigate(it)
             }
@@ -33,14 +101,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
 
-        findPreference<Preference>("resources")?.setOnPreferenceClickListener {
+        findPreference<Preference>(getString(R.string.resources_key))?.setOnPreferenceClickListener {
             SettingsFragmentDirections.actionSettingsFragmentToOtherFragment().also {
                 findNavController().navigate(it)
             }
             true
         }
 
-        findPreference<SeekBarPreference>("font")?.onPreferenceChangeListener =
+        findPreference<SeekBarPreference>(getString(R.string.font_key))?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, p1 ->
                 val newValue = p1.toString().toInt()
                 viewModel.firebaseAnalytics.logEvent(Tag.FONT, bundleOf(Pair(Tag.FONT, newValue)))
@@ -48,19 +116,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
 
 
-        findPreference<Preference>("rate")?.setOnPreferenceClickListener {
+        findPreference<Preference>(getString(R.string.rate_key))?.setOnPreferenceClickListener {
             val url = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
             Utils.openWebsite(requireActivity(), url)
             true
         }
 
-        findPreference<Preference>("feedback")?.setOnPreferenceClickListener {
+        findPreference<Preference>(getString(R.string.feedback_key))?.setOnPreferenceClickListener {
             val url = "https://api.whatsapp.com/send?phone=+265993563408"
             startActivity(Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)))
             true
         }
 
-        findPreference<Preference>("clear_favorite")?.setOnPreferenceClickListener {
+        findPreference<Preference>(getString(R.string.clear_favorite_key))?.setOnPreferenceClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Warning")
                 .setMessage("Are you sure you want to delete all your favorite hymn list ?")

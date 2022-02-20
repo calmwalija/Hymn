@@ -13,7 +13,6 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentSearchBinding
 import net.techandgraphics.hymn.models.Search
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
-import net.techandgraphics.hymn.ui.adapters.FavoriteAdapter
 import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils.onAddTextChangedListener
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
@@ -24,14 +23,14 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel by viewModels<BaseViewModel>()
-    private lateinit var favoriteAdapter: FavoriteAdapter
+    private lateinit var searchAdapter: SearchAdapter
     private lateinit var searchTagAdapter: SearchTagAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
         binding.searchEt.requestFocus()
 
-        favoriteAdapter = FavoriteAdapter(click = {
+        searchAdapter = SearchAdapter(click = {
             val searchQuery = binding.searchEt.text.toString().trim().lowercase()
             val searchList = searchQuery.regexLowerCase().split(" ")
 
@@ -72,7 +71,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
-            favoriteAdapter.submitList(it)
+            searchAdapter.submitList(it)
         }
 
         viewModel.observeSearch().observe(viewLifecycleOwner) {
@@ -81,7 +80,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.favoriteAdapter = favoriteAdapter
+        binding.favoriteAdapter = searchAdapter
         binding.searchAdapter = searchTagAdapter
         Tag.screenView(viewModel.firebaseAnalytics, Tag.SEARCH)
 

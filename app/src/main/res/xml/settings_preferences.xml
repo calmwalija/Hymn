@@ -6,28 +6,52 @@
 
         <Preference
             app:icon="@drawable/ic_info"
-            app:key="about"
+            app:key="@string/about_key"
             app:summary="Developers, donate etc"
             app:title="About" />
 
         <Preference
             app:icon="@drawable/ic_list"
-            app:key="resources"
-            app:summary="The Lord's Prayer, The creed etc"
+            app:key="@string/resources_key"
+            app:summary="The Lord's Prayer, The Creed e.t.c"
             app:title="Other resources" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Configurations">
+    <PreferenceCategory app:title="Version">
+
+
+        <ListPreference
+            android:defaultValue="en"
+            android:dialogTitle="Choose version"
+            android:entries="@array/version_entries"
+            android:entryValues="@array/version_values"
+            android:icon="@drawable/ic_play"
+            android:key="@string/version_key"
+            android:title="Hymn version" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory app:title="Appearance">
 
         <SeekBarPreference
             android:defaultValue="2"
             android:max="6"
             app:icon="@drawable/ic_font"
-            app:key="font"
+            app:key="@string/font_key"
             app:min="1"
             app:showSeekBarValue="true"
             app:title="Change lyrics font size" />
+
+        <ListPreference
+            android:defaultValue="system"
+            android:dialogTitle="Choose theme"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_values"
+            android:icon="@drawable/ic_brightness"
+            android:key="@string/theme_key"
+            android:title="Theme" />
 
     </PreferenceCategory>
 
@@ -36,13 +60,13 @@
 
         <Preference
             app:icon="@drawable/ic_whatsapp"
-            app:key="feedback"
+            app:key="@string/feedback_key"
             app:summary="Contact us, report missing hymn etc"
             app:title="Feedback" />
 
         <Preference
             app:icon="@drawable/ic_rate"
-            app:key="rate"
+            app:key="@string/rate_key"
             app:summary="Give us a rating or review at Google play store"
             app:title="Rate and review" />
 
@@ -53,7 +77,7 @@
 
         <Preference
             app:icon="@drawable/ic_delete"
-            app:key="clear_favorite"
+            app:key="@string/clear_favorite_key"
             app:summary="Delete all favorite hymn list"
             app:title="Clear favorites" />
 
