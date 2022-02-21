@@ -8,7 +8,7 @@
         because we believe in the mission to help people draw closer to God.
         Help us get this app with friends and family. You can donate using the following</string>
     <string name="developer">This app was designed and developed by Tech and Graphics in close collaboration with Zonse Media. </string>
-    <string name="bank_details">National Bank of Malawi\nAccount Name : Comfort Mwalija\nAccount Number : 1004069974\nBranch : City Center</string>
+    <string name="bank_details">Comfort Mwalija\nAccount # • 1004069974\nBranch • City Center</string>
     <string name="share">Share hymn</string>
     <string name="favorite">Favorite hymn</string>
     <string name="add_favorite">Hymn number %d has been added to favorites.</string>
@@ -30,4 +30,5 @@
     <string name="rate_key">rate_key</string>
     <string name="resources_key">resources_key</string>
     <string name="about_key">about_key</string>
+    <string name="clear_data_key">clear_data_key</string>
 </resources>

@@ -22,7 +22,7 @@ interface LyricDao {
                title LIKE'%' || :query || '%'  OR 
                number LIKE'%' || :query || '%'  OR 
                categoryName  LIKE'%' || :query || '%' )
-              AND  lang=:version GROUP BY number ORDER BY title ASC"""
+              AND  lang=:version GROUP BY number HAVING MIN(number) ORDER BY title ASC"""
     )
     fun observeLyrics(query: String = "", version: String): Flow<List<Lyric>>
 
@@ -49,5 +49,8 @@ interface LyricDao {
 
     @Query("SELECT * FROM lyric WHERE lyricId =:id AND lang=:version GROUP BY number ORDER BY lyricId")
     fun findLyricById(id: Int, version: String): Flow<Lyric>
+
+    @Query("DELETE  FROM  lyric  ")
+    suspend fun clear()
 
 }

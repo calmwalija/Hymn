@@ -13,6 +13,9 @@ interface SearchDao {
     @Delete
     suspend fun delete(search: Search)
 
+    @Query("DELETE  FROM  search  ")
+    suspend fun clear()
+
     @Query("SELECT * FROM search ORDER BY id DESC LIMIT 15")
     fun observeSearch(): Flow<List<Search>>
 }

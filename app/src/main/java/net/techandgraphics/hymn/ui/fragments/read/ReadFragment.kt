@@ -83,15 +83,19 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentReadBinding.bind(view)
-        binding.lyric = args.lyric
         lyric = args.lyric
         setHasOptionsMenu(true)
 
         val fontSize =
-            PreferenceManager.getDefaultSharedPreferences(requireContext()).getInt("font", 1)
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getInt(getString(R.string.font_key), 1)
 
         readAdapter = ReadAdapter(fontSize + 14).also { binding.adapter = it }
 
+        viewModel.getLyricsById(args.lyric).observe(viewLifecycleOwner) {
+            binding.lyric = it[0]
+            readAdapter.submitList(it)
+        }
 
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbar)
@@ -128,10 +132,6 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
                 args.lyric,
                 viewModel.firebaseAnalytics
             )
-        }
-
-        viewModel.getLyricsById(args.lyric).observe(viewLifecycleOwner) {
-            readAdapter.submitList(it)
         }
 
         viewModel.update(

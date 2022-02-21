@@ -1,13 +1,17 @@
 package net.techandgraphics.hymn.utils
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -20,10 +24,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import net.techandgraphics.hymn.models.Lyric
+import java.util.*
 
 
 object Utils {
-    fun getActionBar(context: Context) = (context as AppCompatActivity).supportActionBar
 
 
     fun readJsonFromAssetToString(context: Context, file: String): String? {
@@ -65,6 +69,28 @@ object Utils {
 
 
     fun String.regexLowerCase() = replace(Regex("[_',.;!-\"?]"), "").lowercase()
+    fun String.capitaliseWord() = split(" ").joinToString(" ") { it.capitalize() }
+
+    fun Dialog.dialog(): Dialog {
+        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)).also { return this }
+    }
+
+    fun Dialog.dialogShow() {
+        Objects.requireNonNull(window!!).setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        show()
+    }
+
+    fun restartApp(activity: Activity, putExtra: Boolean = true) = activity.apply {
+        finish()
+        if (putExtra)
+            startActivity(intent.putExtra(Constant.RESTART, true))
+        else
+            startActivity(intent)
+        overridePendingTransition(0, 0)
+    }
 
     fun EditText.onAddTextChangedListener(onTextChangedCallback: (String) -> Unit) {
         this.addTextChangedListener(object : TextWatcher {

@@ -14,6 +14,9 @@ interface OtherDao {
     @Delete
     suspend fun delete(search: Search)
 
+    @Query("DELETE  FROM  other ")
+    suspend fun clear()
+
     @Query("SELECT * FROM other ORDER BY resourceId ")
     fun observeOther(): Flow<List<Other>>
 }

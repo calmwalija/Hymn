@@ -5,10 +5,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.Repository
 import net.techandgraphics.hymn.models.Lyric
@@ -20,6 +18,9 @@ class BaseViewModel @Inject constructor(
     private val repository: Repository,
     val firebaseAnalytics: FirebaseAnalytics
 ) : ViewModel() {
+
+    private val channel = Channel<Callback>()
+    val channelTask = channel.receiveAsFlow()
 
     private val _whenRead = MutableStateFlow(true)
     val whenRead: StateFlow<Boolean> = _whenRead.asStateFlow()
@@ -54,6 +55,12 @@ class BaseViewModel @Inject constructor(
     fun clearFavorite() =
         viewModelScope.launch { repository.clearFavorite() }
 
+    fun clear() =
+        viewModelScope.launch {
+            repository.clear()
+            channel.send(Callback.OnComplete)
+        }
+
 
     fun update(lyric: Lyric) =
         viewModelScope.launch { repository.update(lyric) }
@@ -61,5 +68,10 @@ class BaseViewModel @Inject constructor(
     fun delete(search: Search) = viewModelScope.launch {
         repository.delete(search)
     }
+
+    sealed class Callback {
+        object OnComplete : Callback()
+    }
+
 
 }

@@ -1,7 +1,12 @@
 package net.techandgraphics.hymn.utils
 
+import androidx.annotation.DrawableRes
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.models.Category
+
+data class Category(
+    val categoryId: Int,
+    @DrawableRes val drawableRes: Int
+)
 
 object Constant {
     val images = arrayListOf(
