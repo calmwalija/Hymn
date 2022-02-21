@@ -23,6 +23,7 @@
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_list.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_list_alt.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_logo.xml" value="0.18461538461538463" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_more.xml" value="0.2035" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_more_horiz.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_more_vert.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/ic_nb_logo.xml" value="0.31794871794871793" />
@@ -43,12 +44,13 @@
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_round.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/drawable/shape_round_stroke.xml" value="0.225" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_about.xml" value="0.25" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/dialog.xml" value="0.33" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_about.xml" value="0.33" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_category.xml" value="0.2" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_category_item.xml" value="0.25" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_discover.xml" value="0.25" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_discover_category_item.xml" value="0.25" />
-        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_discover_top_pick_item.xml" value="0.2" />
+        <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_discover_top_pick_item.xml" value="0.33" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_favorite.xml" value="0.25" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_favorite_item.xml" value="0.17136752136752137" />
         <entry key="..\:/Users/Ki4/AndroidStudioProjects/Hymn/app/src/main/res/layout/fragment_hymn.xml" value="0.20885416666666667" />

@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.adapters
+package net.techandgraphics.hymn.ui.fragments.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,10 +8,10 @@ import net.techandgraphics.hymn.databinding.FragmentFavoriteItemBinding
 import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.ui.diffs.DiffUtils.HYMN_DIFF_UTIL
 
-class FavoriteAdapter(
+class SearchAdapter(
     private val click: (Lyric) -> Unit,
     private val favorite: (Lyric) -> Unit
-) : ListAdapter<Lyric, FavoriteAdapter.ViewHolder>(HYMN_DIFF_UTIL) {
+) : ListAdapter<Lyric, SearchAdapter.ViewHolder>(HYMN_DIFF_UTIL) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -18,17 +18,17 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Version">
+    <PreferenceCategory app:title="Books">
 
 
         <ListPreference
             android:defaultValue="en"
-            android:dialogTitle="Choose version"
+            android:dialogTitle="Choose book"
             android:entries="@array/version_entries"
             android:entryValues="@array/version_values"
-            android:icon="@drawable/ic_play"
+            android:icon="@drawable/ic_books"
             android:key="@string/version_key"
-            android:title="Hymn version" />
+            android:title="Hymn book" />
 
     </PreferenceCategory>
 
@@ -37,7 +37,7 @@
 
         <SeekBarPreference
             android:defaultValue="2"
-            android:max="6"
+            android:max="10"
             app:icon="@drawable/ic_font"
             app:key="@string/font_key"
             app:min="1"
@@ -78,8 +78,15 @@
         <Preference
             app:icon="@drawable/ic_delete"
             app:key="@string/clear_favorite_key"
-            app:summary="Delete all favorite hymn list"
+            app:summary="Delete favorite hymn list"
             app:title="Clear favorites" />
+
+        <Preference
+            app:icon="@drawable/ic_cached"
+            app:key="@string/clear_data_key"
+            app:summary="Delete all data"
+            app:title="Clear cache &amp; data" />
+
 
     </PreferenceCategory>
 

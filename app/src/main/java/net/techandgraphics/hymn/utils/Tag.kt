@@ -12,6 +12,7 @@ object Tag {
     const val THEME = "theme"
     const val VERSION = "version"
     const val CLEAR_FAV = "clear_favorites"
+    const val CLEAR_DATA = "clear_data"
     const val KEYWORD = "search_keyword"
     const val SEARCH_BTN = "search_button"
     const val DELETE = "delete_tag"

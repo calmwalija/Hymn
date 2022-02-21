@@ -25,8 +25,8 @@
 
     <item
         android:id="@+id/settingsFragment"
-        android:icon="@drawable/ic_more"
-        android:title="More" />
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
 
 
 </menu>

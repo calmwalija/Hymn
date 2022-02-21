@@ -7,9 +7,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.utils.Constant
@@ -54,11 +57,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     it.summary =
                         if (newValue == versionValue[0]) versionEntries[0] else versionEntries[1]
                     if (it.value.toString() != newValue) {
-                        with(requireActivity()) {
-                            finish()
-                            startActivity(intent.putExtra(Constant.RESTART, true))
-                            overridePendingTransition(0, 0)
-                        }
+                        Utils.restartApp(requireActivity())
                         viewModel.firebaseAnalytics.logEvent(
                             Tag.VERSION,
                             bundleOf(Pair(Tag.VERSION, newValue))
@@ -130,8 +129,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>(getString(R.string.clear_favorite_key))?.setOnPreferenceClickListener {
             AlertDialog.Builder(requireContext())
-                .setTitle("Warning")
-                .setMessage("Are you sure you want to delete all your favorite hymn list ?")
+                .setTitle("Attention")
+                .setMessage("Are you sure you want to delete your favorite hymn list ?")
                 .setNegativeButton("no", null)
                 .setPositiveButton("yes") { _, _ ->
                     viewModel.clearFavorite()
@@ -142,6 +141,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
                 .show()
             true
+        }
+
+        findPreference<Preference>(getString(R.string.clear_data_key))?.setOnPreferenceClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Attention")
+                .setMessage("Are you sure you want to delete all your data ?")
+                .setNegativeButton("no", null)
+                .setPositiveButton("yes") { _, _ ->
+                    viewModel.firebaseAnalytics.logEvent(
+                        Tag.CLEAR_DATA, bundleOf(Pair(Tag.CLEAR_DATA, Tag.CLEAR_DATA))
+                    )
+                    viewModel.clear()
+                }
+                .show()
+            true
+        }
+        viewModel.viewModelScope.launch {
+            viewModel.channelTask.collectLatest {
+                when (it) {
+                    BaseViewModel.Callback.OnComplete -> {
+                        Utils.toast(requireContext(), "App data has been reset.")
+                        Utils.restartApp(requireActivity(), false)
+                    }
+                }
+            }
         }
 
 

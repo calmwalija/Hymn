@@ -3,6 +3,7 @@ package net.techandgraphics.hymn.ui.fragments.read
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentReadItemBinding
@@ -47,10 +48,11 @@ class ReadAdapter(
             executePendingBindings()
 
             stanza.textSize = fontSize.toFloat()
-
+            stanzaIndexTextView.isVisible = lyric.chorus != 2
+            stanza.setPadding(16,  if(lyric.chorus == 2) 0 else 16, 16, 16)
             stanza.setTypeface(
                 null,
-                if (lyric.chorus == 1) Typeface.ITALIC else Typeface.NORMAL
+                if (lyric.chorus > 0) Typeface.ITALIC else Typeface.NORMAL
             )
 
         }

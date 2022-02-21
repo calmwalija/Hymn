@@ -11,8 +11,8 @@ import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.models.Other
 import net.techandgraphics.hymn.models.Search
 import net.techandgraphics.hymn.utils.Utils
+import net.techandgraphics.hymn.utils.Utils.capitaliseWord
 import net.techandgraphics.hymn.utils.Utils.regexLowerCase
-import java.util.*
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -44,17 +44,11 @@ class Repository @Inject constructor(
                     }
 
                     val title = try {
-                        it.content.substring(0, it.content.indexOf("\n")).regexLowerCase()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                        it.content.substring(0, it.content.indexOf("\n"))
+                            .regexLowerCase().capitaliseWord()
                     } catch (e: Exception) {
-                        it.content.regexLowerCase()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                        it.content.regexLowerCase().capitaliseWord()
                     }
-
-                    title.replace("god", "God")
-                    title.replace("lord", "Lord")
-                    title.replace("jesus", "Jesus")
-                    title.replace("holy spirit", "Holy Spirit")
 
                     it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
                 }
@@ -82,6 +76,12 @@ class Repository @Inject constructor(
     fun getLyricsById(lyric: Lyric) = db.lyricDao.getLyricsById(lyric.number, version)
     fun findLyricById(id: Int) = db.lyricDao.findLyricById(id, version)
     suspend fun clearFavorite() = db.lyricDao.clearFavorite()
+
+    suspend fun clear() = db.apply {
+        searchDao.clear()
+        lyricDao.clear()
+        otherDao.clear()
+    }
 
 
     suspend fun update(lyric: Lyric) = db.lyricDao.update(lyric)
