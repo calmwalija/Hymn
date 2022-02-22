@@ -7,7 +7,7 @@ import net.techandgraphics.hymn.models.Lyric
 @Dao
 interface LyricDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(lyric: List<Lyric>)
 
     @Update
