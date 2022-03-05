@@ -34,12 +34,12 @@ class FavoriteAdapter(
 
 
         init {
-            if (absoluteAdapterPosition != RecyclerView.NO_POSITION)
-                getItem(absoluteAdapterPosition)?.let { lyric ->
-                    binding.root.setOnClickListener { click.invoke(lyric) }
-                    binding.buttonFav.setOnClickListener { favorite.invoke(lyric) }
-                }
+            with(binding) {
+                root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
+                buttonFav.setOnClickListener { favorite.invoke(currentList[absoluteAdapterPosition]) }
+            }
         }
+
     }
 
 }
