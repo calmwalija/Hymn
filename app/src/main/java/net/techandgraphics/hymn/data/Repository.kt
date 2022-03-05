@@ -20,7 +20,7 @@ class Repository @Inject constructor(
     @ApplicationContext val context: Context
 ) {
 
-    private val version =
+    val version =
         PreferenceManager.getDefaultSharedPreferences(context)
             .getString(context.getString(R.string.version_key), "en")!!
 
@@ -90,6 +90,6 @@ class Repository @Inject constructor(
 
     suspend fun insert(list: List<Search>) = db.searchDao.insert(list)
     suspend fun delete(list: Search) = db.searchDao.delete(list)
-    val observeSearch = db.searchDao.observeSearch()
+    val observeSearch = db.searchDao.observeSearch(version)
 
 }

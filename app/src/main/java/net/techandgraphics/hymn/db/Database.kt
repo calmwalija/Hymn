@@ -6,7 +6,7 @@ import net.techandgraphics.hymn.models.Lyric
 import net.techandgraphics.hymn.models.Other
 import net.techandgraphics.hymn.models.Search
 
-@Database(entities = [Lyric::class, Search::class, Other::class], version = 2)
+@Database(entities = [Lyric::class, Search::class, Other::class], version = 3)
 abstract class Database : RoomDatabase() {
     abstract val lyricDao: LyricDao
     abstract val searchDao: SearchDao

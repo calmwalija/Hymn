@@ -49,7 +49,7 @@ class BaseViewModel @Inject constructor(
     fun getLyricsByCategory(lyric: Lyric) = repository.getLyricsByCategory(lyric).asLiveData()
 
     fun insert(search: Search) = viewModelScope.launch {
-        repository.insert(listOf(search))
+        repository.insert(listOf(search.copy(lang = repository.version)))
     }
 
     fun clearFavorite() =
