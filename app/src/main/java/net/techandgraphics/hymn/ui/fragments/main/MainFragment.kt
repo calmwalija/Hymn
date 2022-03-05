@@ -1,19 +1,15 @@
 package net.techandgraphics.hymn.ui.fragments.main
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.models.Lyric
@@ -24,8 +20,6 @@ import net.techandgraphics.hymn.ui.fragments.BaseViewModel
 import net.techandgraphics.hymn.utils.Constant
 import net.techandgraphics.hymn.utils.Tag
 import net.techandgraphics.hymn.utils.Utils
-import net.techandgraphics.hymn.utils.Utils.dialog
-import net.techandgraphics.hymn.utils.Utils.dialogShow
 import net.techandgraphics.hymn.utils.Utils.stateRestorationPolicy
 import javax.inject.Inject
 
@@ -36,7 +30,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var lyricAdapter: LyricAdapter
     private lateinit var recentAdapter: RecentAdapter
     private val viewModel by viewModels<BaseViewModel>()
-    private lateinit var dialog: Dialog
 
     @Inject
     lateinit var userPrefs: UserPrefs
@@ -71,7 +64,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentMainBinding.bind(view)
-        dialog = Dialog(requireContext()).dialog()
         lyricAdapter =
             LyricAdapter(click = {
                 it.navigateToReadFragment()
@@ -117,24 +109,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         onRestart()
 
         setupDynamicLink()
-
-        userPrefs.getWhatsNew.asLiveData().observe(viewLifecycleOwner) {
-            if (it) {
-                with(dialog) {
-                    setContentView(R.layout.dialog)
-                    setCancelable(false)
-                    findViewById<View>(R.id.tryButton).setOnClickListener {
-                        dismiss()
-                        viewModel.viewModelScope.launch { userPrefs.setWhatsNew(false) }
-                        MainFragmentDirections.actionMainFragmentToSettingsFragment().also {
-                            findNavController().navigate(it)
-                        }
-                    }
-                    dialogShow()
-                }
-            }
-        }
-
     }
 
     private fun onRestart() {

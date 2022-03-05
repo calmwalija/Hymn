@@ -12,4 +12,5 @@ data class Other(
     val resourceId: Int,
     val groupName: String,
     val content: String,
-) : Parcelable
+    val lang: String = "en",
+    ) : Parcelable
