@@ -17,7 +17,7 @@ android {
         minSdk 21
         targetSdk 31
         versionCode 7
-        versionName "1.2.1"
+        versionName "1.2.1 - dev"
         compileSdkVersion 31
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -65,6 +65,7 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.31-alpha"
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.preference:preference:1.2.0'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.2'
     kapt "com.google.dagger:hilt-android-compiler:2.31-alpha"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
