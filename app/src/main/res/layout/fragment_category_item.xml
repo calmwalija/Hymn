@@ -7,7 +7,7 @@
 
         <variable
             name="lyric"
-            type="net.techandgraphics.hymn.models.Lyric" />
+            type="net.techandgraphics.hymn.domain.model.Lyric" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

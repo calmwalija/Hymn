@@ -1,6 +1,8 @@
 package net.techandgraphics.hymn.di
 
+import android.app.Application
 import android.content.Context
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
@@ -8,8 +10,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.techandgraphics.hymn.db.Database
-import net.techandgraphics.hymn.db.Migration
+import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.data.local.Migration
+import net.techandgraphics.hymn.data.repository.*
 import javax.inject.Singleton
 
 @Module
@@ -29,4 +33,26 @@ object AppModule {
     fun providesFirebaseAnalytics(
         @ApplicationContext context: Context
     ): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+
+
+    @Singleton
+    @Provides
+    fun providesLang(app: Application): String =
+        PreferenceManager.getDefaultSharedPreferences(app)
+            .getString(app.getString(R.string.version_key), "en")!!
+
+    @Singleton
+    @Provides
+    fun providesRepository(
+        db: Database,
+        app: Application,
+        version: String
+    ): Repository {
+        return Repository(
+            otherRepositoryImpl = OtherRepositoryImpl(db, app),
+            lyricRepositoryImpl = LyricRepositoryImpl(db, app, version),
+            searchRepositoryImpl = SearchRepositoryImpl(db, app, version),
+            jsonParserImpl = JsonParserImpl(app, db)
+        )
+    }
 }

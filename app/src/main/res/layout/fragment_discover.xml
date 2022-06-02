@@ -53,7 +53,7 @@
             app:layout_constraintTop_toBottomOf="@+id/recyclerView_top_pick" />
 
 
-        <net.techandgraphics.hymn.view.BaseRecyclerView
+        <net.techandgraphics.hymn.presentation.view.BaseRecyclerView
             android:id="@+id/recyclerView_browse_category"
             android:layout_width="0dp"
             android:layout_height="0dp"

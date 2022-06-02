@@ -7,7 +7,7 @@
 
         <variable
             name="other"
-            type="net.techandgraphics.hymn.models.Other" />
+            type="net.techandgraphics.hymn.domain.model.Other" />
 
     </data>
 
