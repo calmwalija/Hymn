@@ -8,7 +8,7 @@
 
         <variable
             name="adapter"
-            type="net.techandgraphics.hymn.ui.fragments.other.OtherAdapter" />
+            type="net.techandgraphics.hymn.presentation.fragments.other.OtherAdapter" />
 
 
     </data>

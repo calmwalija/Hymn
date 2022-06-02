@@ -1,9 +1,7 @@
 package net.techandgraphics.hymn.services
 
 import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
@@ -13,7 +11,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import net.techandgraphics.hymn.HymnApplication.Companion.NOTIFICATION_ID
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.ui.MainActivity
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL

@@ -4,8 +4,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
-import net.techandgraphics.hymn.models.Lyric
-import net.techandgraphics.hymn.utils.Constant
+import net.techandgraphics.hymn.domain.model.Lyric
 
 
 @BindingAdapter("setImageView")

@@ -7,15 +7,15 @@
 
         <variable
             name="lyric"
-            type="net.techandgraphics.hymn.models.Lyric" />
+            type="net.techandgraphics.hymn.domain.model.Lyric" />
 
         <variable
             name="favoriteAdapter"
-            type="net.techandgraphics.hymn.ui.fragments.search.SearchAdapter" />
+            type="net.techandgraphics.hymn.presentation.fragments.search.SearchAdapter" />
 
         <variable
             name="searchAdapter"
-            type="net.techandgraphics.hymn.ui.fragments.search.SearchTagAdapter" />
+            type="net.techandgraphics.hymn.presentation.fragments.search.SearchTagAdapter" />
     </data>
 
     <ScrollView

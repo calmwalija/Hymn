@@ -5,8 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.core.app.NotificationChannelCompat
-import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -16,6 +14,7 @@ class HymnApplication : Application() {
         super.onCreate()
         onCreateNotificationChannel()
     }
+
     companion object {
         const val NOTIFICATION_ID = "198193"
         const val NOTIFICATION_DESCRIPTION = "Hymn Channel Description"
@@ -34,4 +33,4 @@ class HymnApplication : Application() {
         }
     }
 
- }
+}
