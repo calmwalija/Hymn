@@ -20,9 +20,9 @@ class BaseViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val lyricRepository = repository.lyricRepositoryImpl
-    private val searchRepository = repository.searchRepositoryImpl
-    private val otherRepository = repository.otherRepositoryImpl
+    private val lyricRepository = repository.lyricRepository
+    private val searchRepository = repository.searchRepository
+    private val otherRepository = repository.otherRepository
 
     private val channel = Channel<Callback>()
     val channelTask = channel.receiveAsFlow()
@@ -31,7 +31,7 @@ class BaseViewModel @Inject constructor(
     val whenRead: StateFlow<Boolean> = _whenRead.asStateFlow()
 
     fun onLoad() = viewModelScope.launch {
-        _whenRead.value = repository.jsonParserImpl.fromJson()
+        _whenRead.value = repository.jsonParser.fromJson()
     }
 
     val searchQuery = MutableStateFlow("")

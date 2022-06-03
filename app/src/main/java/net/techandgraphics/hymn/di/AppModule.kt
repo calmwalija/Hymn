@@ -49,10 +49,10 @@ object AppModule {
         version: String
     ): Repository {
         return Repository(
-            otherRepositoryImpl = OtherRepositoryImpl(db, app),
-            lyricRepositoryImpl = LyricRepositoryImpl(db, app, version),
-            searchRepositoryImpl = SearchRepositoryImpl(db, app, version),
-            jsonParserImpl = JsonParserImpl(app, db)
+            OtherRepositoryImpl(db),
+            LyricRepositoryImpl(db, version),
+            SearchRepositoryImpl(db, version),
+            JsonParserImpl(app, db)
         )
     }
 }
