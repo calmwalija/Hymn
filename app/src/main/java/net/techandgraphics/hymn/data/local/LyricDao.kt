@@ -51,7 +51,7 @@ interface LyricDao {
     @Query("SELECT * FROM lyric WHERE lyricId =:id AND lang=:version GROUP BY number ORDER BY lyricId")
     fun findLyricById(id: Int, version: String): Flow<Lyric>
 
-    @Query("DELETE  FROM  lyric")
-    suspend fun clear()
+    @Query("UPDATE lyric SET topPickHit = 0")
+    suspend fun reset()
 
 }

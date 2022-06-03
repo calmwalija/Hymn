@@ -9,7 +9,7 @@ interface LyricRepository {
     suspend fun update(lyric: Lyric)
     suspend fun count(): Int
     suspend fun clearFavorite()
-    suspend fun clear()
+    suspend fun reset()
     fun observeLyrics(query: String = ""): Flow<PagingData<Lyric>>
     fun observeCategories(): Flow<List<Lyric>>
     fun observeTopPickCategories(): Flow<List<Lyric>>

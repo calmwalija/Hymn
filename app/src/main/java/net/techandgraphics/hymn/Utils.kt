@@ -68,11 +68,13 @@ object Utils {
 
 
     fun String.regexLowerCase() = replace(Regex("[_',.;!-\"?]"), "").lowercase()
-    fun String.capitaliseWord() = split(" ").joinToString(" ") { it.replaceFirstChar {
-        if (it.isLowerCase()) it.titlecase(
-            Locale.getDefault()
-        ) else it.toString()
-    } }
+    fun String.capitaliseWord() = split(" ").joinToString(" ") {
+        it.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(
+                Locale.getDefault()
+            ) else it.toString()
+        }
+    }
 
     fun Dialog.dialog(): Dialog {
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)).also { return this }
@@ -92,7 +94,7 @@ object Utils {
             startActivity(intent.putExtra(Constant.RESTART, true))
         else
             startActivity(intent)
-        overridePendingTransition(0, 0)
+        pendingTransition(activity)
     }
 
     fun EditText.onAddTextChangedListener(onTextChangedCallback: (String) -> Unit) {
@@ -150,5 +152,9 @@ object Utils {
         Intent(Intent.ACTION_VIEW)
             .setData(Uri.parse(url))
     )
+
+    fun pendingTransition(activity: Activity) {
+        activity.overridePendingTransition(R.animator.slide_from_right, R.animator.slide_to_left)
+    }
 
 }
