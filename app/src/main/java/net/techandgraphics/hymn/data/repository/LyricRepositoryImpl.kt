@@ -10,6 +10,8 @@ import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
+const val SIZE = 20
+
 @Singleton
 class LyricRepositoryImpl @Inject constructor(
     private val db: Database,
@@ -39,9 +41,9 @@ class LyricRepositoryImpl @Inject constructor(
     override fun observeLyrics(query: String): Flow<PagingData<Lyric>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20,
+                pageSize = SIZE,
                 enablePlaceholders = false,
-                maxSize = 20 * 3
+                maxSize = SIZE * 3
             ),
             pagingSourceFactory = { db.lyricDao.observeLyrics(query, version) }
         ).flow
