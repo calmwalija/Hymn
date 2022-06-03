@@ -60,6 +60,8 @@ class BaseViewModel @Inject constructor(
 
     fun clear() = viewModelScope.launch {
         lyricRepository.clear()
+        searchRepository.clear()
+        otherRepository.clear()
         channel.send(Callback.OnComplete)
     }
 
