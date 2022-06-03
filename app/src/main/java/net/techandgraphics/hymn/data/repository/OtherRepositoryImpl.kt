@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.data.repository
 
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.domain.model.Other
@@ -10,8 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class OtherRepositoryImpl @Inject constructor(
-    private val db: Database,
-    val context: Context
+    db: Database,
 ) : OtherRepository {
 
     private val dao = db.otherDao

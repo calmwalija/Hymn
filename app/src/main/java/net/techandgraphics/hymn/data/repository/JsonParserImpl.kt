@@ -16,47 +16,58 @@ import javax.inject.Singleton
 
 @Singleton
 class JsonParserImpl @Inject constructor(
-    val context: Context,
-    val db: Database
+    private val context: Context,
+    db: Database
 ) : JsonParser {
 
-    override suspend fun fromJson(): Boolean {
-        var ofType: Type = object : TypeToken<List<Lyric>>() {}.type
-        (Gson().fromJson(
-            Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
-        ) as List<Lyric>).also { lyric ->
-            if (lyric.size != db.lyricDao.count()) {
+    private val lyricRepo = db.lyricDao
+    private val otherRepo = db.otherDao
 
-                val data = lyric.map {
-                    val string: List<String> = it.content.split(" ")
-                    val data = buildString {
-                        try {
-                            for (i in 0..2) {
-                                append(string[i])
-                            }
-                        } catch (e: Exception) {
-                            append(string[0])
-                        }
-                    }
 
-                    val title = try {
-                        it.content.substring(0, it.content.indexOf("\n"))
-                            .regexLowerCase().capitaliseWord()
-                    } catch (e: Exception) {
-                        it.content.regexLowerCase().capitaliseWord()
-                    }
-
-                    it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
-                }
-                db.lyricDao.insert(data)
-            }
-        }
-
-        ofType = object : TypeToken<List<Other>>() {}.type
+    override suspend fun fromJsonToOther() {
+        val ofType = object : TypeToken<List<Other>>() {}.type
         (Gson().fromJson(
             Utils.readJsonFromAssetToString(context, "other.json")!!, ofType
-        ) as List<Other>).also { db.otherDao.insert(it) }
+        ) as List<Other>).also { otherRepo.insert(it) }
+    }
 
+    override suspend fun fromJsonToLyric() {
+        val ofType: Type = object : TypeToken<List<Lyric>>() {}.type
+        (Gson().fromJson(
+            Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
+        ) as List<Lyric>).also {
+            fromJsonToLyricImpl(it)
+        }
+    }
+
+    private suspend fun fromJsonToLyricImpl(lyric: List<Lyric>) {
+        val data = lyric.map {
+            val string: List<String> = it.content.split(" ")
+            val data = buildString {
+                try {
+                    for (i in 0..2) {
+                        append(string[i])
+                    }
+                } catch (e: Exception) {
+                    append(string[0])
+                }
+            }
+
+            val title = try {
+                it.content.substring(0, it.content.indexOf("\n"))
+                    .regexLowerCase().capitaliseWord()
+            } catch (e: Exception) {
+                it.content.regexLowerCase().capitaliseWord()
+            }
+
+            it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
+        }
+        lyricRepo.insert(data)
+    }
+
+    override suspend fun fromJson(): Boolean {
+        fromJsonToLyric()
+        fromJsonToOther()
         return false
 
     }

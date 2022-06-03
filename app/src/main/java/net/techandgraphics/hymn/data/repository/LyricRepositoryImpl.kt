@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.data.repository
 
-import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -14,7 +13,6 @@ import javax.inject.Singleton
 @Singleton
 class LyricRepositoryImpl @Inject constructor(
     private val db: Database,
-    val context: Context,
     private val version: String
 ) : LyricRepository {
 
