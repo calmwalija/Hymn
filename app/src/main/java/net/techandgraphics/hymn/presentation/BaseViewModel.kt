@@ -59,7 +59,7 @@ class BaseViewModel @Inject constructor(
     fun clearFavorite() = viewModelScope.launch { lyricRepository.clearFavorite() }
 
     fun clear() = viewModelScope.launch {
-        lyricRepository.clear()
+        lyricRepository.reset()
         searchRepository.clear()
         otherRepository.clear()
         channel.send(Callback.OnComplete)

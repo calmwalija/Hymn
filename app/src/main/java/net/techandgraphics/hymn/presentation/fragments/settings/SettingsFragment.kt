@@ -9,11 +9,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
-import androidx.preference.*
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SeekBarPreference
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
@@ -37,17 +39,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val versionEntries: Array<String> =
             requireActivity().resources.getStringArray(R.array.version_entries)
-
-        if (requireActivity().intent.getBooleanExtra(Constant.RESTART, false)) {
-            requireActivity().intent.data = null
-            requireActivity().intent.replaceExtras(Bundle())
-            (if (PreferenceManager.getDefaultSharedPreferences(requireContext())
-                    .getString(getString(R.string.version_key), versionValue[0]) == versionValue[0]
-            ) versionEntries[0] else versionEntries[1]).also {
-                Utils.toast(requireContext(), "$it version has been applied.")
-            }
-        }
-
 
         findPreference<ListPreference>(getString(R.string.version_key))?.let {
             it.summary =
@@ -131,8 +122,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             AlertDialog.Builder(requireContext())
                 .setTitle("Attention")
                 .setMessage("Are you sure you want to delete your favorite hymn list ?")
-                .setNegativeButton("no", null)
-                .setPositiveButton("yes") { _, _ ->
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes") { _, _ ->
                     viewModel.clearFavorite()
                     viewModel.firebaseAnalytics.logEvent(
                         Tag.CLEAR_FAV, bundleOf(Pair(Tag.CLEAR_FAV, Tag.CLEAR_FAV))
@@ -147,8 +138,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             AlertDialog.Builder(requireContext())
                 .setTitle("Attention")
                 .setMessage("Are you sure you want to delete all your data ?")
-                .setNegativeButton("no", null)
-                .setPositiveButton("yes") { _, _ ->
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes") { _, _ ->
                     viewModel.firebaseAnalytics.logEvent(
                         Tag.CLEAR_DATA, bundleOf(Pair(Tag.CLEAR_DATA, Tag.CLEAR_DATA))
                     )
@@ -162,7 +153,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 when (it) {
                     BaseViewModel.Callback.OnComplete -> {
                         Utils.toast(requireContext(), "App data has been reset.")
-                        Utils.restartApp(requireActivity(), false)
                     }
                 }
             }

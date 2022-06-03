@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn
 
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
@@ -8,7 +9,7 @@ import net.techandgraphics.hymn.domain.model.Lyric
 
 
 @BindingAdapter("setImageView")
-fun setImageView(imageView: AppCompatImageView, drawableRes: Int) {
+fun setImageView(imageView: ImageView, drawableRes: Int) {
     Picasso.get().load(Constant.images[drawableRes].drawableRes).into(imageView)
 }
 

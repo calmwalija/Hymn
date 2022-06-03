@@ -103,6 +103,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
                 setHomeButtonEnabled(true)
                 setDisplayHomeAsUpEnabled(true)
                 setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+                title = lyric.title
             }
         }
 

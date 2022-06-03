@@ -34,8 +34,8 @@ class LyricRepositoryImpl @Inject constructor(
         db.lyricDao.clearFavorite()
     }
 
-    override suspend fun clear() {
-        db.lyricDao.clear()
+    override suspend fun reset() {
+        db.lyricDao.reset()
     }
 
     override fun observeLyrics(query: String): Flow<PagingData<Lyric>> {

@@ -100,12 +100,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         setupDynamicLink()
     }
 
-    private fun onRestart() {
-        if (requireActivity().intent.getBooleanExtra(Constant.RESTART, false)) {
-            MainFragmentDirections
-                .actionMainFragmentToSettingsFragment().also {
-                    findNavController().navigate(it)
-                }
+    private fun onRestart() = with(requireActivity().intent) {
+        if (getBooleanExtra(Constant.RESTART, false)) {
+            if (getBooleanExtra(Constant.RESTART, false)) {
+                data = null
+                replaceExtras(Bundle())
+                Utils.toast(requireContext(), "Version changed.")
+            }
         }
     }
 }

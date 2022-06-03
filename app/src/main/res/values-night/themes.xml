@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Hymn" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Hymn" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/mellon</item>
         <item name="colorPrimaryVariant">@color/mellon</item>

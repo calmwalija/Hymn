@@ -17,7 +17,8 @@
         android:layout_margin="4dp"
         android:background="?attr/selectableItemBackground">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/view_circle"
             setImageView="@{lyric.categoryId}"
             android:layout_width="70dp"
@@ -26,10 +27,10 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/seed_time_and_harvest"
-            app:civ_border="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize30Percent" />
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -39,6 +40,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@+id/view_circle"
             app:layout_constraintEnd_toStartOf="@+id/buttonShare"
