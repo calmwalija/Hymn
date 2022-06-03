@@ -35,14 +35,12 @@ object AppModule {
     ): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 
 
-    @Singleton
     @Provides
     fun providesLang(app: Application): String =
         PreferenceManager.getDefaultSharedPreferences(app)
             .getString(app.getString(R.string.version_key), "en")!!
 
-    @Singleton
-    @Provides
+     @Provides
     fun providesRepository(
         db: Database,
         app: Application,
@@ -52,7 +50,7 @@ object AppModule {
             OtherRepositoryImpl(db),
             LyricRepositoryImpl(db, version),
             SearchRepositoryImpl(db, version),
-            JsonParserImpl(app, db)
+            JsonParserImpl(db, app)
         )
     }
 }

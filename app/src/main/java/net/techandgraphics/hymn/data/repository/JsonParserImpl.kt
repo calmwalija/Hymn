@@ -16,8 +16,8 @@ import javax.inject.Singleton
 
 @Singleton
 class JsonParserImpl @Inject constructor(
+    db: Database,
     private val context: Context,
-    db: Database
 ) : JsonParser {
 
     private val lyricRepo = db.lyricDao
