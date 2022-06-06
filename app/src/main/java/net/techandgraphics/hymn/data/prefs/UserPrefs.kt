@@ -1,8 +1,8 @@
 package net.techandgraphics.hymn.data.prefs
 
 import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
@@ -16,12 +16,12 @@ class UserPrefs @Inject constructor(
         context.createDataStore(name = "net.techandgraphics.hymn.data.prefs")
 
     companion object {
-        val WhatsNew = booleanPreferencesKey("NEW")
+        val build = intPreferencesKey("build_number")
+        private const val BUILD = 1
     }
 
-    suspend fun setWhatsNew(isFirstLaunch: Boolean) =
-        dataStore.edit { it[WhatsNew] = isFirstLaunch }
+    suspend fun setBuild(num: Int) = dataStore.edit { it[build] = num }
 
-    val getWhatsNew = dataStore.data.map { it[WhatsNew] ?: true }
+    val getBuild = dataStore.data.map { it[build] ?: 0 }
 
 }

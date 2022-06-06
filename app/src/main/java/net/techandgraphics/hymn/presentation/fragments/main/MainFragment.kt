@@ -3,7 +3,6 @@ package net.techandgraphics.hymn.presentation.fragments.main
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,23 +14,15 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
-import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.BaseViewModel
-import net.techandgraphics.hymn.presentation.adapters.RecentAdapter
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private lateinit var binding: FragmentMainBinding
-    private lateinit var lyricAdapter: MainAdapter
-    private lateinit var recentAdapter: RecentAdapter
+    private lateinit var bind: FragmentMainBinding
     private val viewModel by viewModels<BaseViewModel>()
-
-    @Inject
-    lateinit var userPrefs: UserPrefs
 
 
     private fun setupDynamicLink() {
@@ -62,38 +53,35 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding = FragmentMainBinding.bind(view)
-        lyricAdapter =
-            MainAdapter(click = {
-                it.navigateToReadFragment()
-            },
-                share = {
-                    Utils.createDynamicLink(
-                        requireParentFragment(),
-                        it,
-                        viewModel.firebaseAnalytics
-                    )
-                }).also { it.stateRestorationPolicy() }
-
-        recentAdapter =
-            RecentAdapter { it.navigateToReadFragment() }.also { it.stateRestorationPolicy() }
-
-        viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
-            lyricAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+        bind = FragmentMainBinding.bind(view)
+        bind.lyricAdapter = MainAdapter(click = {
+            it.navigateToReadFragment()
+        },
+            share = {
+                Utils.createDynamicLink(
+                    requireParentFragment(),
+                    it,
+                    viewModel.firebaseAnalytics
+                )
+            }).apply {
+            stateRestorationPolicy()
+            viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
+                submitData(viewLifecycleOwner.lifecycle, it)
+            }
         }
 
-
-        viewModel.observeRecentLyrics().observe(viewLifecycleOwner) {
-            recentAdapter.submitList(it)
-            binding.recent.isVisible = it.isEmpty().not() && it.size > 3
+        bind.otherAdapter = OtherAdapter {
+            MainFragmentDirections.actionMainFragmentToOtherFragment(it).apply {
+                findNavController().navigate(this)
+            }
+        }.apply {
+            viewModel.observeOther().observe(viewLifecycleOwner) {
+                submitList(it)
+            }
         }
 
-
-        with(binding) {
-            recyclerViewAll.adapter = lyricAdapter
-            recyclerViewRecent.adapter = recentAdapter
+        with(bind) {
             recyclerViewAll.itemAnimator = null
-
         }
         onRestart()
 
