@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 class JsonParserImpl @Inject constructor(
-    db: Database,
+    private val db: Database,
     private val context: Context,
 ) : JsonParser {
 
@@ -36,7 +36,8 @@ class JsonParserImpl @Inject constructor(
         (Gson().fromJson(
             Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
         ) as List<Lyric>).also {
-            fromJsonToLyricImpl(it)
+            if (db.lyricDao.count() != it.size)
+                fromJsonToLyricImpl(it)
         }
     }
 

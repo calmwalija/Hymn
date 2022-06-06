@@ -6,10 +6,11 @@
     <data>
 
         <variable
-            name="lyric"
-            type="net.techandgraphics.hymn.domain.model.Lyric" />
+            name="other"
+            type="net.techandgraphics.hymn.domain.model.Other" />
 
     </data>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,11 +21,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            app:cardCornerRadius="15dp">
+            app:cardCornerRadius="10dp">
 
 
             <androidx.appcompat.widget.AppCompatTextView
-                setTag="@{lyric.topPick}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -32,6 +32,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:padding="16dp"
+                android:text="@{other.groupName}"
                 tools:text="@string/androidx_startup" />
 
 

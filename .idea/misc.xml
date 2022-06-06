@@ -91,11 +91,14 @@
         <entry key="app/src/main/res/layout/fragment_category_item.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_discover.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_discover_category_item.xml" value="0.24375" />
-        <entry key="app/src/main/res/layout/fragment_discover_top_pick_item.xml" value="0.10625" />
-        <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.10625" />
+        <entry key="app/src/main/res/layout/fragment_discover_top_pick_item.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.2421875" />
         <entry key="app/src/main/res/layout/fragment_favorite_item.xml" value="0.24375" />
-        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.24479166666666666" />
+        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.2421875" />
         <entry key="app/src/main/res/layout/fragment_main_item.xml" value="0.24375" />
+        <entry key="app/src/main/res/layout/fragment_main_other_item.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_main_other_read.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_main_other_read_item.xml" value="0.2421875" />
         <entry key="app/src/main/res/layout/fragment_main_recent_item.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_other.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_other_item.xml" value="0.24375" />

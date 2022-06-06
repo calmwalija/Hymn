@@ -3,6 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="lyricAdapter"
+            type="net.techandgraphics.hymn.presentation.fragments.main.MainAdapter" />
+        <variable
+            name="otherAdapter"
+            type="net.techandgraphics.hymn.presentation.fragments.main.OtherAdapter" />
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,23 +23,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:text="Recently Opened"
+            android:text="Essentials"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_recent"
+            android:id="@+id/recyclerView_main"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
             app:spanCount="2"
+            android:adapter="@{otherAdapter}"
             tools:itemCount="6"
-            tools:listitem="@layout/fragment_main_recent_item" />
+            tools:listitem="@layout/fragment_main_other_item" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appCompatTextView3"
@@ -43,7 +53,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView_recent" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView_main" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -51,7 +61,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:adapter="@{lyricAdapter}"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -66,7 +77,7 @@
             android:id="@+id/recent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="appCompatTextView2,recyclerView_recent"
+            app:constraint_referenced_ids="appCompatTextView2,recyclerView_main"
             tools:layout_editor_absoluteX="132dp"
             tools:layout_editor_absoluteY="6dp" />
 

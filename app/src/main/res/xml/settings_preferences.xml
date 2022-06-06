@@ -10,12 +10,6 @@
             app:summary="Developers, donate etc"
             app:title="About" />
 
-        <Preference
-            app:icon="@drawable/ic_list"
-            app:key="@string/resources_key"
-            app:summary="The Lord's Prayer, The Creed e.t.c"
-            app:title="Other resources" />
-
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Books">
