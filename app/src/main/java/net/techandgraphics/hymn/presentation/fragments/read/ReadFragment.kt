@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.presentation.fragments.read
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +18,7 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
+import net.techandgraphics.hymn.Utils.changeFontSize
 import net.techandgraphics.hymn.databinding.FragmentReadBinding
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.BaseViewModel
@@ -31,6 +32,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
     private lateinit var binding: FragmentReadBinding
     private lateinit var menu: Menu
     private lateinit var lyric: Lyric
+    private var fontSize = 2
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.read_menu, menu)
@@ -73,10 +75,15 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
                 }
 
             }
-            R.id.font_size -> ReadFragmentDirections
-                .actionReadFragmentToSettingsFragment().also {
-                    findNavController().navigate(it)
+            R.id.font_size -> {
+                changeFontSize(Dialog(requireContext()), fontSize) {
+                    readAdapter.fontSize = it.plus(14).also {
+                        fontSize = it.minus(14)
+                    }
+                    readAdapter.notifyDataSetChanged()
                 }
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -86,9 +93,9 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
         lyric = args.lyric
         setHasOptionsMenu(true)
 
-        val fontSize =
+        fontSize =
             PreferenceManager.getDefaultSharedPreferences(requireContext())
-                .getInt(getString(R.string.font_key), 1)
+                .getInt(getString(R.string.font_key), 2)
 
         readAdapter = ReadAdapter(fontSize + 14).also { binding.adapter = it }
 

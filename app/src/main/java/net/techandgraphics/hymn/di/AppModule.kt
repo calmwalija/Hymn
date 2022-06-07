@@ -47,7 +47,7 @@ object AppModule {
         version: String
     ): Repository {
         return Repository(
-            OtherRepositoryImpl(db),
+            OtherRepositoryImpl(db, version),
             LyricRepositoryImpl(db, version),
             SearchRepositoryImpl(db, version),
             JsonParserImpl(db, app)

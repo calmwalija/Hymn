@@ -1,6 +1,7 @@
 package net.techandgraphics.hymn.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.techandgraphics.hymn.Utils
@@ -35,10 +36,7 @@ class JsonParserImpl @Inject constructor(
         val ofType: Type = object : TypeToken<List<Lyric>>() {}.type
         (Gson().fromJson(
             Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
-        ) as List<Lyric>).also {
-            if (db.lyricDao.count() != it.size)
-                fromJsonToLyricImpl(it)
-        }
+        ) as List<Lyric>).also { fromJsonToLyricImpl(it) }
     }
 
     private suspend fun fromJsonToLyricImpl(lyric: List<Lyric>) {
@@ -69,6 +67,8 @@ class JsonParserImpl @Inject constructor(
     override suspend fun fromJson(): Boolean {
         fromJsonToLyric()
         fromJsonToOther()
+
+        Log.e("TAG", "fromJson: " )
         return false
 
     }

@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.databinding.ActivityMainBinding
 
 @AndroidEntryPoint
@@ -26,7 +28,11 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.onLoad()
+        viewModel.userPrefs.getBuild
+            .asLiveData()
+            .observe(this) {
+                viewModel.onLoad(it != UserPrefs.BUILD)
+            }
         installSplashScreen().apply {
             setKeepOnScreenCondition { viewModel.whenRead.value }
         }
