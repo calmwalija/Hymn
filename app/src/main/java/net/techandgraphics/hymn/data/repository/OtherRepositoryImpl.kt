@@ -10,6 +10,7 @@ import javax.inject.Singleton
 @Singleton
 class OtherRepositoryImpl @Inject constructor(
     db: Database,
+    private val version: String
 ) : OtherRepository {
 
     private val dao = db.otherDao
@@ -23,6 +24,6 @@ class OtherRepositoryImpl @Inject constructor(
     }
 
     override fun observeOther(): Flow<List<Other>> {
-        return dao.observeOther()
+        return dao.observeOther(version)
     }
 }

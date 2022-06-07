@@ -11,13 +11,17 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.palette.graphics.Palette
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.dynamiclinks.DynamicLink
@@ -153,8 +157,45 @@ object Utils {
             .setData(Uri.parse(url))
     )
 
-    fun pendingTransition(activity: Activity) {
+    private fun pendingTransition(activity: Activity) {
         activity.overridePendingTransition(R.animator.slide_from_right, R.animator.slide_to_left)
+    }
+
+    fun changeFontSize(dialog: Dialog, fontSize: Int, onTextChanged: (Int) -> Unit) =
+        dialog.dialog().apply {
+            setContentView(R.layout.dialog_change_font)
+            val size = findViewById<TextView>(R.id.size)
+            size.text = fontSize.toString()
+            window?.setGravity(Gravity.BOTTOM)
+            window?.attributes?.let {
+                it.y = 100
+            }
+            findViewById<SeekBar>(R.id.seekbar).apply {
+                progress = fontSize
+                seekBarChangeListener {
+                    onTextChanged.invoke(it)
+                    size.text = it.toString()
+                    PreferenceManager
+                        .getDefaultSharedPreferences(context)
+                        .edit()
+                        .putInt(context.getString(R.string.font_key), it)
+                        .apply()
+                }
+            }
+            dialogShow()
+        }
+
+
+    private fun SeekBar.seekBarChangeListener(progressChanged: (Int) -> Unit) {
+        setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                progressChanged.invoke(p1)
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
+            override fun onStopTrackingTouch(p0: SeekBar?) = Unit
+        })
     }
 
 }

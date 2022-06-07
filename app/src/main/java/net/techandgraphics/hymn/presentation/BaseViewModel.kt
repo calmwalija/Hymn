@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.model.Search
@@ -19,6 +20,8 @@ class BaseViewModel @Inject constructor(
     val firebaseAnalytics: FirebaseAnalytics
 ) : ViewModel() {
 
+    @Inject
+    lateinit var userPrefs: UserPrefs
 
     private val lyricRepository = repository.lyricRepository
     private val searchRepository = repository.searchRepository
@@ -30,8 +33,9 @@ class BaseViewModel @Inject constructor(
     private val _whenRead = MutableStateFlow(true)
     val whenRead: StateFlow<Boolean> = _whenRead.asStateFlow()
 
-    fun onLoad() = viewModelScope.launch {
-        _whenRead.value = repository.jsonParser.fromJson()
+    fun onLoad(init: Boolean) = viewModelScope.launch {
+        userPrefs.setBuild(UserPrefs.BUILD)
+        _whenRead.value = if (init.not()) false else repository.jsonParser.fromJson()
     }
 
     val searchQuery = MutableStateFlow("")
@@ -61,7 +65,6 @@ class BaseViewModel @Inject constructor(
     fun clear() = viewModelScope.launch {
         lyricRepository.reset()
         searchRepository.clear()
-        otherRepository.clear()
         channel.send(Callback.OnComplete)
     }
 

@@ -12,7 +12,7 @@ import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 import net.techandgraphics.hymn.presentation.fragments.read.ReadAdapter.PreviewFragmentViewHolder
 
 class ReadAdapter(
-    val fontSize: Int
+    var fontSize: Int
 ) : ListAdapter<Lyric, PreviewFragmentViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
 
     private var hasChorus = false

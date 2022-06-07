@@ -16,6 +16,10 @@ interface OtherDao {
     @Query("DELETE  FROM  other ")
     suspend fun clear()
 
-    @Query("SELECT * FROM other ORDER BY resourceId ")
-    fun observeOther(): Flow<List<Other>>
+    @Query("SELECT * FROM other WHERE lang=:version ORDER BY resourceId ")
+    fun observeOther(version: String): Flow<List<Other>>
+
+    @Query("SELECT COUNT(*) FROM other")
+    suspend fun count(): Int
+
 }

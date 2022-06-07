@@ -31,7 +31,7 @@
 
         <SeekBarPreference
             android:defaultValue="2"
-            android:max="10"
+            android:max="15"
             app:icon="@drawable/ic_font"
             app:key="@string/font_key"
             app:min="1"
