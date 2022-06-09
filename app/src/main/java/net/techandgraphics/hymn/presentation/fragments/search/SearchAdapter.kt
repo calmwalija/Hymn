@@ -38,7 +38,8 @@ class SearchAdapter(
                 getItem(absoluteAdapterPosition)?.let { click.invoke(it) }
             }
             binding.buttonFav.setOnClickListener {
-                getItem(absoluteAdapterPosition)?.let { favorite.invoke(it) }
+                if (absoluteAdapterPosition != RecyclerView.NO_POSITION)
+                    getItem(absoluteAdapterPosition)?.let { favorite.invoke(it) }
             }
         }
     }
