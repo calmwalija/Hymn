@@ -17,36 +17,36 @@ import net.techandgraphics.hymn.presentation.BaseViewModel
 @AndroidEntryPoint
 class AboutFragment : Fragment(R.layout.fragment_about) {
 
-    private lateinit var bind: FragmentAboutBinding
-    private val viewModel: BaseViewModel by viewModels()
+  private lateinit var bind: FragmentAboutBinding
+  private val viewModel: BaseViewModel by viewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        bind = FragmentAboutBinding.bind(view)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    bind = FragmentAboutBinding.bind(view)
 
-        bind.tag.setOnClickListener {
-            Utils.openWebsite(requireActivity(), "https://techandgraphics.net")
-        }
-
-
-        bind.zonse.setOnClickListener {
-            Utils.openWebsite(requireActivity(), "https://zonse.live")
-        }
-
-
-        bind.paypal.setOnClickListener {
-            Utils.openWebsite(requireActivity(), "https://paypal.me/samlungu")
-        }
-
-
-        bind.nb.apply {
-            setOnClickListener {
-                Utils.toast(context, "Text copied to clipboard.")
-                (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-                    .setPrimaryClip(ClipData.newPlainText("", text))
-            }
-        }
-
-        Tag.screenView(viewModel.firebaseAnalytics, Tag.ABOUT)
-
+    bind.tag.setOnClickListener {
+      Utils.openWebsite(requireActivity(), "https://techandgraphics.net")
     }
+
+
+    bind.zonse.setOnClickListener {
+      Utils.openWebsite(requireActivity(), "https://zonse.live")
+    }
+
+
+    bind.paypal.setOnClickListener {
+      Utils.openWebsite(requireActivity(), "https://paypal.me/samlungu")
+    }
+
+
+    bind.nb.apply {
+      setOnClickListener {
+        Utils.toast(context, "Text copied to clipboard.")
+        (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+          .setPrimaryClip(ClipData.newPlainText("", text))
+      }
+    }
+
+    Tag.screenView(viewModel.firebaseAnalytics, Tag.ABOUT)
+
+  }
 }

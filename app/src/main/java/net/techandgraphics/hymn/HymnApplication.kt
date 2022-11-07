@@ -10,27 +10,27 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class HymnApplication : Application() {
 
-    override fun onCreate() {
-        super.onCreate()
-        onCreateNotificationChannel()
-    }
+  override fun onCreate() {
+    super.onCreate()
+    onCreateNotificationChannel()
+  }
 
-    companion object {
-        const val NOTIFICATION_ID = "198193"
-        const val NOTIFICATION_DESCRIPTION = "Hymn Channel Description"
-    }
+  companion object {
+    const val NOTIFICATION_ID = "198193"
+    const val NOTIFICATION_DESCRIPTION = "Hymn Channel Description"
+  }
 
-    private fun onCreateNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .createNotificationChannel(
-                    NotificationChannel(
-                        NOTIFICATION_ID,
-                        NOTIFICATION_DESCRIPTION,
-                        NotificationManager.IMPORTANCE_HIGH
-                    )
-                )
-        }
+  private fun onCreateNotificationChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        .createNotificationChannel(
+          NotificationChannel(
+            NOTIFICATION_ID,
+            NOTIFICATION_DESCRIPTION,
+            NotificationManager.IMPORTANCE_HIGH
+          )
+        )
     }
+  }
 
 }

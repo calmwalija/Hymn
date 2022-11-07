@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class BaseRecyclerView(context: Context, attributeSet: AttributeSet?) :
-    RecyclerView(context, attributeSet) {
+  RecyclerView(context, attributeSet) {
 
-    init {
-        setHasFixedSize(true)
-        layoutManager = GridLayoutManager(context, 2)
-        isVerticalScrollBarEnabled = true
-    }
+  init {
+    setHasFixedSize(true)
+    layoutManager = GridLayoutManager(context, 2)
+    isVerticalScrollBarEnabled = true
+  }
 
 }

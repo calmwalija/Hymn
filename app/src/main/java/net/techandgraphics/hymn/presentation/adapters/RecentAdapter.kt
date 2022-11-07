@@ -9,35 +9,35 @@ import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils.HYMN_DIFF_UTIL
 
 class RecentAdapter(
-    private val itemClickListener: (Lyric) -> Unit
+  private val itemClickListener: (Lyric) -> Unit
 ) :
-    ListAdapter<Lyric, RecentAdapter.HymnLyricViewHolder>(HYMN_DIFF_UTIL) {
+  ListAdapter<Lyric, RecentAdapter.HymnLyricViewHolder>(HYMN_DIFF_UTIL) {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HymnLyricViewHolder {
-        return HymnLyricViewHolder(
-            FragmentMainRecentItemBinding.inflate(
-                LayoutInflater.from(parent.context)
-            )
-        )
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HymnLyricViewHolder {
+    return HymnLyricViewHolder(
+      FragmentMainRecentItemBinding.inflate(
+        LayoutInflater.from(parent.context)
+      )
+    )
+  }
+
+  override fun onBindViewHolder(holder: HymnLyricViewHolder, position: Int) {
+    getItem(position)?.let { holder.bind(it) }
+  }
+
+  inner class HymnLyricViewHolder(
+    private val binding: FragmentMainRecentItemBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(lyric: Lyric) = binding.apply {
+      this.lyric = lyric
+      executePendingBindings()
     }
 
-    override fun onBindViewHolder(holder: HymnLyricViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+
+    init {
+      binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
     }
-
-    inner class HymnLyricViewHolder(
-        private val binding: FragmentMainRecentItemBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(lyric: Lyric) = binding.apply {
-            this.lyric = lyric
-            executePendingBindings()
-        }
-
-
-        init {
-            binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
-        }
-    }
+  }
 
 }

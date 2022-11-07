@@ -7,8 +7,8 @@ import net.techandgraphics.hymn.domain.repository.SearchRepository
 
 
 data class Repository(
-    val otherRepository: OtherRepository,
-    val lyricRepository: LyricRepository,
-    val searchRepository: SearchRepository,
-    val jsonParser: JsonParser
+  val otherRepository: OtherRepository,
+  val lyricRepository: LyricRepository,
+  val searchRepository: SearchRepository,
+  val jsonParser: JsonParser
 )

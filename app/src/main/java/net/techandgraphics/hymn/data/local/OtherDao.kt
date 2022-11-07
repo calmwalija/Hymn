@@ -10,16 +10,16 @@ import net.techandgraphics.hymn.domain.model.Other
 @Dao
 interface OtherDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(resource: List<Other>)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun insert(resource: List<Other>)
 
-    @Query("DELETE  FROM  other ")
-    suspend fun clear()
+  @Query("DELETE  FROM  other ")
+  suspend fun clear()
 
-    @Query("SELECT * FROM other WHERE lang=:version ORDER BY resourceId ")
-    fun observeOther(version: String): Flow<List<Other>>
+  @Query("SELECT * FROM other WHERE lang=:version ORDER BY resourceId ")
+  fun observeOther(version: String): Flow<List<Other>>
 
-    @Query("SELECT COUNT(*) FROM other")
-    suspend fun count(): Int
+  @Query("SELECT COUNT(*) FROM other")
+  suspend fun count(): Int
 
 }
