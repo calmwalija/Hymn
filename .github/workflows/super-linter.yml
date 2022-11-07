@@ -31,13 +31,9 @@ jobs:
       - name: Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/reports/
-          env_vars: OS,PYTHON
+          token: ${{ secrets.GITHUB_TOKEN }}
           fail_ci_if_error: true
-          files: ./coverage1.xml,./coverage2.xml
           flags: unittests
           name: codecov-umbrella
-          path_to_write_report: ./coverage/codecov_report.txt
           verbose: true
           
