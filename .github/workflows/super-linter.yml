@@ -29,11 +29,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fail_ci_if_error: true
-          flags: unittests
-          name: codecov-umbrella
-          verbose: true
-          
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+        run: | 
+         curl -Os https://uploader.codecov.io/latest/linux/codecov
+         find . -iregex "codecov.*"
+         chmod +x codecov 
+         ./codecov -t ${CODECOV_TOKEN}
