@@ -8,7 +8,7 @@ import net.techandgraphics.hymn.domain.model.Search
 
 @Database(entities = [Lyric::class, Search::class, Other::class], version = 3)
 abstract class Database : RoomDatabase() {
-    abstract val lyricDao: LyricDao
-    abstract val searchDao: SearchDao
-    abstract val otherDao: OtherDao
+  abstract val lyricDao: LyricDao
+  abstract val searchDao: SearchDao
+  abstract val otherDao: OtherDao
 }

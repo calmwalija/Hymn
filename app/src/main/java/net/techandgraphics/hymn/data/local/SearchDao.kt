@@ -1,21 +1,25 @@
 package net.techandgraphics.hymn.data.local
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.domain.model.Search
 
 @Dao
 interface SearchDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(search: List<Search>)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun insert(search: List<Search>)
 
-    @Delete
-    suspend fun delete(search: Search)
+  @Delete
+  suspend fun delete(search: Search)
 
-    @Query("DELETE  FROM  search")
-    suspend fun clear()
+  @Query("DELETE  FROM  search")
+  suspend fun clear()
 
-    @Query("SELECT * FROM search WHERE lang=:version ORDER BY id DESC LIMIT 15")
-    fun observeSearch(version: String): Flow<List<Search>>
+  @Query("SELECT * FROM search WHERE lang=:version ORDER BY id DESC LIMIT 15")
+  fun observeSearch(version: String): Flow<List<Search>>
 }

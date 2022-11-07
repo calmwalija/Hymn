@@ -5,23 +5,23 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlinx.coroutines.flow.map
 
 class UserPrefs @Inject constructor(
-    @ApplicationContext context: Context
+  @ApplicationContext context: Context
 ) {
 
-    private val dataStore =
-        context.createDataStore(name = "net.techandgraphics.hymn.data.prefs")
+  private val dataStore =
+    context.createDataStore(name = "net.techandgraphics.hymn.data.prefs")
 
-    companion object {
-        val build = intPreferencesKey("build_number")
-        const val BUILD = 1
-    }
+  companion object {
+    val build = intPreferencesKey("build_number")
+    const val BUILD = 1
+  }
 
-    suspend fun setBuild(num: Int) = dataStore.edit { it[build] = num }
+  suspend fun setBuild(num: Int) = dataStore.edit { it[build] = num }
 
-    val getBuild = dataStore.data.map { it[build] ?: 0 }
+  val getBuild = dataStore.data.map { it[build] ?: 0 }
 
 }

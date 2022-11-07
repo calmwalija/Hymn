@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @Parcelize
 data class Other(
-    @PrimaryKey(autoGenerate = false)
-    val resourceId: Int,
-    val groupName: String,
-    val content: String,
-    val lang: String = "en",
+  @PrimaryKey(autoGenerate = false)
+  val resourceId: Int,
+  val groupName: String,
+  val content: String,
+  val lang: String = "en",
 ) : Parcelable
