@@ -29,10 +29,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Codecov
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-        run: | 
-         curl -Os https://uploader.codecov.io/latest/linux/codecov
-         find . -iregex "codecov.*"
-         chmod +x codecov 
-         ./codecov -t ${CODECOV_TOKEN}
+        # You may pin to the exact commit or the version.
+        # uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+        uses: codecov/codecov-action@v3.1.1
