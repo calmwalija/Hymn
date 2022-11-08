@@ -33,12 +33,13 @@
             android:id="@+id/recyclerView_main"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adapter="@{otherAdapter}"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
             app:spanCount="2"
-            android:adapter="@{otherAdapter}"
             tools:itemCount="6"
             tools:listitem="@layout/fragment_main_other_item" />
 

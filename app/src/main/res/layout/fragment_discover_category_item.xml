@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="lyric"
-            type="net.techandgraphics.hymn.domain.model.Lyric" />
+            name="discover"
+            type="net.techandgraphics.hymn.domain.model.Discover" />
 
     </data>
 
@@ -20,7 +20,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image"
-            setImageView="@{lyric.categoryId}"
+            setImageView="@{discover.lyric.categoryId}"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
@@ -35,7 +35,7 @@
             android:gravity="center"
             android:maxLines="4"
             android:padding="14dp"
-            android:text="@{lyric.categoryName.trim()}"
+            android:text="@{discover.lyric.categoryName.trim()}"
             android:textColor="@color/white"
             tools:text="@string/androidx_startup" />
 

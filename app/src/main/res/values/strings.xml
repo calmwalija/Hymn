@@ -31,4 +31,7 @@
     <string name="resources_key">resources_key</string>
     <string name="about_key">about_key</string>
     <string name="clear_data_key">clear_data_key</string>
+
+    <string name="hymn_number">#%d</string>
+
 </resources>

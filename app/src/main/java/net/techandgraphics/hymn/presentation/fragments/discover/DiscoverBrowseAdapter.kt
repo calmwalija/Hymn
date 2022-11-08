@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentDiscoverCategoryItemBinding
-import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.presentation.diffs.DiffUtils
+import net.techandgraphics.hymn.domain.model.Discover
+ import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 import net.techandgraphics.hymn.presentation.fragments.discover.DiscoverBrowseAdapter.ViewHolder
 
 class DiscoverBrowseAdapter(
-  private val itemClickListener: (Lyric) -> Unit
-) : ListAdapter<Lyric, ViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
+  private val itemClickListener: (Discover) -> Unit
+) : ListAdapter<Discover, ViewHolder>(DiffUtils.DISCOVER_DIFF_UTIL) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(FragmentDiscoverCategoryItemBinding.inflate(LayoutInflater.from(parent.context)))
@@ -24,8 +24,8 @@ class DiscoverBrowseAdapter(
   inner class ViewHolder(
     private val binding: FragmentDiscoverCategoryItemBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(lyric: Lyric) = binding.apply {
-      this.lyric = lyric
+    fun bind(discover: Discover) = binding.apply {
+      this.discover = discover
       executePendingBindings()
     }
 

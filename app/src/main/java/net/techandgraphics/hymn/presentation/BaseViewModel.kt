@@ -7,11 +7,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.data.repository.Repository
@@ -19,13 +15,12 @@ import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.model.Search
 
 @HiltViewModel
-class BaseViewModel @Inject constructor(
-  private val repository: Repository,
-  val firebaseAnalytics: FirebaseAnalytics
-) : ViewModel() {
+class BaseViewModel
+@Inject
+constructor(private val repository: Repository, val firebaseAnalytics: FirebaseAnalytics) :
+  ViewModel() {
 
-  @Inject
-  lateinit var userPrefs: UserPrefs
+  @Inject lateinit var userPrefs: UserPrefs
 
   private val lyricRepository = repository.lyricRepository
   private val searchRepository = repository.searchRepository
@@ -37,19 +32,18 @@ class BaseViewModel @Inject constructor(
   private val _whenRead = MutableStateFlow(true)
   val whenRead: StateFlow<Boolean> = _whenRead.asStateFlow()
 
-  fun onLoad(init: Boolean) = viewModelScope.launch {
-    userPrefs.setBuild(UserPrefs.BUILD)
-    _whenRead.value = if (init.not()) false else repository.jsonParser.fromJson()
-  }
+  fun onLoad(init: Boolean) =
+    viewModelScope.launch {
+      userPrefs.setBuild(UserPrefs.BUILD)
+      _whenRead.value = if (init.not()) false else repository.jsonParser.fromJson()
+    }
 
   val searchQuery = MutableStateFlow("")
 
-  private val flatMapLatest = searchQuery.flatMapLatest {
-    lyricRepository.observeLyrics(it)
-  }
+  private val flatMapLatest = searchQuery.flatMapLatest { lyricRepository.observeLyrics(it) }
 
   fun observeHymnLyrics() = flatMapLatest.asLiveData()
-  fun observeCategories() = lyricRepository.observeCategories().asLiveData()
+  fun observeCategories() = lyricRepository.observeCategories()
   fun observeTopPickCategories() = lyricRepository.observeTopPickCategories().asLiveData()
   fun observeRecentLyrics() = lyricRepository.observeRecentLyrics().asLiveData()
   fun observeSearch() = searchRepository.observeSearch().asLiveData()
@@ -60,28 +54,22 @@ class BaseViewModel @Inject constructor(
   fun getLyricsByCategory(lyric: Lyric) =
     lyricRepository.getLyricsByCategory(lyric.categoryId).asLiveData()
 
-  fun insert(search: Search) = viewModelScope.launch {
-    searchRepository.insert(listOf(search))
-  }
+  fun insert(search: Search) = viewModelScope.launch { searchRepository.insert(listOf(search)) }
 
   fun clearFavorite() = viewModelScope.launch { lyricRepository.clearFavorite() }
 
-  fun clear() = viewModelScope.launch {
-    lyricRepository.reset()
-    searchRepository.clear()
-    channel.send(Callback.OnComplete)
-  }
-
+  fun clear() =
+    viewModelScope.launch {
+      lyricRepository.reset()
+      searchRepository.clear()
+      channel.send(Callback.OnComplete)
+    }
 
   fun update(lyric: Lyric) = viewModelScope.launch { lyricRepository.update(lyric) }
 
-  fun delete(search: Search) = viewModelScope.launch {
-    searchRepository.delete(search)
-  }
+  fun delete(search: Search) = viewModelScope.launch { searchRepository.delete(search) }
 
   sealed class Callback {
     object OnComplete : Callback()
   }
-
-
 }

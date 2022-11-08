@@ -5,8 +5,11 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
@@ -43,9 +46,9 @@ class DiscoverFragment : Fragment(R.layout.fragment_discover) {
       }
     }.also { it.stateRestorationPolicy() }
 
-    viewModel.observeCategories().observe(viewLifecycleOwner) {
+    viewModel.observeCategories().onEach {
       browseAdapter.submitList(it)
-    }
+    }.launchIn(viewModel.viewModelScope)
 
     viewModel.observeRecentLyrics().observe(viewLifecycleOwner) {
       recentAdapter.submitList(it)

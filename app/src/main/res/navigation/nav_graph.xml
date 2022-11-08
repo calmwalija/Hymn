@@ -88,7 +88,7 @@
         tools:layout="@layout/fragment_category">
         <argument
             android:name="lyric"
-            app:argType="net.techandgraphics.hymn.domain.model.Lyric" />
+            app:argType="net.techandgraphics.hymn.domain.model.Discover" />
         <action
             android:id="@+id/action_categoryFragment_to_readFragment"
             app:destination="@id/readFragment"

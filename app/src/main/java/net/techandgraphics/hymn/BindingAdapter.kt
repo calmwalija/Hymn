@@ -7,24 +7,20 @@ import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
 import net.techandgraphics.hymn.domain.model.Lyric
 
-
 @BindingAdapter("setImageView")
 fun setImageView(imageView: ImageView, drawableRes: Int) {
   Picasso.get().load(Constant.images[drawableRes].drawableRes).into(imageView)
 }
-
 
 @BindingAdapter("setTextHymnNumber")
 fun setTextHymnNumber(textView: AppCompatTextView, lyric: Lyric) {
   "Number ${lyric.number}".also { textView.text = it }
 }
 
-
 @BindingAdapter("setTextHymnCount")
 fun setTextHymnCount(textView: AppCompatTextView, count: Int) {
-  "$count hymns".also { textView.text = it }
+  textView.text = textView.context.resources.getQuantityString(R.plurals.hymn_count, count, count)
 }
-
 
 @BindingAdapter("setTag")
 fun setTag(textView: AppCompatTextView, content: String) {
@@ -34,4 +30,9 @@ fun setTag(textView: AppCompatTextView, content: String) {
 @BindingAdapter("favorite")
 fun favorite(view: AppCompatImageView, favorite: Boolean) {
   view.setImageResource(if (favorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite)
+}
+
+@BindingAdapter("hymnNumber")
+fun hymnNumber(textView: AppCompatTextView, number: Int) {
+  textView.text = textView.context.getString(R.string.hymn_number, number)
 }
