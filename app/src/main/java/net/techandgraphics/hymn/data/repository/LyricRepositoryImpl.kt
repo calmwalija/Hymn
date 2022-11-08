@@ -3,12 +3,13 @@ package net.techandgraphics.hymn.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.domain.model.Discover
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val SIZE = 20
 
@@ -49,7 +50,7 @@ class LyricRepositoryImpl @Inject constructor(
     ).flow
   }
 
-  override fun observeCategories(): Flow<List<Lyric>> {
+  override fun observeCategories(): Flow<List<Discover>> {
     return db.lyricDao.observeCategories(version)
   }
 

@@ -2,6 +2,7 @@ package net.techandgraphics.hymn.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import net.techandgraphics.hymn.domain.model.Discover
 import net.techandgraphics.hymn.domain.model.Lyric
 
 interface LyricRepository {
@@ -11,7 +12,7 @@ interface LyricRepository {
   suspend fun clearFavorite()
   suspend fun reset()
   fun observeLyrics(query: String = ""): Flow<PagingData<Lyric>>
-  fun observeCategories(): Flow<List<Lyric>>
+  fun observeCategories(): Flow<List<Discover>>
   fun observeTopPickCategories(): Flow<List<Lyric>>
   fun observeRecentLyrics(): Flow<List<Lyric>>
   fun getLyricsById(number: Int): Flow<List<Lyric>>

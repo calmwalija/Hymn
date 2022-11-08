@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import net.techandgraphics.hymn.domain.model.Discover
 import net.techandgraphics.hymn.domain.model.Lyric
 
 @Dao
@@ -31,8 +32,8 @@ interface LyricDao {
   )
   fun observeLyrics(query: String = "", version: String): PagingSource<Int, Lyric>
 
-  @Query("SELECT * FROM lyric  WHERE lang=:version GROUP BY categoryName ORDER BY categoryName ASC")
-  fun observeCategories(version: String): Flow<List<Lyric>>
+  @Query("SELECT COUNT(DISTINCT(number)) as count, * FROM lyric WHERE lang=:version  GROUP BY categoryName ORDER BY categoryName ASC")
+  fun observeCategories(version: String): Flow<List<Discover>>
 
   @Query("SELECT * FROM lyric WHERE  topPickHit > 0 AND lang=:version GROUP BY categoryName ORDER BY topPickHit DESC LIMIT 6")
   fun observeTopPickCategories(version: String): Flow<List<Lyric>>

@@ -33,6 +33,20 @@
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize30Percent" />
 
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/shape_round"
+            android:backgroundTint="@color/mellon"
+            android:padding="4dp"
+            android:textColor="@android:color/white"
+             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/view_circle"
+            hymnNumber="@{lyric.number}"
+            tools:text="#370" />
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutCompat"
             android:layout_width="0dp"
@@ -44,7 +58,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@+id/view_circle"
             app:layout_constraintEnd_toStartOf="@+id/buttonShare"
-            app:layout_constraintStart_toEndOf="@+id/view_circle"
+            app:layout_constraintStart_toEndOf="@+id/appCompatTextView5"
             app:layout_constraintTop_toTopOf="@+id/view_circle">
 
             <androidx.appcompat.widget.AppCompatTextView
