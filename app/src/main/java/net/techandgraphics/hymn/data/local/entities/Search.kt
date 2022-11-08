@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.domain.model
+package net.techandgraphics.hymn.data.local.entities
 
 import androidx.room.Entity
 

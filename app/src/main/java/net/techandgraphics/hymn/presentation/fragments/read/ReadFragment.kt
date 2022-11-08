@@ -20,7 +20,7 @@ import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.changeFontSize
 import net.techandgraphics.hymn.databinding.FragmentReadBinding
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.presentation.BaseViewModel
 
 @AndroidEntryPoint

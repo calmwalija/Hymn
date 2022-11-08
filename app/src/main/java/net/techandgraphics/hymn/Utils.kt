@@ -28,7 +28,7 @@ import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import java.util.Locale
 import java.util.Objects
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Lyric
 
 
 object Utils {

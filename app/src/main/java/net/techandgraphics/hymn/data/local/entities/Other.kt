@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.domain.model
+package net.techandgraphics.hymn.data.local.entities
 
 import android.os.Parcelable
 import androidx.room.Entity

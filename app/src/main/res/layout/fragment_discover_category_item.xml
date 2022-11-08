@@ -7,7 +7,7 @@
 
         <variable
             name="discover"
-            type="net.techandgraphics.hymn.domain.model.Discover" />
+            type="net.techandgraphics.hymn.data.local.entities.Discover" />
 
     </data>
 

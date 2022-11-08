@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import net.techandgraphics.hymn.domain.model.Search
+import net.techandgraphics.hymn.data.local.entities.Search
 
 @Dao
 interface SearchDao {

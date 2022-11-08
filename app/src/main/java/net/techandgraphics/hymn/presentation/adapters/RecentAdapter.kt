@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentMainRecentItemBinding
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils.HYMN_DIFF_UTIL
 
 class RecentAdapter(

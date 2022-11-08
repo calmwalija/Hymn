@@ -15,7 +15,7 @@ import net.techandgraphics.hymn.Utils.onAddTextChangedListener
 import net.techandgraphics.hymn.Utils.regexLowerCase
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
 import net.techandgraphics.hymn.databinding.FragmentSearchBinding
-import net.techandgraphics.hymn.domain.model.Search
+import net.techandgraphics.hymn.data.local.entities.Search
 import net.techandgraphics.hymn.presentation.BaseViewModel
 
 @AndroidEntryPoint
