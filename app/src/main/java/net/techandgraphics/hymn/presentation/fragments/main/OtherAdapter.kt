@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentMainOtherItemBinding
-import net.techandgraphics.hymn.domain.model.Other
+import net.techandgraphics.hymn.data.local.entities.Other
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 
 class OtherAdapter(

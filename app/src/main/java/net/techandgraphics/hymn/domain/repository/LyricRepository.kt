@@ -2,8 +2,8 @@ package net.techandgraphics.hymn.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import net.techandgraphics.hymn.domain.model.Discover
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Discover
+import net.techandgraphics.hymn.data.local.entities.Lyric
 
 interface LyricRepository {
   suspend fun insert(lyric: List<Lyric>)

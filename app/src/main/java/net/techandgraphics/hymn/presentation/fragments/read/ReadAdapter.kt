@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentReadItemBinding
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 import net.techandgraphics.hymn.presentation.fragments.read.ReadAdapter.PreviewFragmentViewHolder
 

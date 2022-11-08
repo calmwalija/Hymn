@@ -7,8 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import net.techandgraphics.hymn.domain.model.Discover
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Discover
+import net.techandgraphics.hymn.data.local.entities.Lyric
 
 @Dao
 interface LyricDao {

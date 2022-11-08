@@ -7,7 +7,7 @@
 
         <variable
             name="search"
-            type="net.techandgraphics.hymn.domain.model.Search" />
+            type="net.techandgraphics.hymn.data.local.entities.Search" />
 
     </data>
 

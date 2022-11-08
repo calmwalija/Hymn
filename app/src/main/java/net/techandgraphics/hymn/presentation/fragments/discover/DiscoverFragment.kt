@@ -14,7 +14,7 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
 import net.techandgraphics.hymn.databinding.FragmentDiscoverBinding
-import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.presentation.BaseViewModel
 import net.techandgraphics.hymn.presentation.adapters.RecentAdapter
 

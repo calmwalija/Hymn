@@ -11,8 +11,8 @@ import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.capitaliseWord
 import net.techandgraphics.hymn.Utils.regexLowerCase
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.domain.model.Other
+import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.Other
 import net.techandgraphics.hymn.domain.repository.JsonParser
 
 @Singleton

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import net.techandgraphics.hymn.domain.model.Other
+import net.techandgraphics.hymn.data.local.entities.Other
 
 @Dao
 interface OtherDao {

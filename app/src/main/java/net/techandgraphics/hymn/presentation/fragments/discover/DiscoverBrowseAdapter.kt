@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.techandgraphics.hymn.databinding.FragmentDiscoverCategoryItemBinding
-import net.techandgraphics.hymn.domain.model.Discover
+import net.techandgraphics.hymn.data.local.entities.Discover
  import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 import net.techandgraphics.hymn.presentation.fragments.discover.DiscoverBrowseAdapter.ViewHolder
 

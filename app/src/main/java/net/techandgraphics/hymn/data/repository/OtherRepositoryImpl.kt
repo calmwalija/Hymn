@@ -4,7 +4,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.domain.model.Other
+import net.techandgraphics.hymn.data.local.entities.Other
 import net.techandgraphics.hymn.domain.repository.OtherRepository
 
 @Singleton

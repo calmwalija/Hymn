@@ -1,10 +1,10 @@
 package net.techandgraphics.hymn.presentation.diffs
 
 import androidx.recyclerview.widget.DiffUtil
-import net.techandgraphics.hymn.domain.model.Discover
-import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.domain.model.Other
-import net.techandgraphics.hymn.domain.model.Search
+import net.techandgraphics.hymn.data.local.entities.Discover
+import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.Other
+import net.techandgraphics.hymn.data.local.entities.Search
 
 object DiffUtils {
 

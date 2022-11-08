@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.data.repository.Repository
-import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.domain.model.Search
+import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.Search
 
 @HiltViewModel
 class BaseViewModel
