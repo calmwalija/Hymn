@@ -8,10 +8,12 @@
         <variable
             name="lyricAdapter"
             type="net.techandgraphics.hymn.presentation.fragments.main.MainAdapter" />
+
         <variable
             name="otherAdapter"
             type="net.techandgraphics.hymn.presentation.fragments.main.OtherAdapter" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,10 +23,9 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
-            android:text="Essentials"
-            android:textStyle="bold"
+            android:text="essentials"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -48,10 +49,9 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Browse Hymn"
-            android:textStyle="bold"
+            android:text="index"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerView_main" />

@@ -62,6 +62,7 @@ constructor(private val repository: Repository, val firebaseAnalytics: FirebaseA
     viewModelScope.launch {
       lyricRepository.reset()
       searchRepository.clear()
+      lyricRepository.clearFavorite()
       channel.send(Callback.OnComplete)
     }
 

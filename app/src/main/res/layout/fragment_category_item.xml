@@ -17,31 +17,34 @@
         android:padding="12dp">
 
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayoutCompat5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="@{lyric.title}"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonFav"
             app:layout_constraintEnd_toStartOf="@+id/buttonFav"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="The Church Of God:The House of the Lord" />
+            app:layout_constraintTop_toTopOf="@+id/buttonFav">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@{lyric.title}"
+                android:textSize="16sp"
+                tools:text="The Church Of God:The House of the Lord" />
 
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/number"
-            setTextHymnNumber="@{lyric}"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            app:layout_constraintVertical_bias="0.0"
-            tools:text="12 hymns" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/number"
+                setTextHymnNumber="@{lyric}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="12 hymns" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonFav"
@@ -60,7 +63,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_favorite" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

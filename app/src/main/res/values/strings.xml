@@ -11,8 +11,8 @@
     <string name="bank_details">Comfort Mwalija\nAccount # • 1004069974\nBranch • City Center</string>
     <string name="share">Share hymn</string>
     <string name="favorite">Favorite hymn</string>
-    <string name="add_favorite">Hymn number %d has been added to favorites.</string>
-    <string name="remove_favorite">Hymn number %d has been removed from favorites.</string>
+    <string name="add_favorite">Hymn #%d has been added to favorites.</string>
+    <string name="remove_favorite">Hymn #%d has been removed from favorites.</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -31,6 +31,7 @@
     <string name="resources_key">resources_key</string>
     <string name="about_key">about_key</string>
     <string name="clear_data_key">clear_data_key</string>
+    <string name="donate_key">donate_key</string>
 
     <string name="hymn_number">#%d</string>
 

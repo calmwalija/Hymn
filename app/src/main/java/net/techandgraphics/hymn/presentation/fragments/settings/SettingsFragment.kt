@@ -90,6 +90,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
       true
     }
 
+    findPreference<Preference>(getString(R.string.donate_key))?.setOnPreferenceClickListener {
+      SettingsFragmentDirections.actionSettingsFragmentToDonateFragment().also {
+        findNavController().navigate(it)
+      }
+      true
+    }
+
     findPreference<SeekBarPreference>(getString(R.string.font_key))?.onPreferenceChangeListener =
       Preference.OnPreferenceChangeListener { _, p1 ->
         val newValue = p1.toString().toInt()

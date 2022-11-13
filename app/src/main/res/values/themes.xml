@@ -5,9 +5,9 @@
         <item name="colorPrimary">@color/mellon</item>
         <item name="colorPrimaryVariant">@color/mellon</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/yellow</item>
+        <item name="colorPrimaryDark">@color/mellon</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorSecondary">@color/mellon</item>
         <item name="colorSecondaryVariant">@color/mellon</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->

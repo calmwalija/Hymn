@@ -26,9 +26,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import java.util.Locale
-import java.util.Objects
 import net.techandgraphics.hymn.data.local.entities.Lyric
+import java.util.*
 
 
 object Utils {
@@ -118,6 +117,13 @@ object Utils {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
   fun createDynamicLink(fragment: Fragment, lyric: Lyric, firebaseAnalytics: FirebaseAnalytics) {
+    if (NetworkConnection(fragment.requireContext()).ifConnected().not()) {
+      toast(
+        fragment.requireContext(),
+        "Could not connect to the internet to process your request."
+      )
+      return
+    }
     toast(fragment.requireContext(), "Processing, just a moment please ...")
     FirebaseDynamicLinks.getInstance().createDynamicLink()
       .setLink(Uri.parse(String.format("%s?id=%d", Constant.DEEP_LINK, lyric.lyricId)))
@@ -149,6 +155,26 @@ object Utils {
         toast(
           fragment.requireContext(),
           "Could not process your request, please check your internet connection."
+        )
+      }
+  }
+
+  fun shareOffline(fragment: Fragment, lyric: List<Lyric>, firebaseAnalytics: FirebaseAnalytics) {
+    val text = buildString {
+      lyric.map { it.content }.forEach {
+        append(it).append("\n\n")
+      }
+    }
+    Intent(Intent.ACTION_SEND)
+      .putExtra(Intent.EXTRA_TEXT, text)
+      .setType("text/plain")
+      .also {
+        firebaseAnalytics.logEvent(
+          Tag.SHARE,
+          bundleOf(Pair(Tag.SHARE, lyric.first().number))
+        )
+        fragment.startActivity(
+          Intent.createChooser(it, "Share")
         )
       }
   }

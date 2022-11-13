@@ -43,6 +43,7 @@
                 android:id="@+id/appCompatTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:padding="12dp"
                 android:text="@{other.content}"
                 tools:text="@string/appbar_scrolling_view_behavior" />

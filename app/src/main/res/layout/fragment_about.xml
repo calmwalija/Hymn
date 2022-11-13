@@ -86,7 +86,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView10">
@@ -144,133 +146,7 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView11"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="24dp"
-                android:text="Donate"
-                android:textSize="17sp"
-                android:textAllCaps="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat3" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:text="@string/donate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView11" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutCompat4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView12">
-
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    app:cardBackgroundColor="#303030"
-                    app:cardCornerRadius="8dp">
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/shape_circle"
-                            android:backgroundTint="@android:color/white"
-                            android:padding="6dp"
-                            android:src="@drawable/ic_nb_logo" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/nb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="8dp"
-                            android:text="@string/bank_details"
-                            android:textColor="@android:color/white" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-                </androidx.cardview.widget.CardView>
-
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    app:cardBackgroundColor="#303030"
-                    app:cardCornerRadius="8dp">
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/shape_circle"
-                            android:backgroundTint="@android:color/white"
-                            android:padding="6dp"
-                            android:src="@drawable/ic_paypal_logo" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/paypal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="8dp"
-                            android:text="paypal.me/samlungu"
-                            android:textColor="@android:color/white" />
-
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-                </androidx.cardview.widget.CardView>
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                android:background="#F5AAAAAA"
-                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView6"
-                app:layout_constraintStart_toStartOf="@+id/appCompatTextView6"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat4" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Tap on a button to open or copy text."
-                android:textSize="12sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
