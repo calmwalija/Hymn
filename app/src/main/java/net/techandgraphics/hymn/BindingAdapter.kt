@@ -14,7 +14,7 @@ fun setImageView(imageView: ImageView, drawableRes: Int) {
 
 @BindingAdapter("setTextHymnNumber")
 fun setTextHymnNumber(textView: AppCompatTextView, lyric: Lyric) {
-  "Number ${lyric.number}".also { textView.text = it }
+  "#${lyric.number}".also { textView.text = it }
 }
 
 @BindingAdapter("setTextHymnCount")

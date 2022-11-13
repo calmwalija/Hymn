@@ -48,7 +48,7 @@
         tools:layout="@layout/fragment_read">
         <argument
             android:name="lyric"
-            app:argType="net.techandgraphics.hymn.domain.model.Lyric"
+            app:argType="net.techandgraphics.hymn.data.local.entities.Lyric"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -88,7 +88,7 @@
         tools:layout="@layout/fragment_category">
         <argument
             android:name="lyric"
-            app:argType="net.techandgraphics.hymn.domain.model.Discover" />
+            app:argType="net.techandgraphics.hymn.data.local.entities.Discover" />
         <action
             android:id="@+id/action_categoryFragment_to_readFragment"
             app:destination="@id/readFragment"
@@ -117,7 +117,7 @@
         tools:layout="@layout/fragment_main_other_read">
         <argument
             android:name="other"
-            app:argType="net.techandgraphics.hymn.domain.model.Other" />
+            app:argType="net.techandgraphics.hymn.data.local.entities.Other" />
         <action
             android:id="@+id/action_otherReadFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
@@ -155,5 +155,16 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_donateFragment"
+            app:destination="@id/donateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/donateFragment"
+        android:name="net.techandgraphics.hymn.presentation.fragments.donate.DonateFragment"
+        android:label="DonateFragment" />
 </navigation>

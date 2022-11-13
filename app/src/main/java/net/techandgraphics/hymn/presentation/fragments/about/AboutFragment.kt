@@ -32,20 +32,6 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
       Utils.openWebsite(requireActivity(), "https://zonse.live")
     }
 
-
-    bind.paypal.setOnClickListener {
-      Utils.openWebsite(requireActivity(), "https://paypal.me/samlungu")
-    }
-
-
-    bind.nb.apply {
-      setOnClickListener {
-        Utils.toast(context, "Text copied to clipboard.")
-        (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-          .setPrimaryClip(ClipData.newPlainText("", text))
-      }
-    }
-
     Tag.screenView(viewModel.firebaseAnalytics, Tag.ABOUT)
 
   }

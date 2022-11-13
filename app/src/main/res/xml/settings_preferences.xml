@@ -7,8 +7,15 @@
         <Preference
             app:icon="@drawable/ic_info"
             app:key="@string/about_key"
-            app:summary="Developers, donate etc"
+            app:summary="Developers, etc"
             app:title="About" />
+
+
+        <Preference
+            app:icon="@drawable/ic_donate"
+            app:key="@string/donate_key"
+            app:summary="Fee free to donate, thank you"
+            app:title="Donate" />
 
     </PreferenceCategory>
 
@@ -36,7 +43,7 @@
             app:key="@string/font_key"
             app:min="1"
             app:showSeekBarValue="true"
-            app:title="Change lyrics font size" />
+            app:title="Lyrics font size" />
 
         <ListPreference
             android:defaultValue="system"
@@ -71,14 +78,8 @@
 
         <Preference
             app:icon="@drawable/ic_delete"
-            app:key="@string/clear_favorite_key"
-            app:summary="Delete favorite hymn list"
-            app:title="Clear favorites" />
-
-        <Preference
-            app:icon="@drawable/ic_cached"
             app:key="@string/clear_data_key"
-            app:summary="Delete all data"
+            app:summary="Delete all data ie favorites, recently viewed"
             app:title="Clear cache &amp; data" />
 
 

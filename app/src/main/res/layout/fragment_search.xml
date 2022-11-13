@@ -38,12 +38,11 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.AppCompat.Large"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Search"
-                    android:textStyle="bold" />
+                    android:text="search hymn"/>
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -51,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingHorizontal="24dp"
-                    android:text="Enter keyword to search or filter i.e hymn text, hymn number or category." />
+                    android:text="enter keyword to search i.e hymn text, number" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -61,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/shape_circle"
                 android:backgroundTint="#3EAAAAAA"
@@ -72,7 +71,6 @@
                 android:maxLength="20"
                 android:maxLines="1"
                 android:padding="16dp"
-                android:paddingStart="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat2" />
