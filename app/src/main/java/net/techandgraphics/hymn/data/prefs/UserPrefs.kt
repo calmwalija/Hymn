@@ -17,7 +17,7 @@ class UserPrefs @Inject constructor(
 
   companion object {
     val build = intPreferencesKey("build_number")
-    const val BUILD = 2
+    const val BUILD = 1
   }
 
   suspend fun setBuild(num: Int) = dataStore.edit { it[build] = num }
