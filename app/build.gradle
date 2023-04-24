@@ -17,8 +17,8 @@ android {
         applicationId "net.techandgraphics.hymn"
         minSdk 21
         targetSdk 33
-        versionCode 10
-        versionName "1.5"
+        versionCode 13
+        versionName "1.6"
         compileSdkVersion 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
