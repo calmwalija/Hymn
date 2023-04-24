@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center_horizontal"
     android:layout_margin="20dp"
     app:cardCornerRadius="20dp">
@@ -12,56 +13,57 @@
         android:layout_height="wrap_content">
 
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/message"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mellon"
-            android:padding="20dp"
-            android:gravity="center"
-            android:text="Whats new in this version"
-            android:textColor="@android:color/white"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/woohoo_qhwxkcno" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
             android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/message">
+            app:layout_constraintTop_toBottomOf="@+id/animationView">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="We have add more Hymn Books"
-                android:textSize="17sp"
+                style="@style/TextAppearance.AppCompat.Large"
+                android:text="What's new"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:padding="8dp"
+                android:id="@+id/textSummary"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="You can now change books between English and Chichewa. To change, go to Settings > Books." />
+                android:text="@string/whats_new_april_24_2023" />
 
 
             <Button
-                android:id="@+id/tryButton"
+                android:id="@+id/closeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/shape_circle"
-                android:backgroundTint="@color/yellow"
-                android:textColor="@android:color/white"
-                android:paddingHorizontal="30dp"
-                android:text="Try it now"
-                android:textAllCaps="false" />
+                android:backgroundTint="@color/mellon"
+                android:paddingHorizontal="70dp"
+                android:text="Close"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
