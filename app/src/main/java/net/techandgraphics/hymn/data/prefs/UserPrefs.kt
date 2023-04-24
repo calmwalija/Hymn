@@ -7,7 +7,9 @@ import androidx.datastore.preferences.createDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.map
+import javax.inject.Singleton
 
+@Singleton
 class UserPrefs @Inject constructor(
   @ApplicationContext context: Context
 ) {
@@ -17,11 +19,15 @@ class UserPrefs @Inject constructor(
 
   companion object {
     val build = intPreferencesKey("build_number")
-    const val BUILD = 1
+    val whatsNew = intPreferencesKey("whats_new")
+    const val BUILD = 3
+    const val WHATS_NEW = 2
   }
 
   suspend fun setBuild(num: Int) = dataStore.edit { it[build] = num }
+  suspend fun whatsNew(version: Int) = dataStore.edit { it[whatsNew] = version }
 
-  val getBuild = dataStore.data.map { it[build] ?: 0 }
+  val getBuild = dataStore.data.map { it[build] ?: 1 }
+  val getWhatsNew = dataStore.data.map { it[whatsNew] ?: 1 }
 
 }
