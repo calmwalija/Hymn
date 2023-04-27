@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton
+import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.capitaliseWord
 import net.techandgraphics.hymn.Utils.regexLowerCase
@@ -62,6 +63,7 @@ class JsonParserImpl @Inject constructor(
       it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
     }
     lyricRepo.insert(data)
+    db.searchDao.insert(Constant.searchTag)
   }
 
   override suspend fun fromJson(): Boolean {

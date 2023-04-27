@@ -10,6 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
@@ -40,9 +41,37 @@ class MainActivity : AppCompatActivity() {
     navController = findNavController(R.id.fragmentContainerView)
     binding.bottomNavigationView.setupWithNavController(navController)
     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
+    binding.setOnItemSelectedListener()
   }
 
+  private fun ActivityMainBinding.setOnItemSelectedListener() =
+    with(this) {
+      val options = NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .setEnterAnim(R.anim.slide_in_right)
+        .setExitAnim(R.anim.slide_out_left)
+        .setPopEnterAnim(R.anim.slide_in_left)
+        .setPopExitAnim(R.anim.slide_out_right)
+        .setPopUpTo(navController.graph.startDestinationId, false)
+        .build()
+
+      bottomNavigationView.setOnItemSelectedListener {
+        when (it.itemId) {
+          R.id.mainFragment ->
+            navController.navigate(R.id.mainFragment, null, options)
+          R.id.discoverFragment ->
+            navController.navigate(R.id.discoverFragment, null, options)
+          R.id.searchFragment ->
+            navController.navigate(R.id.searchFragment, null, options)
+          R.id.favoriteFragment ->
+            navController.navigate(R.id.favoriteFragment, null, options)
+          R.id.settingsFragment ->
+            navController.navigate(R.id.settingsFragment, null, options)
+        }
+        true
+      }
+      bottomNavigationView.setOnItemReselectedListener { return@setOnItemReselectedListener }
+    }
 
   override fun onSupportNavigateUp(): Boolean {
     return navController.navigateUp() || super.onSupportNavigateUp()
