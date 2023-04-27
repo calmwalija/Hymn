@@ -4,19 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import net.techandgraphics.hymn.databinding.FragmentSearchItemBinding
 import net.techandgraphics.hymn.data.local.entities.Search
+import net.techandgraphics.hymn.databinding.FragmentSearchTagItemBinding
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 
 class SearchTagAdapter(
-  private val itemClickListener: (Search) -> Unit,
-  private val onDelete: (Search) -> Unit,
-  private val onLongTap: (Search) -> Unit,
+  private val click: (Search) -> Unit,
 ) : ListAdapter<Search, SearchTagAdapter.ViewHolder>(DiffUtils.SEARCH_DIFF_UTIL) {
 
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(FragmentSearchItemBinding.inflate(LayoutInflater.from(parent.context)))
+    return ViewHolder(FragmentSearchTagItemBinding.inflate(LayoutInflater.from(parent.context)))
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -24,7 +22,7 @@ class SearchTagAdapter(
   }
 
   inner class ViewHolder(
-    private val binding: FragmentSearchItemBinding
+    private val binding: FragmentSearchTagItemBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(search: Search) = binding.apply {
       this.search = search
@@ -32,12 +30,7 @@ class SearchTagAdapter(
     }
 
     init {
-      binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
-      binding.buttonDelete.setOnClickListener { onDelete.invoke(currentList[absoluteAdapterPosition]) }
-      binding.root.setOnLongClickListener {
-        onLongTap.invoke(currentList[absoluteAdapterPosition])
-        true
-      }
+      binding.root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
     }
   }
 }

@@ -117,9 +117,7 @@ dependencies {
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
 
-    def lottieVersion = "3.4.0"
-    implementation "com.airbnb.android:lottie:$lottieVersion"
-
+    implementation "com.airbnb.android:lottie:6.0.0"
     /*A simple utility class to add a background, an icon and a label to a RecyclerView item while swiping it left or right.*/
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 

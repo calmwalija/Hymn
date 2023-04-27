@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.data.local.entities.Search
+import net.techandgraphics.hymn.presentation.fragments.search.SearchInputEvent
 
 @HiltViewModel
 class BaseViewModel
@@ -38,9 +41,20 @@ constructor(private val repository: Repository, val firebaseAnalytics: FirebaseA
       _whenRead.value = if (init.not()) false else repository.jsonParser.fromJson()
     }
 
+  private var job: Job? = null
+  private val searchInputEventChannel = Channel<SearchInputEvent>()
+  val searchInput = searchInputEventChannel.receiveAsFlow()
+
   val searchQuery = MutableStateFlow("")
 
-  private val flatMapLatest = searchQuery.flatMapLatest { lyricRepository.observeLyrics(it) }
+  private val flatMapLatest = searchQuery.flatMapLatest {
+    job?.cancel()
+    job = viewModelScope.launch {
+      delay(3000)
+      searchInputEventChannel.send(SearchInputEvent.TextChanged)
+    }
+    lyricRepository.observeLyrics(it)
+  }
 
   fun observeHymnLyrics() = flatMapLatest.asLiveData()
   fun observeCategories() = lyricRepository.observeCategories()
@@ -73,4 +87,6 @@ constructor(private val repository: Repository, val firebaseAnalytics: FirebaseA
   sealed class Callback {
     object OnComplete : Callback()
   }
+
+  val queryRandom = repository.lyricRepository.queryRandom
 }

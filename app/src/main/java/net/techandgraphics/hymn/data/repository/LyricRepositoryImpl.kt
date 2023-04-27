@@ -78,5 +78,7 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.findLyricById(id, version)
   }
 
+  override val queryRandom = db.lyricDao.queryRandom(version)
+
 
 }
