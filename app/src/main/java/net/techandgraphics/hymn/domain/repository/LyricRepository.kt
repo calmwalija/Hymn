@@ -19,4 +19,6 @@ interface LyricRepository {
   fun getLyricsByCategory(id: Int): Flow<List<Lyric>>
   fun observeFavoriteLyrics(): Flow<List<Lyric>>
   fun findLyricById(id: Int): Flow<Lyric>
+
+  val queryRandom: Flow<List<Lyric>>
 }

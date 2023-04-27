@@ -9,6 +9,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.entities.Discover
 import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.Search
 
 @Dao
 interface LyricDao {
@@ -58,5 +59,8 @@ interface LyricDao {
 
   @Query("UPDATE lyric SET topPickHit = 0")
   suspend fun reset()
+
+  @Query("SELECT * FROM lyric WHERE lang=:version  ORDER BY RANDOM() LIMIT 5")
+  fun queryRandom(version: String): Flow<List<Lyric>>
 
 }

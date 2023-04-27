@@ -1,6 +1,7 @@
 package net.techandgraphics.hymn
 
 import androidx.annotation.DrawableRes
+import net.techandgraphics.hymn.data.local.entities.Search
 
 data class Category(
   val categoryId: Int,
@@ -132,6 +133,16 @@ object Constant {
   const val LOGO_URL = "https://techandgraphics.net/image/hymn/logo2.jpg"
 
   const val RESTART = "RESTART"
+
+  val searchTag = arrayListOf(
+    Search(query = "Amazing grace", tag = "amazinggrace"),
+    Search(query = "I need thee", tag = "ineedthee"),
+    Search(query = "199", tag = "199"),
+    Search(query = "Holy Spirit", tag = "holyspirit"),
+    Search(query = "Pass me not", tag = "passmenot"),
+    Search(query = "I have promised", tag = "Ihavepromised"),
+    Search(query = "Happy day", tag = "happyday")
+  )
 
 
 }
