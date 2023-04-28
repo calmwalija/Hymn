@@ -127,7 +127,6 @@ object Constant {
     Category(56 + 56, R.drawable.conflict_and_templation),
   )
 
-
   const val DOMAIN_URI_PREFIX = "https://hymn.page.link"
   const val DEEP_LINK = "https://techandgraphics.net/"
   const val LOGO_URL = "https://techandgraphics.net/image/hymn/logo2.jpg"
@@ -143,6 +142,4 @@ object Constant {
     Search(query = "I have promised", tag = "Ihavepromised"),
     Search(query = "Happy day", tag = "happyday")
   )
-
-
 }

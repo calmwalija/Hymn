@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.onEach
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
-import net.techandgraphics.hymn.databinding.FragmentDiscoverBinding
 import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.databinding.FragmentDiscoverBinding
 import net.techandgraphics.hymn.presentation.BaseViewModel
 import net.techandgraphics.hymn.presentation.adapters.RecentAdapter
 
@@ -26,7 +26,6 @@ class DiscoverFragment : Fragment(R.layout.fragment_discover) {
   private lateinit var browseAdapter: DiscoverBrowseAdapter
   private lateinit var recentAdapter: RecentAdapter
 
-
   private fun Lyric.navigateToReadFragment() =
     DiscoverFragmentDirections.actionDiscoverFragmentToReadFragment(this).apply {
       findNavController().navigate(this)
@@ -35,10 +34,8 @@ class DiscoverFragment : Fragment(R.layout.fragment_discover) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     binding = FragmentDiscoverBinding.bind(view)
 
-
     recentAdapter =
       RecentAdapter { it.navigateToReadFragment() }.also { it.stateRestorationPolicy() }
-
 
     browseAdapter = DiscoverBrowseAdapter {
       DiscoverFragmentDirections.actionDiscoverFragmentToCategoryFragment(it).apply {
@@ -63,6 +60,5 @@ class DiscoverFragment : Fragment(R.layout.fragment_discover) {
     binding.recyclerViewBrowseCategory.adapter = browseAdapter
     binding.recyclerViewTopPick.adapter = recentAdapter
     Tag.screenView(viewModel.firebaseAnalytics, Tag.DISCOVER)
-
   }
 }

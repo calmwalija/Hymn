@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import net.techandgraphics.hymn.databinding.FragmentReadItemBinding
 import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.databinding.FragmentReadItemBinding
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 import net.techandgraphics.hymn.presentation.fragments.read.ReadAdapter.PreviewFragmentViewHolder
 
@@ -16,7 +16,6 @@ class ReadAdapter(
 ) : ListAdapter<Lyric, PreviewFragmentViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
 
   private var hasChorus = false
-
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreviewFragmentViewHolder {
     return PreviewFragmentViewHolder(
@@ -28,7 +27,6 @@ class ReadAdapter(
 
   override fun onBindViewHolder(holder: PreviewFragmentViewHolder, position: Int) {
     getItem(position)?.let { holder.bind(it, position) }
-
   }
 
   inner class PreviewFragmentViewHolder(
@@ -54,9 +52,6 @@ class ReadAdapter(
         null,
         if (lyric.chorus > 0) Typeface.ITALIC else Typeface.NORMAL
       )
-
     }
   }
-
-
 }

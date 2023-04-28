@@ -14,14 +14,13 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Locale
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.presentation.BaseViewModel
-
+import java.util.Locale
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -58,7 +57,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-
     findPreference<ListPreference>(getString(R.string.theme_key))?.let {
       it.summary =
         if (it.value.toString() == themeValue[0]) "System default" else it.value.toString()
@@ -82,7 +80,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
       }
     }
 
-
     findPreference<Preference>(getString(R.string.about_key))?.setOnPreferenceClickListener {
       SettingsFragmentDirections.actionSettingsFragmentToAboutFragment().also {
         findNavController().navigate(it)
@@ -103,7 +100,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         viewModel.firebaseAnalytics.logEvent(Tag.FONT, bundleOf(Pair(Tag.FONT, newValue)))
         true
       }
-
 
     findPreference<Preference>(getString(R.string.rate_key))?.setOnPreferenceClickListener {
       val url = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
@@ -156,8 +152,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
       }
     }
-
-
   }
-
 }

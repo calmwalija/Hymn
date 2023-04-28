@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.room.Embedded
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
 data class Discover(
   @Embedded

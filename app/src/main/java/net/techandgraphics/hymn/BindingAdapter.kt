@@ -37,7 +37,6 @@ fun hymnNumber(textView: AppCompatTextView, number: Int) {
   textView.text = textView.context.getString(R.string.hymn_number, number)
 }
 
-
 @BindingAdapter("hymn")
 fun hymn(textView: AppCompatTextView, lyric: Lyric) {
   textView.text = lyric.title

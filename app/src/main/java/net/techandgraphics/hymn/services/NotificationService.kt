@@ -9,12 +9,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import net.techandgraphics.hymn.HymnApplication.Companion.NOTIFICATION_ID
+import net.techandgraphics.hymn.R
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.random.Random
-import net.techandgraphics.hymn.HymnApplication.Companion.NOTIFICATION_ID
-import net.techandgraphics.hymn.R
 
 fun Context.getNotificationCompat(): NotificationCompat.Builder {
   return NotificationCompat.Builder(this, NOTIFICATION_ID)

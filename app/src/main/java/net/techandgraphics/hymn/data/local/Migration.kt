@@ -11,5 +11,4 @@ object Migration {
       database.execSQL("ALTER TABLE Other ADD `lang` TEXT NOT NULL DEFAULT 'en'")
     }
   }
-
 }

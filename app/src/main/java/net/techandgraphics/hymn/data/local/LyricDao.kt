@@ -9,7 +9,6 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.entities.Discover
 import net.techandgraphics.hymn.data.local.entities.Lyric
-import net.techandgraphics.hymn.data.local.entities.Search
 
 @Dao
 interface LyricDao {
@@ -24,10 +23,10 @@ interface LyricDao {
   suspend fun count(): Int
 
   @Query(
-    """ SELECT * FROM lyric WHERE  
-               (content LIKE'%' || :query || '%'  OR 
-               title LIKE'%' || :query || '%'  OR 
-               number LIKE'%' || :query || '%'  OR 
+    """ SELECT * FROM lyric WHERE
+               (content LIKE'%' || :query || '%'  OR
+               title LIKE'%' || :query || '%'  OR
+               number LIKE'%' || :query || '%'  OR
                categoryName  LIKE'%' || :query || '%' )
               AND  lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT)"""
   )
@@ -62,5 +61,4 @@ interface LyricDao {
 
   @Query("SELECT * FROM lyric WHERE lang=:version  ORDER BY RANDOM() LIMIT 5")
   fun queryRandom(version: String): Flow<List<Lyric>>
-
 }

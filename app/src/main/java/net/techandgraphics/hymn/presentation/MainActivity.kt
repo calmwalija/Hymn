@@ -79,9 +79,11 @@ class MainActivity : AppCompatActivity() {
 
   override fun onResume() {
     val themeValue: Array<String> = resources.getStringArray(R.array.theme_values)
-    when (PreferenceManager.getDefaultSharedPreferences(this)
-      .getString(getString(R.string.theme_key), themeValue[0])
-      .toString()) {
+    when (
+      PreferenceManager.getDefaultSharedPreferences(this)
+        .getString(getString(R.string.theme_key), themeValue[0])
+        .toString()
+    ) {
       themeValue[0] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
       themeValue[1] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
       themeValue[2] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
