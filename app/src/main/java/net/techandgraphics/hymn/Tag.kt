@@ -28,7 +28,6 @@ object Tag {
   const val FAVORITE = "favorite_screen"
   const val CATEGORY = "category_screen"
 
-
   fun screenView(firebaseAnalytics: FirebaseAnalytics, screen: String) {
     val bundle = Bundle()
     bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, screen)

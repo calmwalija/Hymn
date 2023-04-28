@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import net.techandgraphics.hymn.R
 
-
 abstract class SwipeDecorator :
   ItemTouchHelper.SimpleCallback(
     0, ItemTouchHelper.RIGHT
@@ -44,5 +43,4 @@ abstract class SwipeDecorator :
       .decorate()
     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
   }
-
 }

@@ -1,8 +1,5 @@
 package net.techandgraphics.hymn.presentation.fragments.about
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -27,12 +24,10 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
       Utils.openWebsite(requireActivity(), "https://techandgraphics.net")
     }
 
-
     bind.zonse.setOnClickListener {
       Utils.openWebsite(requireActivity(), "https://zonse.live")
     }
 
     Tag.screenView(viewModel.firebaseAnalytics, Tag.ABOUT)
-
   }
 }

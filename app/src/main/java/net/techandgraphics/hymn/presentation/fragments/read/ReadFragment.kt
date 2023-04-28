@@ -19,8 +19,8 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.changeFontSize
-import net.techandgraphics.hymn.databinding.FragmentReadBinding
 import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.databinding.FragmentReadBinding
 import net.techandgraphics.hymn.presentation.BaseViewModel
 
 @AndroidEntryPoint
@@ -47,14 +47,12 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
     )
   }
 
-
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
       R.id.favorite -> {
         lyric = lyric.copy(favorite = !lyric.favorite, timestamp = lyric.timestamp)
         viewModel.update(lyric)
         favorite(lyric)
-
 
         if (lyric.favorite) {
           viewModel.firebaseAnalytics.logEvent(
@@ -73,7 +71,6 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
             bundleOf(Pair(Tag.REMOVE_FAV, lyric.number))
           )
         }
-
       }
       R.id.font_size -> {
         changeFontSize(Dialog(requireContext()), fontSize) {
@@ -83,7 +80,6 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
           readAdapter.notifyDataSetChanged()
         }
       }
-
     }
     return super.onOptionsItemSelected(item)
   }
@@ -151,12 +147,10 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
     binding.recyclerView.itemAnimator = null
     binding.recyclerView.setHasFixedSize(true)
 
-
     viewModel.apply {
       firebaseAnalytics.logEvent(Tag.TITLE, bundleOf(Pair(Tag.TITLE, args.lyric.title)))
       firebaseAnalytics.logEvent(Tag.NUMBER, bundleOf(Pair(Tag.NUMBER, args.lyric.number)))
       Tag.screenView(firebaseAnalytics, Tag.READ)
     }
-
   }
 }

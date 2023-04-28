@@ -8,7 +8,6 @@ import net.techandgraphics.hymn.data.local.entities.Search
 
 object DiffUtils {
 
-
   val HYMN_DIFF_UTIL = object : DiffUtil.ItemCallback<Lyric>() {
     override fun areContentsTheSame(
       oldItem: Lyric,
@@ -33,7 +32,6 @@ object DiffUtils {
     ) = oldItem == newItem
   }
 
-
   val OTHER_DIFF_UTIL = object : DiffUtil.ItemCallback<Other>() {
     override fun areContentsTheSame(
       oldItem: Other,
@@ -57,6 +55,4 @@ object DiffUtils {
       newItem: Discover
     ) = oldItem == newItem
   }
-
-
 }

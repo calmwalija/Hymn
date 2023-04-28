@@ -13,5 +13,4 @@ class BaseRecyclerView(context: Context, attributeSet: AttributeSet?) :
     layoutManager = GridLayoutManager(context, 2)
     isVerticalScrollBarEnabled = true
   }
-
 }

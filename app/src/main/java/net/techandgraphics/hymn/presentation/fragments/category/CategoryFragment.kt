@@ -14,7 +14,6 @@ import net.techandgraphics.hymn.Utils.stateRestorationPolicy
 import net.techandgraphics.hymn.databinding.FragmentCategoryBinding
 import net.techandgraphics.hymn.presentation.BaseViewModel
 
-
 @AndroidEntryPoint
 class CategoryFragment : Fragment(R.layout.fragment_category) {
 
@@ -27,28 +26,28 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     binding = FragmentCategoryBinding.bind(view)
     binding.lyric = args.lyric.lyric
 
-
-    categoryAdapter = CategoryAdapter(click = {
-      CategoryFragmentDirections.actionCategoryFragmentToReadFragment(it).apply {
-        findNavController().navigate(this)
+    categoryAdapter = CategoryAdapter(
+      click = {
+        CategoryFragmentDirections.actionCategoryFragmentToReadFragment(it).apply {
+          findNavController().navigate(this)
+        }
+      },
+      favorite = {
+        viewModel.update(it.copy(favorite = !it.favorite))
+        requireContext().apply {
+          Utils.toast(
+            this,
+            if (it.favorite.not()) getString(R.string.add_favorite, it.number) else
+              getString(R.string.remove_favorite, it.number)
+          )
+        }
       }
-    }, favorite = {
-      viewModel.update(it.copy(favorite = !it.favorite))
-      requireContext().apply {
-        Utils.toast(
-          this,
-          if (it.favorite.not()) getString(R.string.add_favorite, it.number) else
-            getString(R.string.remove_favorite, it.number)
-        )
-      }
-    }).also { it.stateRestorationPolicy() }
+    ).also { it.stateRestorationPolicy() }
 
     viewModel.getLyricsByCategory(args.lyric.lyric).observe(viewLifecycleOwner) {
       binding.counter = it.size
       categoryAdapter.submitList(it)
     }
-
-
 
     with(binding.recyclerView) {
       setHasFixedSize(true)
@@ -57,6 +56,5 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     }
 
     Tag.screenView(viewModel.firebaseAnalytics, Tag.CATEGORY)
-
   }
 }
