@@ -22,7 +22,6 @@ class OtherRead : Fragment(R.layout.fragment_main_other_read) {
   private val args: OtherReadArgs by navArgs()
   private var fontSize = 2
 
-
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     inflater.inflate(R.menu.read_menu, menu)
     menu.getItem(0).isVisible = false
@@ -61,6 +60,5 @@ class OtherRead : Fragment(R.layout.fragment_main_other_read) {
         title = args.other.groupName
       }
     }
-
   }
 }

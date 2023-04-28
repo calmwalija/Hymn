@@ -36,27 +36,28 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     binding = FragmentSearchBinding.bind(view)
     binding.searchEt.requestFocus()
 
-    searchAdapter = SearchAdapter(click = {
-      val searchQuery = binding.searchEt.text.toString().trim().lowercase()
-      val searchList = searchQuery.regexLowerCase().split(" ")
+    searchAdapter = SearchAdapter(
+      click = {
+        val searchQuery = binding.searchEt.text.toString().trim().lowercase()
+        val searchList = searchQuery.regexLowerCase().split(" ")
 
-      if (searchQuery.isNotBlank())
-        Search(
-          query = searchQuery,
-          tag = buildString { searchList.forEach { append(it) } }
-        ).also { viewModel.insert(it) }
+        if (searchQuery.isNotBlank())
+          Search(
+            query = searchQuery,
+            tag = buildString { searchList.forEach { append(it) } }
+          ).also { viewModel.insert(it) }
 
-      viewModel.firebaseAnalytics.logEvent(
-        Tag.KEYWORD,
-        bundleOf(Pair(Tag.KEYWORD, searchQuery))
-      )
+        viewModel.firebaseAnalytics.logEvent(
+          Tag.KEYWORD,
+          bundleOf(Pair(Tag.KEYWORD, searchQuery))
+        )
 
-      actionToReadFragment(it)
-
-    },
+        actionToReadFragment(it)
+      },
       favorite = {
         viewModel.update(it.copy(favorite = !it.favorite))
-      }).also { it.stateRestorationPolicy() }
+      }
+    ).also { it.stateRestorationPolicy() }
 
     searchTagAdapter = SearchTagAdapter {
       binding.searchEt.setText(it.query)
@@ -73,12 +74,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
       }
     }
 
-
     viewModel.searchInput.onEach {
       binding.searchIcon.isInvisible = false
       binding.animationView.isInvisible = true
     }.launchIn(viewLifecycleOwner.lifecycleScope)
-
 
     viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
       searchAdapter.submitData(viewLifecycleOwner.lifecycle, it)
@@ -103,7 +102,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     binding.searchAdapter = searchTagAdapter
     binding.randomAdapter = randomAdapter
     Tag.screenView(viewModel.firebaseAnalytics, Tag.SEARCH)
-
   }
 
   private fun actionToReadFragment(lyric: Lyric) {

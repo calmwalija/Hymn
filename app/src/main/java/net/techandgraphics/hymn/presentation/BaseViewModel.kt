@@ -5,17 +5,21 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.prefs.UserPrefs
-import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.data.local.entities.Search
+import net.techandgraphics.hymn.data.prefs.UserPrefs
+import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.presentation.fragments.search.SearchInputEvent
+import javax.inject.Inject
 
 @HiltViewModel
 class BaseViewModel

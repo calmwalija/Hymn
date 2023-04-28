@@ -8,16 +8,13 @@ import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.databinding.FragmentSearchRandomItemBinding
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 
-
-sealed class SearchRandomAdapterEvent{
-  class OnClick(val lyric: Lyric): SearchRandomAdapterEvent()
+sealed class SearchRandomAdapterEvent {
+  class OnClick(val lyric: Lyric) : SearchRandomAdapterEvent()
 }
-
 
 class SearchRandomAdapter(
   private val event: (SearchRandomAdapterEvent) -> Unit,
 ) : ListAdapter<Lyric, SearchRandomAdapter.ViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
-
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(FragmentSearchRandomItemBinding.inflate(LayoutInflater.from(parent.context)))
@@ -40,5 +37,4 @@ class SearchRandomAdapter(
       binding.root.setOnClickListener { event.invoke(SearchRandomAdapterEvent.OnClick(currentList[absoluteAdapterPosition])) }
     }
   }
-
 }

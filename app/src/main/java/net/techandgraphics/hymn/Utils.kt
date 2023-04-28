@@ -27,11 +27,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import net.techandgraphics.hymn.data.local.entities.Lyric
-import java.util.*
-
+import java.util.Locale
+import java.util.Objects
 
 object Utils {
-
 
   fun readJsonFromAssetToString(context: Context, file: String): String? {
     return try {
@@ -64,12 +63,10 @@ object Utils {
     startActivity(Intent.createChooser(this, "Share"))
   }
 
-
   fun decodeResource(context: Context, @DrawableRes drawableRes: Int): Bitmap =
     BitmapFactory.decodeResource(context.resources, drawableRes)
 
   fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
-
 
   fun String.regexLowerCase() = replace(Regex("[_',.;!-\"?]"), "").lowercase()
   fun String.capitaliseWord() = split(" ").joinToString(" ") {
@@ -212,17 +209,15 @@ object Utils {
       dialogShow()
     }
 
-
   private fun SeekBar.seekBarChangeListener(progressChanged: (Int) -> Unit) {
     setOnSeekBarChangeListener(object :
-      SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-        progressChanged.invoke(p1)
-      }
+        SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+          progressChanged.invoke(p1)
+        }
 
-      override fun onStartTrackingTouch(p0: SeekBar?) = Unit
-      override fun onStopTrackingTouch(p0: SeekBar?) = Unit
-    })
+        override fun onStartTrackingTouch(p0: SeekBar?) = Unit
+        override fun onStopTrackingTouch(p0: SeekBar?) = Unit
+      })
   }
-
 }

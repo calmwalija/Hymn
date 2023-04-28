@@ -5,7 +5,6 @@ import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 
-
 data class Repository(
   val otherRepository: OtherRepository,
   val lyricRepository: LyricRepository,

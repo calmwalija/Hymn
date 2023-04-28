@@ -13,8 +13,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
-import net.techandgraphics.hymn.databinding.FragmentFavoriteBinding
 import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.databinding.FragmentFavoriteBinding
 import net.techandgraphics.hymn.presentation.BaseViewModel
 import net.techandgraphics.hymn.presentation.adapters.TopPickAdapter
 import net.techandgraphics.hymn.presentation.fragments.SwipeDecorator
@@ -62,11 +62,12 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         }
     }.also { it.stateRestorationPolicy() }
 
-
-    favoriteAdapter = FavoriteAdapter(click = {
-      it.navigateToReadFragment()
-    }, favorite = { removeFavorite(it) }).also { it.stateRestorationPolicy() }
-
+    favoriteAdapter = FavoriteAdapter(
+      click = {
+        it.navigateToReadFragment()
+      },
+      favorite = { removeFavorite(it) }
+    ).also { it.stateRestorationPolicy() }
 
     bind.topPickAdapter = topPick
     bind.favoriteAdapter = favoriteAdapter
@@ -85,7 +86,5 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     onItemTouchHelper()
     Tag.screenView(viewModel.firebaseAnalytics, Tag.FAVORITE)
-
   }
-
 }

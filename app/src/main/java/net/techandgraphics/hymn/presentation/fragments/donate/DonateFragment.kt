@@ -36,6 +36,5 @@ class DonateFragment : Fragment(R.layout.fragment_donate) {
 
       Tag.screenView(viewModel.firebaseAnalytics, Tag.ABOUT)
     }
-
   }
 }

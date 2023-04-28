@@ -10,7 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.Migration
@@ -19,6 +18,7 @@ import net.techandgraphics.hymn.data.repository.LyricRepositoryImpl
 import net.techandgraphics.hymn.data.repository.OtherRepositoryImpl
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.data.repository.SearchRepositoryImpl
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -37,7 +37,6 @@ object AppModule {
   fun providesFirebaseAnalytics(
     @ApplicationContext context: Context
   ): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
-
 
   @Provides
   fun providesLang(app: Application): String =
