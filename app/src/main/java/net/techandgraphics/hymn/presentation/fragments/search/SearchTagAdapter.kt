@@ -12,7 +12,6 @@ class SearchTagAdapter(
   private val click: (Search) -> Unit,
 ) : ListAdapter<Search, SearchTagAdapter.ViewHolder>(DiffUtils.SEARCH_DIFF_UTIL) {
 
-
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(FragmentSearchTagItemBinding.inflate(LayoutInflater.from(parent.context)))
   }

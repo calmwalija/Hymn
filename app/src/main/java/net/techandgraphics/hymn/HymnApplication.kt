@@ -32,5 +32,4 @@ class HymnApplication : Application() {
         )
     }
   }
-
 }

@@ -4,9 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
-import javax.inject.Inject
-import javax.inject.Singleton
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.capitaliseWord
@@ -15,6 +12,9 @@ import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.data.local.entities.Other
 import net.techandgraphics.hymn.domain.repository.JsonParser
+import java.lang.reflect.Type
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class JsonParserImpl @Inject constructor(
@@ -25,19 +25,22 @@ class JsonParserImpl @Inject constructor(
   private val lyricRepo = db.lyricDao
   private val otherRepo = db.otherDao
 
-
   override suspend fun fromJsonToOther() {
     val ofType = object : TypeToken<List<Other>>() {}.type
-    (Gson().fromJson(
-      Utils.readJsonFromAssetToString(context, "other.json")!!, ofType
-    ) as List<Other>).also { otherRepo.insert(it) }
+    (
+      Gson().fromJson(
+        Utils.readJsonFromAssetToString(context, "other.json")!!, ofType
+      ) as List<Other>
+      ).also { otherRepo.insert(it) }
   }
 
   override suspend fun fromJsonToLyric() {
     val ofType: Type = object : TypeToken<List<Lyric>>() {}.type
-    (Gson().fromJson(
-      Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
-    ) as List<Lyric>).also { fromJsonToLyricImpl(it) }
+    (
+      Gson().fromJson(
+        Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
+      ) as List<Lyric>
+      ).also { fromJsonToLyricImpl(it) }
   }
 
   private suspend fun fromJsonToLyricImpl(lyric: List<Lyric>) {
@@ -72,6 +75,5 @@ class JsonParserImpl @Inject constructor(
 
     Log.e("TAG", "fromJson: ")
     return false
-
   }
 }

@@ -2,22 +2,17 @@ package net.techandgraphics.hymn.presentation.fragments.main
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
@@ -25,9 +20,9 @@ import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.dialog
 import net.techandgraphics.hymn.Utils.dialogShow
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
-import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.data.prefs.UserPrefs
+import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.presentation.BaseViewModel
 
 @AndroidEntryPoint
@@ -36,7 +31,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
   private lateinit var bind: FragmentMainBinding
   private val viewModel by viewModels<BaseViewModel>()
   private lateinit var dialog: Dialog
-
 
   private fun setupDynamicLink() {
     Firebase.dynamicLinks
@@ -67,16 +61,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     bind = FragmentMainBinding.bind(view)
-    bind.lyricAdapter = MainAdapter(click = {
-      it.navigateToReadFragment()
-    },
+    bind.lyricAdapter = MainAdapter(
+      click = {
+        it.navigateToReadFragment()
+      },
       share = {
         Utils.createDynamicLink(
           requireParentFragment(),
           it,
           viewModel.firebaseAnalytics
         )
-      }).apply {
+      }
+    ).apply {
       stateRestorationPolicy()
       viewModel.observeHymnLyrics().observe(viewLifecycleOwner) {
         submitData(viewLifecycleOwner.lifecycle, it)
@@ -113,7 +109,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
       }
     }.launchIn(viewLifecycleOwner.lifecycleScope)
-
   }
 
   private fun onRestart() = with(requireActivity().intent) {

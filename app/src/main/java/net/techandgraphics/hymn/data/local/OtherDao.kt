@@ -21,5 +21,4 @@ interface OtherDao {
 
   @Query("SELECT COUNT(*) FROM other")
   suspend fun count(): Int
-
 }

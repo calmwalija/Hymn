@@ -8,6 +8,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
+    id 'com.diffplug.spotless'
 }
 
 android {
@@ -40,6 +41,21 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    spotless {
+        kotlin {
+            target '**/*.kt'
+            trimTrailingWhitespace()
+            ktlint("0.41.0").userData(['indent_size': '2', 'continuation_indent_size': '2'])
+        }
+
+        format 'xml', {
+            target '**/*.xml'
+            indentWithSpaces()
+            trimTrailingWhitespace()
+        }
+    }
+
 }
 
 dependencies {

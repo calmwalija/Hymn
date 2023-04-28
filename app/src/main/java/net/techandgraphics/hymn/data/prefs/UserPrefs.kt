@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
@@ -29,5 +29,4 @@ class UserPrefs @Inject constructor(
 
   val getBuild = dataStore.data.map { it[build] ?: 1 }
   val getWhatsNew = dataStore.data.map { it[whatsNew] ?: 1 }
-
 }
