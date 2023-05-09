@@ -2,7 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
     app:startDestination="@id/mainFragment">
 
     <fragment
@@ -33,8 +32,8 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainFragment_to_otherFragment"
-            app:destination="@id/otherReadFragment"
+            android:id="@+id/action_mainFragment_to_essentialFragment"
+            app:destination="@id/essentialFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -48,7 +47,7 @@
         tools:layout="@layout/fragment_read">
         <argument
             android:name="lyric"
-            app:argType="net.techandgraphics.hymn.data.local.entities.Lyric"
+            app:argType="net.techandgraphics.hymn.domain.model.Lyric"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -111,13 +110,13 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/otherReadFragment"
-        android:name="net.techandgraphics.hymn.presentation.fragments.main.OtherRead"
-        android:label="OtherFragment"
-        tools:layout="@layout/fragment_main_other_read">
+        android:id="@+id/essentialFragment"
+        android:name="net.techandgraphics.hymn.presentation.fragments.essential.EssentialFragment"
+        android:label="EssentialFragment"
+        tools:layout="@layout/fragment_essential">
         <argument
-            android:name="other"
-            app:argType="net.techandgraphics.hymn.data.local.entities.Other" />
+            android:name="essential"
+            app:argType="net.techandgraphics.hymn.domain.model.Essential" />
         <action
             android:id="@+id/action_otherReadFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"

@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import java.util.Locale
 import java.util.Objects
 
@@ -44,7 +44,7 @@ object Utils {
     stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
   }
 
-  infix fun Context.share(lyricList: List<Lyric>) = with(Intent(Intent.ACTION_SEND)) {
+  infix fun Context.share(lyricList: List<LyricEntity>) = with(Intent(Intent.ACTION_SEND)) {
     var index = 0
     buildString {
       append(lyricList[0].title.uppercase())
@@ -113,7 +113,7 @@ object Utils {
   fun toast(context: Context, message: String) =
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-  fun createDynamicLink(fragment: Fragment, lyric: Lyric, firebaseAnalytics: FirebaseAnalytics) {
+  fun createDynamicLink(fragment: Fragment, lyric: LyricEntity, firebaseAnalytics: FirebaseAnalytics) {
     if (NetworkConnection(fragment.requireContext()).ifConnected().not()) {
       toast(
         fragment.requireContext(),
@@ -156,7 +156,7 @@ object Utils {
       }
   }
 
-  fun shareOffline(fragment: Fragment, lyric: List<Lyric>, firebaseAnalytics: FirebaseAnalytics) {
+  fun shareOffline(fragment: Fragment, lyric: List<LyricEntity>, firebaseAnalytics: FirebaseAnalytics) {
     val text = buildString {
       lyric.map { it.content }.forEach {
         append(it).append("\n\n")

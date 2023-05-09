@@ -4,16 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import net.techandgraphics.hymn.data.local.entities.Lyric
 import net.techandgraphics.hymn.databinding.FragmentSearchRandomItemBinding
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 
-sealed class SearchRandomAdapterEvent {
-  class OnClick(val lyric: Lyric) : SearchRandomAdapterEvent()
-}
-
 class SearchRandomAdapter(
-  private val event: (SearchRandomAdapterEvent) -> Unit,
+  private val event: (SearchRandomEvent) -> Unit,
 ) : ListAdapter<Lyric, SearchRandomAdapter.ViewHolder>(DiffUtils.HYMN_DIFF_UTIL) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +30,11 @@ class SearchRandomAdapter(
     }
 
     init {
-      binding.root.setOnClickListener { event.invoke(SearchRandomAdapterEvent.OnClick(currentList[absoluteAdapterPosition])) }
+      binding.root.setOnClickListener { event.invoke(SearchRandomEvent.Click(currentList[absoluteAdapterPosition])) }
     }
+  }
+
+  sealed class SearchRandomEvent {
+    class Click(val lyric: Lyric) : SearchRandomEvent()
   }
 }

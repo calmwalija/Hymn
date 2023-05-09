@@ -13,9 +13,9 @@ import dagger.hilt.components.SingletonComponent
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.Migration
+import net.techandgraphics.hymn.data.repository.EssentialRepositoryImpl
 import net.techandgraphics.hymn.data.repository.JsonParserImpl
 import net.techandgraphics.hymn.data.repository.LyricRepositoryImpl
-import net.techandgraphics.hymn.data.repository.OtherRepositoryImpl
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.data.repository.SearchRepositoryImpl
 import javax.inject.Singleton
@@ -50,7 +50,7 @@ object AppModule {
     version: String
   ): Repository {
     return Repository(
-      OtherRepositoryImpl(db, version),
+      EssentialRepositoryImpl(db, version),
       LyricRepositoryImpl(db, version),
       SearchRepositoryImpl(db, version),
       JsonParserImpl(db, app)

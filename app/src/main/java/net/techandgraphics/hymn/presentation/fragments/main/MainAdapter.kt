@@ -4,19 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import net.techandgraphics.hymn.data.local.entities.Lyric
-import net.techandgraphics.hymn.databinding.FragmentMainItemBinding
+import net.techandgraphics.hymn.databinding.LyricItemBinding
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils.HYMN_DIFF_UTIL
 import net.techandgraphics.hymn.presentation.fragments.main.MainAdapter.ViewHolder
 
 class MainAdapter(
-  private val click: (Lyric) -> Unit,
-  private val share: (Lyric) -> Unit
+  val event: (Lyric) -> Unit,
 ) : PagingDataAdapter<Lyric, ViewHolder>(HYMN_DIFF_UTIL) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(
-      FragmentMainItemBinding.inflate(
+      LyricItemBinding.inflate(
         LayoutInflater.from(parent.context)
       )
     )
@@ -27,7 +26,7 @@ class MainAdapter(
   }
 
   inner class ViewHolder(
-    private val binding: FragmentMainItemBinding
+    private val binding: LyricItemBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(lyric: Lyric) = binding.apply {
       this.lyric = lyric
@@ -37,11 +36,7 @@ class MainAdapter(
     init {
 
       binding.root.setOnClickListener {
-        getItem(absoluteAdapterPosition)?.let { click.invoke(it) }
-      }
-
-      binding.buttonShare.setOnClickListener {
-        getItem(absoluteAdapterPosition)?.let { share.invoke(it) }
+        getItem(absoluteAdapterPosition)?.let { event.invoke(it) }
       }
     }
   }

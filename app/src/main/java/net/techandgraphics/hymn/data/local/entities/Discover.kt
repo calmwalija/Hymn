@@ -3,6 +3,7 @@ package net.techandgraphics.hymn.data.local.entities
 import android.os.Parcelable
 import androidx.room.Embedded
 import kotlinx.parcelize.Parcelize
+import net.techandgraphics.hymn.domain.model.Lyric
 
 @Parcelize
 data class Discover(

@@ -19,9 +19,12 @@ object Tag {
   const val SORT = "sort_by"
   const val SHARE = "share_hymn"
   const val LINK_OPEN = "link_open"
+  const val LANG = "language"
+  const val CONTENT = "content"
+  const val RES_ID = "resource_id"
 
   const val ABOUT = "about_screen"
-  const val OTHER = "other_screen"
+  const val ESSENTIAL = "essential_screen"
   const val SEARCH = "search_screen"
   const val DISCOVER = "discover_screen"
   const val READ = "read_screen"

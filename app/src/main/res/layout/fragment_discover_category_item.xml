@@ -16,14 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="6dp">
+        android:paddingTop="4dp"
+        android:paddingHorizontal="2dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image"
             setImageView="@{discover.lyric.categoryId}"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:scaleType="centerCrop"
+            android:layout_height="120dp"
+             android:scaleType="centerCrop"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize20Percent"
             tools:src="@drawable/seed_time_and_harvest" />
 

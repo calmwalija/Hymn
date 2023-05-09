@@ -11,7 +11,7 @@
 
         <variable
             name="lyric"
-            type="net.techandgraphics.hymn.data.local.entities.Lyric" />
+            type="net.techandgraphics.hymn.data.local.entities.LyricEntity" />
 
         <variable
             name="favoriteAdapter"
@@ -170,7 +170,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/recyclerView"
                 app:spanCount="1"
                 tools:itemCount="4"
-                tools:listitem="@layout/fragment_main_item" />
+                tools:listitem="@layout/lyric_item" />
 
 
             <androidx.appcompat.widget.AppCompatTextView

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import net.techandgraphics.hymn.data.local.entities.Search
 import net.techandgraphics.hymn.databinding.FragmentSearchTagItemBinding
+import net.techandgraphics.hymn.domain.model.Search
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils
 
 class SearchTagAdapter(
