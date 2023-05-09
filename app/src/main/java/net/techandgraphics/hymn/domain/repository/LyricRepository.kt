@@ -3,22 +3,22 @@ package net.techandgraphics.hymn.domain.repository
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.entities.Discover
-import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 
 interface LyricRepository {
-  suspend fun insert(lyric: List<Lyric>)
-  suspend fun update(lyric: Lyric)
+  suspend fun insert(lyric: List<LyricEntity>)
+  suspend fun update(lyric: LyricEntity)
   suspend fun count(): Int
   suspend fun clearFavorite()
   suspend fun reset()
-  fun observeLyrics(query: String = ""): Flow<PagingData<Lyric>>
+  fun observeLyrics(query: String = ""): Flow<PagingData<LyricEntity>>
   fun observeCategories(): Flow<List<Discover>>
-  fun observeTopPickCategories(): Flow<List<Lyric>>
-  fun observeRecentLyrics(): Flow<List<Lyric>>
-  fun getLyricsById(number: Int): Flow<List<Lyric>>
-  fun getLyricsByCategory(id: Int): Flow<List<Lyric>>
-  fun observeFavoriteLyrics(): Flow<List<Lyric>>
-  fun findLyricById(id: Int): Flow<Lyric>
+  fun observeRecentLyrics(): Flow<List<LyricEntity>>
+  fun getLyricsById(number: Int): Flow<List<LyricEntity>>
+  fun getLyricsByCategory(id: Int): Flow<List<LyricEntity>>
+  fun findLyricById(id: Int): Flow<LyricEntity>
 
-  val queryRandom: Flow<List<Lyric>>
+  val queryRandom: Flow<List<LyricEntity>>
+  val mostVisited: Flow<List<LyricEntity>>
+  val favorite: Flow<List<LyricEntity>>
 }

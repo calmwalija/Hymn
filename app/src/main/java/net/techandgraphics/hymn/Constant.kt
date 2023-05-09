@@ -1,7 +1,7 @@
 package net.techandgraphics.hymn
 
 import androidx.annotation.DrawableRes
-import net.techandgraphics.hymn.data.local.entities.Search
+import net.techandgraphics.hymn.data.local.entities.SearchEntity
 
 data class Category(
   val categoryId: Int,
@@ -133,13 +133,13 @@ object Constant {
 
   const val RESTART = "RESTART"
 
-  val searchTag = arrayListOf(
-    Search(query = "Amazing grace", tag = "amazinggrace"),
-    Search(query = "I need thee", tag = "ineedthee"),
-    Search(query = "199", tag = "199"),
-    Search(query = "Holy Spirit", tag = "holyspirit"),
-    Search(query = "Pass me not", tag = "passmenot"),
-    Search(query = "I have promised", tag = "Ihavepromised"),
-    Search(query = "Happy day", tag = "happyday")
+  val searchEntityTags = arrayListOf(
+    SearchEntity(query = "Amazing grace", tag = "amazinggrace"),
+    SearchEntity(query = "I need thee", tag = "ineedthee"),
+    SearchEntity(query = "199", tag = "199"),
+    SearchEntity(query = "Holy Spirit", tag = "holyspirit"),
+    SearchEntity(query = "Pass me not", tag = "passmenot"),
+    SearchEntity(query = "I have promised", tag = "Ihavepromised"),
+    SearchEntity(query = "Happy day", tag = "happyday")
   )
 }

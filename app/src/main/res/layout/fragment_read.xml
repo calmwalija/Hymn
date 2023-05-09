@@ -7,7 +7,7 @@
 
         <variable
             name="lyric"
-            type="net.techandgraphics.hymn.data.local.entities.Lyric" />
+            type="net.techandgraphics.hymn.domain.model.Lyric" />
 
         <variable
             name="adapter"
@@ -52,13 +52,13 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabShare"
+            android:id="@+id/fabFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:backgroundTint="@color/mellon"
-            android:contentDescription="@string/share"
-            android:src="@drawable/ic_share"
+            android:contentDescription="@string/font"
+            android:src="@drawable/ic_font"
             app:layout_anchor="@+id/recyclerView"
             app:layout_anchorGravity="end|bottom"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"

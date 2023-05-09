@@ -15,11 +15,11 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="ShapeAppearanceOverlay.App.CornerSize30Percent" parent="">
-        <item name="cornerSize">30%</item>
+    <style name="ShapeAppearanceOverlay.App.CornerSize17Percent" parent="">
+        <item name="cornerSize">17%</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.App.CornerSize20Percent" parent="">
-        <item name="cornerSize">20%</item>
+        <item name="cornerSize">4%</item>
     </style>
 </resources>

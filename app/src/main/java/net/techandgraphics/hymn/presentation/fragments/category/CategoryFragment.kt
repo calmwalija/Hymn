@@ -4,21 +4,23 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
 import net.techandgraphics.hymn.databinding.FragmentCategoryBinding
-import net.techandgraphics.hymn.presentation.BaseViewModel
+import net.techandgraphics.hymn.domain.model.Lyric
 
 @AndroidEntryPoint
 class CategoryFragment : Fragment(R.layout.fragment_category) {
 
   private lateinit var binding: FragmentCategoryBinding
-  private val viewModel: BaseViewModel by viewModels()
+  private val viewModel: CategoryViewModel by viewModels()
   private val args: CategoryFragmentArgs by navArgs()
   private lateinit var categoryAdapter: CategoryAdapter
 
@@ -26,35 +28,40 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     binding = FragmentCategoryBinding.bind(view)
     binding.lyric = args.lyric.lyric
 
-    categoryAdapter = CategoryAdapter(
-      click = {
-        CategoryFragmentDirections.actionCategoryFragmentToReadFragment(it).apply {
-          findNavController().navigate(this)
-        }
-      },
-      favorite = {
-        viewModel.update(it.copy(favorite = !it.favorite))
-        requireContext().apply {
-          Utils.toast(
-            this,
-            if (it.favorite.not()) getString(R.string.add_favorite, it.number) else
-              getString(R.string.remove_favorite, it.number)
-          )
+    categoryAdapter = CategoryAdapter {
+      when (it) {
+        is CategoryAdapter.CategoryEvent.Click ->
+          CategoryFragmentDirections
+            .actionCategoryFragmentToReadFragment(it.lyric).apply {
+              findNavController().navigate(this)
+            }
+
+        is CategoryAdapter.CategoryEvent.Favorite -> {
+          viewModel.update(it.lyric)
+          toast(it.lyric)
         }
       }
-    ).also { it.stateRestorationPolicy() }
+    }.also { it.stateRestorationPolicy() }
 
-    viewModel.getLyricsByCategory(args.lyric.lyric).observe(viewLifecycleOwner) {
+    viewModel.category(args.lyric.lyric).onEach {
       binding.counter = it.size
       categoryAdapter.submitList(it)
-    }
+    }.launchIn(lifecycleScope)
 
     with(binding.recyclerView) {
       setHasFixedSize(true)
       adapter = categoryAdapter
       itemAnimator = null
     }
-
-    Tag.screenView(viewModel.firebaseAnalytics, Tag.CATEGORY)
+    viewModel.firebaseAnalytics()
   }
+
+  private fun toast(lyric: Lyric) =
+    requireContext().apply {
+      Utils.toast(
+        this,
+        if (lyric.favorite.not()) getString(R.string.add_favorite, lyric.number) else
+          getString(R.string.remove_favorite, lyric.number)
+      )
+    }
 }

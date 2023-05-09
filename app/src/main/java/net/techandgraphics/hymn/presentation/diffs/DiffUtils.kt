@@ -2,9 +2,9 @@ package net.techandgraphics.hymn.presentation.diffs
 
 import androidx.recyclerview.widget.DiffUtil
 import net.techandgraphics.hymn.data.local.entities.Discover
-import net.techandgraphics.hymn.data.local.entities.Lyric
-import net.techandgraphics.hymn.data.local.entities.Other
-import net.techandgraphics.hymn.data.local.entities.Search
+import net.techandgraphics.hymn.domain.model.Essential
+import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.model.Search
 
 object DiffUtils {
 
@@ -32,15 +32,15 @@ object DiffUtils {
     ) = oldItem == newItem
   }
 
-  val OTHER_DIFF_UTIL = object : DiffUtil.ItemCallback<Other>() {
+  val ESSENTIAL_DIFF_UTIL = object : DiffUtil.ItemCallback<Essential>() {
     override fun areContentsTheSame(
-      oldItem: Other,
-      newItem: Other
+      oldItem: Essential,
+      newItem: Essential
     ) = oldItem.resourceId == newItem.resourceId
 
     override fun areItemsTheSame(
-      oldItem: Other,
-      newItem: Other
+      oldItem: Essential,
+      newItem: Essential
     ) = oldItem == newItem
   }
 

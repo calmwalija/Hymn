@@ -9,8 +9,8 @@ import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.capitaliseWord
 import net.techandgraphics.hymn.Utils.regexLowerCase
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.local.entities.Lyric
-import net.techandgraphics.hymn.data.local.entities.Other
+import net.techandgraphics.hymn.data.local.entities.EssentialEntity
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.domain.repository.JsonParser
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -23,27 +23,27 @@ class JsonParserImpl @Inject constructor(
 ) : JsonParser {
 
   private val lyricRepo = db.lyricDao
-  private val otherRepo = db.otherDao
+  private val otherRepo = db.essentialDao
 
   override suspend fun fromJsonToOther() {
-    val ofType = object : TypeToken<List<Other>>() {}.type
+    val ofType = object : TypeToken<List<EssentialEntity>>() {}.type
     (
       Gson().fromJson(
         Utils.readJsonFromAssetToString(context, "other.json")!!, ofType
-      ) as List<Other>
+      ) as List<EssentialEntity>
       ).also { otherRepo.insert(it) }
   }
 
   override suspend fun fromJsonToLyric() {
-    val ofType: Type = object : TypeToken<List<Lyric>>() {}.type
+    val ofType: Type = object : TypeToken<List<LyricEntity>>() {}.type
     (
       Gson().fromJson(
         Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
-      ) as List<Lyric>
+      ) as List<LyricEntity>
       ).also { fromJsonToLyricImpl(it) }
   }
 
-  private suspend fun fromJsonToLyricImpl(lyric: List<Lyric>) {
+  private suspend fun fromJsonToLyricImpl(lyric: List<LyricEntity>) {
     val data = lyric.map {
       val string: List<String> = it.content.split(" ")
       val data = buildString {
@@ -66,7 +66,7 @@ class JsonParserImpl @Inject constructor(
       it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
     }
     lyricRepo.insert(data)
-    db.searchDao.insert(Constant.searchTag)
+    db.searchDao.insert(Constant.searchEntityTags)
   }
 
   override suspend fun fromJson(): Boolean {

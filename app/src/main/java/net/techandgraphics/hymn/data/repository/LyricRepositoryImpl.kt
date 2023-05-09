@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.Discover
-import net.techandgraphics.hymn.data.local.entities.Lyric
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,11 +19,11 @@ class LyricRepositoryImpl @Inject constructor(
   private val version: String
 ) : LyricRepository {
 
-  override suspend fun insert(lyric: List<Lyric>) {
+  override suspend fun insert(lyric: List<LyricEntity>) {
     db.lyricDao.insert(lyric)
   }
 
-  override suspend fun update(lyric: Lyric) {
+  override suspend fun update(lyric: LyricEntity) {
     db.lyricDao.update(lyric)
   }
 
@@ -39,7 +39,7 @@ class LyricRepositoryImpl @Inject constructor(
     db.lyricDao.reset()
   }
 
-  override fun observeLyrics(query: String): Flow<PagingData<Lyric>> {
+  override fun observeLyrics(query: String): Flow<PagingData<LyricEntity>> {
     return Pager(
       config = PagingConfig(
         pageSize = SIZE,
@@ -54,29 +54,23 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.observeCategories(version)
   }
 
-  override fun observeTopPickCategories(): Flow<List<Lyric>> {
-    return db.lyricDao.observeTopPickCategories(version)
-  }
-
-  override fun observeRecentLyrics(): Flow<List<Lyric>> {
+  override fun observeRecentLyrics(): Flow<List<LyricEntity>> {
     return db.lyricDao.observeRecentLyrics(version)
   }
 
-  override fun getLyricsById(number: Int): Flow<List<Lyric>> {
+  override fun getLyricsById(number: Int): Flow<List<LyricEntity>> {
     return db.lyricDao.getLyricsById(number, version)
   }
 
-  override fun getLyricsByCategory(id: Int): Flow<List<Lyric>> {
+  override fun getLyricsByCategory(id: Int): Flow<List<LyricEntity>> {
     return db.lyricDao.getLyricsByCategory(id, version)
   }
 
-  override fun observeFavoriteLyrics(): Flow<List<Lyric>> {
-    return db.lyricDao.observeFavoriteLyrics()
-  }
-
-  override fun findLyricById(id: Int): Flow<Lyric> {
+  override fun findLyricById(id: Int): Flow<LyricEntity> {
     return db.lyricDao.findLyricById(id, version)
   }
 
   override val queryRandom = db.lyricDao.queryRandom(version)
+  override val mostVisited = db.lyricDao.mostVisited(version)
+  override val favorite = db.lyricDao.observeFavoriteLyrics(version)
 }
