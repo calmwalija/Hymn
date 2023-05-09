@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Hymn Book</string>
-    <string name="powered">Powered By TAG</string>
     <string name="about">We would like to thank you for downloading the Hymn App and using it,
         for it gives us encouragement and makes it possible for this app to be available for free.</string>
     <string name="donate">The hymn app is not a business, we have never had plans to monetize
@@ -10,16 +9,13 @@
     <string name="developer">This app was designed and developed by Tech and Graphics in close collaboration with Zonse Media. </string>
     <string name="bank_details">Comfort Mwalija\nAccount # • 1004069974\nBranch • City Center</string>
     <string name="share">Share hymn</string>
+    <string name="font">Change font size</string>
     <string name="favorite">Favorite hymn</string>
-    <string name="add_favorite">Hymn #%d has been added to favorites.</string>
-    <string name="remove_favorite">Hymn #%d has been removed from favorites.</string>
+    <string name="add_favorite">Hymn #%d has been added to favorites</string>
+    <string name="remove_favorite">Hymn #%d has been removed from favorites</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Preferences -->
     <string name="theme_key">theme_key</string>
@@ -28,17 +24,10 @@
     <string name="clear_favorite_key">clear_favorite_key</string>
     <string name="feedback_key">feedback_key</string>
     <string name="rate_key">rate_key</string>
-    <string name="resources_key">resources_key</string>
     <string name="about_key">about_key</string>
     <string name="clear_data_key">clear_data_key</string>
     <string name="donate_key">donate_key</string>
 
     <string name="hymn_number">#%d</string>
-
-    <string name="whats_new_april_24_2023">
-    Added requested hymn lyrics\n
-    1 Because He lives\n
-    2 Years I spent in vanity\n
-    </string>
 
 </resources>

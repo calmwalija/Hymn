@@ -4,18 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import net.techandgraphics.hymn.data.local.entities.Lyric
-import net.techandgraphics.hymn.databinding.FragmentFavoriteItemBinding
+import net.techandgraphics.hymn.databinding.LyricItemBinding
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils.HYMN_DIFF_UTIL
 
 class FavoriteAdapter(
-  private val click: (Lyric) -> Unit,
-  private val favorite: (Lyric) -> Unit
+  private val event: (Lyric) -> Unit,
 ) : ListAdapter<Lyric, FavoriteAdapter.ViewHolder>(HYMN_DIFF_UTIL) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(
-      FragmentFavoriteItemBinding.inflate(LayoutInflater.from(parent.context))
+      LyricItemBinding.inflate(LayoutInflater.from(parent.context))
     )
   }
 
@@ -24,7 +23,7 @@ class FavoriteAdapter(
   }
 
   inner class ViewHolder(
-    private val binding: FragmentFavoriteItemBinding
+    private val binding: LyricItemBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(lyric: Lyric) = binding.apply {
       this.lyric = lyric
@@ -33,8 +32,7 @@ class FavoriteAdapter(
 
     init {
       with(binding) {
-        root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
-        buttonFav.setOnClickListener { favorite.invoke(currentList[absoluteAdapterPosition]) }
+        root.setOnClickListener { event.invoke(currentList[absoluteAdapterPosition]) }
       }
     }
   }
