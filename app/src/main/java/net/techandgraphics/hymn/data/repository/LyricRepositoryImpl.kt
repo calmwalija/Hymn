@@ -1,12 +1,18 @@
 package net.techandgraphics.hymn.data.repository
 
+import android.content.Context
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.work.ListenableWorker
 import kotlinx.coroutines.flow.Flow
+import net.techandgraphics.hymn.Resource
+import net.techandgraphics.hymn.data.asLyricEntity
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.Discover
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.data.remote.RemoteSource
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,8 +22,39 @@ const val SIZE = 20
 @Singleton
 class LyricRepositoryImpl @Inject constructor(
   private val db: Database,
-  private val version: String
+  private val version: String,
+  private val api: RemoteSource,
+  private val context: Context
 ) : LyricRepository {
+
+  override suspend fun fetch(status: (Resource<List<LyricEntity>>) -> Unit): ListenableWorker.Result {
+    val lastInsertedId = db.lyricDao.lastInsertedId() ?: 0
+    return try {
+      val lyrics = api.fetchLyric(lastInsertedId).map { it.asLyricEntity() }
+      JsonParserImpl(db, context).fromJsonToLyricImpl(lyrics, runSearchTag = false)
+      db.lyricDao.getLyricsByIdRange(lastInsertedId).also {
+        if (lyrics.isNotEmpty())
+          status.invoke(Resource.Success(it))
+      }
+      ListenableWorker.Result.success()
+    } catch (e: Exception) {
+      status.invoke(Resource.Error(exception = e))
+      Log.e("TAG", e.toString())
+      ListenableWorker.Result.retry()
+    }
+  }
+
+  override fun getLyricsByIdRangeLang(number: Long): Flow<List<LyricEntity>> {
+    return db.lyricDao.getLyricsByIdRangeLang(number, version)
+  }
+
+  override suspend fun count(): Int? {
+    return db.lyricDao.count(version)
+  }
+
+  override suspend fun categoryCount(): List<Int> {
+    return db.lyricDao.categoryCount(version)
+  }
 
   override suspend fun insert(lyric: List<LyricEntity>) {
     db.lyricDao.insert(lyric)
@@ -27,8 +64,8 @@ class LyricRepositoryImpl @Inject constructor(
     db.lyricDao.update(lyric)
   }
 
-  override suspend fun count(): Int {
-    return db.lyricDao.count()
+  override suspend fun lastInsertedHymn(): Int? {
+    return db.lyricDao.lastInsertedHymn(version)
   }
 
   override suspend fun clearFavorite() {
@@ -54,6 +91,10 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.observeCategories(version)
   }
 
+  override fun featuredHymn(limit: Int): Flow<List<Discover>> {
+    return db.lyricDao.featuredHymn(version, limit)
+  }
+
   override fun observeRecentLyrics(): Flow<List<LyricEntity>> {
     return db.lyricDao.observeRecentLyrics(version)
   }
@@ -70,7 +111,7 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.findLyricById(id, version)
   }
 
-  override val queryRandom = db.lyricDao.queryRandom(version)
-  override val mostVisited = db.lyricDao.mostVisited(version)
+  override val recent = db.lyricDao.recent(version)
   override val favorite = db.lyricDao.observeFavoriteLyrics(version)
+  override val theHymn = db.lyricDao.theHymn(version)
 }

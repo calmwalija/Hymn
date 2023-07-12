@@ -26,7 +26,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     binding = FragmentCategoryBinding.bind(view)
-    binding.lyric = args.lyric.lyric
+    binding.lyric = args.discover.lyric
 
     categoryAdapter = CategoryAdapter {
       when (it) {
@@ -43,7 +43,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
       }
     }.also { it.stateRestorationPolicy() }
 
-    viewModel.category(args.lyric.lyric).onEach {
+    viewModel.category(args.discover.lyric).onEach {
       binding.counter = it.size
       categoryAdapter.submitList(it)
     }.launchIn(lifecycleScope)

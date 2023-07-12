@@ -7,29 +7,15 @@
         <Preference
             app:icon="@drawable/ic_info"
             app:key="@string/about_key"
-            app:summary="Developers, etc"
+            app:summary="Appreciation, about the developer and the app"
             app:title="About" />
 
 
         <Preference
             app:icon="@drawable/ic_donate"
             app:key="@string/donate_key"
-            app:summary="Fee free to donate, thank you"
+            app:summary="Support our work to grow by donating the little you can"
             app:title="Donate" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="Books">
-
-
-        <ListPreference
-            android:defaultValue="en"
-            android:dialogTitle="Choose book"
-            android:entries="@array/version_entries"
-            android:entryValues="@array/version_values"
-            android:icon="@drawable/ic_books"
-            android:key="@string/version_key"
-            android:title="Hymn book" />
 
     </PreferenceCategory>
 
@@ -78,9 +64,9 @@
 
         <Preference
             app:icon="@drawable/ic_delete"
-            app:key="@string/clear_data_key"
-            app:summary="Delete all data ie favorites, recently viewed"
-            app:title="Clear cache &amp; data" />
+            app:key="@string/clear_favorite_key"
+            app:summary="Delete all favorite hymn list"
+            app:title="Clear favorites" />
 
 
     </PreferenceCategory>

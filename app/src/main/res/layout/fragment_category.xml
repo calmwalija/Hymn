@@ -21,14 +21,16 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image"
-            setImageView="@{lyric.categoryId}"
+            app:blurRadius="@{5}"
+            app:blurSampling="@{1}"
+            app:drawableRes="@{lyric.categoryId}"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/seed_time_and_harvest" />
+            tools:src="@drawable/im_seed_time_and_harvest" />
 
 
         <androidx.appcompat.widget.AppCompatTextView

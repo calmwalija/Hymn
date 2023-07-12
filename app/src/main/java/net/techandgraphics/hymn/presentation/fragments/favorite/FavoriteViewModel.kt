@@ -27,9 +27,9 @@ constructor(
 
   init {
     repository.lyricRepository.favorite
-      .combine(repository.lyricRepository.mostVisited) { favorite, mostVisited ->
+      .combine(repository.lyricRepository.recent) { favorite, recent ->
         state.value = state.value.copy(
-          mostVisited = mostVisited.map { it.asLyric() },
+          recent = recent.map { it.asLyric() },
           favorite = favorite.map { it.asLyric() }
         )
       }.launchIn(viewModelScope)

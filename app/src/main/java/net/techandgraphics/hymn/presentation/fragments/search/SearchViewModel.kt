@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.presentation.fragments.search
 
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.map
@@ -38,7 +37,6 @@ constructor(
 
   val searchInput = searchInputEventChannel.receiveAsFlow()
   val searchQuery = MutableStateFlow("")
-  val queryRandom = repository.lyricRepository.queryRandom.map { it.map { it.asLyric() } }
   val tag = repository.searchRepository.query.map {
     it.map { it.asSearch() }
   }
@@ -54,7 +52,7 @@ constructor(
   }
 
   fun insert(search: Search) =
-    viewModelScope.launch { repository.searchRepository.insert(listOf(search.asSearchEntity())) }
+    viewModelScope.launch { repository.searchRepository.upsert(listOf(search.asSearchEntity())) }
 
   fun update(lyric: Lyric) =
     viewModelScope.launch {
@@ -65,9 +63,5 @@ constructor(
 
   fun firebaseAnalyticsScreen() {
     Tag.screenView(firebaseAnalytics, Tag.SEARCH)
-  }
-
-  fun firebaseAnalyticsEvent(searchQuery: String) {
-    firebaseAnalytics.logEvent(Tag.KEYWORD, bundleOf(Pair(Tag.KEYWORD, searchQuery)))
   }
 }

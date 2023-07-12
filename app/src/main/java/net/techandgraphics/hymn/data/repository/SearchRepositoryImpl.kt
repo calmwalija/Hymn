@@ -14,8 +14,8 @@ class SearchRepositoryImpl @Inject constructor(
 
   private val dao = db.searchDao
 
-  override suspend fun insert(searchEntities: List<SearchEntity>) {
-    dao.insert(searchEntities.map { it.copy(lang = version) })
+  override suspend fun upsert(searchEntities: List<SearchEntity>) {
+    dao.upsert(searchEntities.map { it.copy(lang = version) })
   }
 
   override suspend fun delete(searchEntity: SearchEntity) {

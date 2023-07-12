@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="randomAdapter"
-            type="net.techandgraphics.hymn.presentation.fragments.search.SearchRandomAdapter" />
-
-        <variable
             name="lyric"
             type="net.techandgraphics.hymn.data.local.entities.LyricEntity" />
 
@@ -35,25 +31,20 @@
                 android:id="@+id/linearLayoutCompat2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="42dp"
+                android:layout_marginTop="24dp"
                 android:orientation="vertical"
-                android:paddingHorizontal="24dp"
+                android:paddingHorizontal="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.AppCompat.Large"
+                    style="@style/TextAppearance.Heading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Search"
+                    android:text="Quick Hymn Search"
                     android:textStyle="bold" />
 
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Which hymn are you looking for ?" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -63,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/shape_circle"
                 android:backgroundTint="#3E5A5A5A"
@@ -74,9 +65,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat2">
 
                 <FrameLayout
-                    android:layout_marginStart="8dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp">
 
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -88,12 +79,12 @@
                         android:src="@drawable/ic_search" />
 
                     <com.airbnb.lottie.LottieAnimationView
-                        android:visibility="invisible"
-                        android:layout_gravity="center"
-                         android:id="@+id/animationView"
+                        android:id="@+id/animationView"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:padding="2dp"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCompat2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/linearLayoutCompat2"
@@ -110,7 +101,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_weight="1"
                     android:background="@drawable/shape_circle"
-                    android:hint="Search hymn"
+                    android:hint="Which hymn are you looking for ?"
                     android:inputType="text|textAutoCorrect|textCapSentences"
                     android:maxLength="30"
                     android:maxLines="1"
@@ -133,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="#tags"
+                android:text="#search-tag-history"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/linearLayoutCompat78"
                 app:layout_constraintStart_toStartOf="@+id/linearLayoutCompat78"
@@ -144,6 +135,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:adapter="@{searchAdapter}"
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
@@ -172,40 +164,11 @@
                 tools:itemCount="4"
                 tools:listitem="@layout/lyric_item" />
 
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView17"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="#justrandom"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/linearLayoutCompat78"
-                app:layout_constraintStart_toStartOf="@+id/linearLayoutCompat78"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_history"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:adapter="@{randomAdapter}"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView17"
-                app:spanCount="1"
-                tools:itemCount="3"
-                tools:listitem="@layout/fragment_search_random_item" />
-
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/emptyRoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="recyclerView,appCompatTextView7,appCompatTextView17,recyclerView_history" />
-
+                app:constraint_referenced_ids="appCompatTextView7,recyclerView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

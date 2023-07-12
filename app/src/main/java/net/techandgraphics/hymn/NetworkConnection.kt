@@ -20,6 +20,7 @@ class NetworkConnection(private val context: Context) {
       return when {
         networkCapability.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
           networkCapability.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+
         else -> false
       }
     } else {

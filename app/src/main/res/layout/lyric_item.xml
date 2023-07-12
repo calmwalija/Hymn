@@ -20,80 +20,76 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/view_circle"
-            setImageView="@{lyric.categoryId}"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/seed_time_and_harvest"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/im_seed_time_and_harvest"
+            app:blurRadius="@{5}"
+            app:blurSampling="@{1}"
+            app:drawableRes="@{lyric.categoryId}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize17Percent" />
 
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView5"
-            hymnNumber="@{lyric.number}"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:maxLength="4"
-            app:layout_constraintBottom_toBottomOf="@+id/view_circle"
-            app:layout_constraintEnd_toEndOf="@+id/view_circle"
-            app:layout_constraintStart_toStartOf="@+id/view_circle"
-            app:layout_constraintTop_toTopOf="@+id/view_circle"
-            tools:text="#370" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutCompat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/view_circle"
-            app:layout_constraintEnd_toStartOf="@+id/buttonShare"
-            app:layout_constraintStart_toEndOf="@+id/appCompatTextView5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button"
+            app:layout_constraintStart_toEndOf="@+id/view_circle"
             app:layout_constraintTop_toTopOf="@+id/view_circle">
 
+
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
+                android:id="@+id/appCompatTextView5"
+                hymnNumber="@{lyric.number}"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{lyric.title}"
+                android:gravity="center"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                tools:text="@string/app_name" />
+                tools:text="#370" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{lyric.categoryName}"
+                android:maxLines="3"
+                android:text="@{lyric.content}"
                 tools:text="@string/androidx_startup" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                timestamp="@{lyric.timestamp}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_access_time"
+                android:drawablePadding="2dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                tools:text="@string/app_name" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/buttonShare"
+            android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:background="?attr/actionBarItemBackground"
-            android:clickable="true"
             android:contentDescription="@string/share"
-            android:focusable="true"
-            android:src="@drawable/ic_arrow_right"
+            android:src="@drawable/ic_arrow_forward"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCompat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/linearLayoutCompat" />

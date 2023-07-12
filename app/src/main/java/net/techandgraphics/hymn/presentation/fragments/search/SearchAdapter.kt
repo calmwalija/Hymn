@@ -33,6 +33,7 @@ class SearchAdapter(
 
     init {
       binding.root.setOnClickListener {
+        if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
         getItem(absoluteAdapterPosition)?.let { event.invoke(it) }
       }
     }

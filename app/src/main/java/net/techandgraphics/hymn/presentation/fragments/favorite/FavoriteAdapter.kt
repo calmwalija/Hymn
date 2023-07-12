@@ -32,7 +32,10 @@ class FavoriteAdapter(
 
     init {
       with(binding) {
-        root.setOnClickListener { event.invoke(currentList[absoluteAdapterPosition]) }
+        root.setOnClickListener {
+          if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+          event.invoke(currentList[absoluteAdapterPosition])
+        }
       }
     }
   }

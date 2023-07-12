@@ -1,7 +1,6 @@
 package net.techandgraphics.hymn.data.repository
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.techandgraphics.hymn.Constant
@@ -34,16 +33,20 @@ class JsonParserImpl @Inject constructor(
       ).also { otherRepo.insert(it) }
   }
 
-  override suspend fun fromJsonToLyric() {
+  override suspend fun fromJsonToLyric(event: suspend () -> Unit) {
     val ofType: Type = object : TypeToken<List<LyricEntity>>() {}.type
     (
       Gson().fromJson(
         Utils.readJsonFromAssetToString(context, "lyrics.json")!!, ofType
       ) as List<LyricEntity>
-      ).also { fromJsonToLyricImpl(it) }
+      ).also { fromJsonToLyricImpl(it, event) }
   }
 
-  private suspend fun fromJsonToLyricImpl(lyric: List<LyricEntity>) {
+  suspend fun fromJsonToLyricImpl(
+    lyric: List<LyricEntity>,
+    event: suspend () -> Unit = {},
+    runSearchTag: Boolean = true
+  ) {
     val data = lyric.map {
       val string: List<String> = it.content.split(" ")
       val data = buildString {
@@ -65,15 +68,14 @@ class JsonParserImpl @Inject constructor(
 
       it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
     }
-    lyricRepo.insert(data)
-    db.searchDao.insert(Constant.searchEntityTags)
+    lyricRepo.upsert(data)
+    if (runSearchTag) db.searchDao.upsert(Constant.searchEntityTags)
+    event.invoke()
   }
 
-  override suspend fun fromJson(): Boolean {
-    fromJsonToLyric()
+  override suspend fun fromJson(event: suspend () -> Unit): Boolean {
+    fromJsonToLyric(event)
     fromJsonToOther()
-
-    Log.e("TAG", "fromJson: ")
     return false
   }
 }

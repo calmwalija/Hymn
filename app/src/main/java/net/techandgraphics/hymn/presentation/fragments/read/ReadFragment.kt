@@ -20,7 +20,6 @@ import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
@@ -96,6 +95,15 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
     }
   }
 
+  private fun Lyric.topPickHit() {
+    viewModel.update(
+      copy(
+        topPickHit = args.lyric.topPickHit.plus(1),
+        timestamp = System.currentTimeMillis()
+      )
+    )
+  }
+
   private fun favorite(lyric: Lyric) {
     menu.getItem(0).icon = ContextCompat.getDrawable(
       requireContext(),
@@ -117,8 +125,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
         }.launchIn(lifecycleScope)
       addMenuProvider()
       setupToolbar(this)
-      statusBarColor()
-      viewModel.update(args.lyric)
+      args.lyric.topPickHit()
       recyclerView.itemAnimator = null
       recyclerView.setHasFixedSize(true)
       viewModel.firebaseAnalytics(args.lyric)
@@ -137,27 +144,4 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
       }
     }
   }
-
-  private fun statusBarColor() {
-    requireContext().also {
-      val bitmap = Utils.decodeResource(it, Constant.images[args.lyric.categoryId].drawableRes)
-      Utils.createPaletteSync(bitmap).apply {
-        val dominantColor = getVibrantColor(ContextCompat.getColor(it, R.color.mellon))
-        requireActivity().window.statusBarColor = dominantColor
-        if (dominantColor == -2200468) {
-          getDominantColor(ContextCompat.getColor(it, R.color.mellon)).also {
-            requireActivity().window.statusBarColor = it
-          }
-        }
-      }
-    }
-  }
 }
-
-// binding.fabShare.setOnClickListener {
-//      Utils.createDynamicLink(
-//        requireParentFragment(),
-//        args.lyric,
-//        viewModel.firebaseAnalytics
-//      )
-// }

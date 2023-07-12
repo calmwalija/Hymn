@@ -11,53 +11,98 @@
 
     </data>
 
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingHorizontal="2dp">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/image"
-            setImageView="@{discover.lyric.categoryId}"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize20Percent"
-            tools:src="@drawable/seed_time_and_harvest" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="16dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:paddingHorizontal="16dp"
-                android:maxLines="2"
-                android:text="@{discover.lyric.categoryName.trim()}"
-                android:textColor="@color/white"
-                tools:text="@string/androidx_startup" />
+                android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                setTextHymnCount="@{discover.count}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                  android:gravity="center"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                 android:textColor="@color/white"
-                tools:text="@string/androidx_startup" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:scaleType="centerCrop"
+                    app:blurRadius="@{5}"
+                    app:blurSampling="@{1}"
+                    app:drawableRes="@{discover.lyric.categoryId}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/im_seed_time_and_harvest" />
 
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    app:blurRadius="@{20}"
+                    app:blurSampling="@{10}"
+                    app:drawableRes="@{discover.lyric.categoryId}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/linearLayoutCompat7"
+                    tools:src="@drawable/im_church" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayoutCompat7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:paddingVertical="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView18"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingHorizontal="4dp"
+                        android:text="@{discover.lyric.categoryName.trim()}"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView16"
+                        app:layout_constraintEnd_toStartOf="@+id/appCompatTextView16"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="@string/appbar_scrolling_view_behavior" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView16"
+                        setTextHymnCount="@{discover.count}"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="16dp"
+                        android:gravity="end|bottom"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="@string/androidx_startup" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
     </FrameLayout>
 </layout>

@@ -29,5 +29,6 @@
     <string name="donate_key">donate_key</string>
 
     <string name="hymn_number">#%d</string>
+    <string name="new_hymn">Hooray! Here is the list of what we have added recently, enjoy!</string>
 
 </resources>
