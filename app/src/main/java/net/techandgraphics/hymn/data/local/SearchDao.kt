@@ -16,9 +16,9 @@ interface SearchDao {
   @Delete
   suspend fun delete(searchEntity: SearchEntity)
 
-  @Query("DELETE  FROM  SearchEntity")
+  @Query("DELETE  FROM  Search")
   suspend fun clear()
 
-  @Query("SELECT * FROM SearchEntity WHERE lang=:version ORDER BY id DESC LIMIT 9")
+  @Query("SELECT * FROM Search WHERE lang=:version ORDER BY id DESC LIMIT 9")
   fun query(version: String): Flow<List<SearchEntity>>
 }

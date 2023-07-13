@@ -87,7 +87,7 @@ interface LyricDao {
   @Query("DELETE  FROM lyric")
   suspend fun clearLyric()
 
-  @Query("DELETE  FROM SearchEntity")
+  @Query("DELETE  FROM Search")
   suspend fun clearSearch()
 
   @Query("DELETE  FROM Other")
