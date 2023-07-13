@@ -10,17 +10,16 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
-import androidx.room.util.newStringBuilder
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlin.random.Random
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Resource
 import net.techandgraphics.hymn.Tag.NOTIFICATION_HYMN_THRESHOLD
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.services.getNotificationCompat
-import kotlin.random.Random
 
 @HiltWorker
 class HymnWorker @AssistedInject constructor(
@@ -35,7 +34,7 @@ class HymnWorker @AssistedInject constructor(
     return repository.lyricRepository.fetch {
       when (it) {
         is Resource.Success -> it.data?.let {
-          val list = newStringBuilder()
+          val list = StringBuilder()
           var size: Int
           it.distinctBy { it.number }.also { size = it.size }.forEach {
             list.append("#").append(it.number).append(".").append(it.title).append("\n")
