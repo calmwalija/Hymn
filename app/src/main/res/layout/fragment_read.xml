@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/mellon"
+            android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@string/font"
             android:src="@drawable/ic_font"
             app:layout_anchor="@+id/recyclerView"

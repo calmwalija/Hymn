@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:max="12"
             android:progress="4"
-            android:progressTint="@color/mellon"
+            android:progressTint="?attr/colorPrimary"
             android:thumb="@drawable/seekbar_thumb"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/size"
