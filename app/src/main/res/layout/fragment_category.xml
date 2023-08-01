@@ -19,6 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/overlay_dark"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image"
             app:blurRadius="@{5}"
@@ -38,6 +50,7 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="1dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
@@ -56,6 +69,7 @@
             setTextHymnCount="@{counter}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:elevation="1dp"
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:textColor="@color/white"

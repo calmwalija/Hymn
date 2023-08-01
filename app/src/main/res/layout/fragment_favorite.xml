@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:text="My Favorite Hymn List"
+            android:text="Favorite Hymn List"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -59,24 +59,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.47000003">
+            app:layout_constraintVertical_bias="0.4">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="160dp"
                 app:lottie_autoPlay="true"
-                app:lottie_loop="false"
+                app:lottie_loop="true"
                 app:lottie_rawRes="@raw/lf30_favorite" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/TextAppearance.Heading"
-                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:gravity="center"
-                android:padding="30dp"
+                android:paddingHorizontal="40dp"
                 android:text="You do not have favorite hymns, to add, click on the heart icon at the top when reading a hymn."
                 tools:ignore="HardcodedText" />
         </androidx.appcompat.widget.LinearLayoutCompat>

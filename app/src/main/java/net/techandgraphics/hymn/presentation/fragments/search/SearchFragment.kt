@@ -53,7 +53,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
       .also { it.stateRestorationPolicy() }
     with(binding) {
       searchEt.onAddTextChangedListener {
-        recyclerViewAll.isVisible = it.isBlank().not()
         searchIcon.isInvisible = it.isBlank().not()
         animationView.isInvisible = it.isBlank()
         emptyRoom.isVisible = it.isBlank()

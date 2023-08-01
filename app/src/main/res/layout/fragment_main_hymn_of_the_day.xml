@@ -16,7 +16,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp">
@@ -42,7 +42,7 @@
                     android:id="@+id/view2"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:background="#6D000000"
+                    android:background="@color/overlay_dark"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -86,10 +86,11 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="3"
-                     android:text="@{lyric.content}"
+                    android:text="@{lyric.content}"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView"
                     app:layout_constraintEnd_toStartOf="@+id/favorite"
@@ -105,6 +106,7 @@
                     android:layout_marginEnd="8dp"
                     android:background="?attr/actionBarItemBackground"
                     android:padding="16dp"
+                    android:contentDescription="Favorite Hymn"
                     android:src="@drawable/ic_favorite"
                     app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView19"
                     app:layout_constraintEnd_toEndOf="parent"
