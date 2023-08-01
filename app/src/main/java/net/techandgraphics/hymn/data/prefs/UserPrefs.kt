@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
+import net.techandgraphics.hymn.timeInMillisMonth
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +28,7 @@ class UserPrefs @Inject constructor(
     val whatsNew = intPreferencesKey("whats_new")
     val currentMills = longPreferencesKey("current_mills")
     val ofTheDay = intPreferencesKey("of_the_day")
+    val donatePeriod = longPreferencesKey("donate_period")
     val onBoarding = booleanPreferencesKey("on_boarding")
     const val BUILD = 3
     const val WHATS_NEW = 2
@@ -36,6 +38,7 @@ class UserPrefs @Inject constructor(
   suspend fun whatsNew(version: Int) = dataStore.edit { it[whatsNew] = version }
   suspend fun mills(mills: Long) = dataStore.edit { it[currentMills] = mills }
   suspend fun ofTheDay(num: Int) = dataStore.edit { it[ofTheDay] = num }
+  suspend fun donatePeriod(mills: Long) = dataStore.edit { it[donatePeriod] = mills }
   suspend fun onBoarding(boolean: Boolean) = dataStore.edit { it[onBoarding] = boolean }
 
   val getBuild = dataStore.data.map { it[build] ?: 1 }
@@ -43,4 +46,5 @@ class UserPrefs @Inject constructor(
   val getOfTheDay = dataStore.data.map { it[ofTheDay] }
   val getWhatsNew = dataStore.data.map { it[whatsNew] ?: 1 }
   val getOnBoarding = dataStore.data.map { it[onBoarding] ?: false }
+  val getDonatePeriod = dataStore.data.map { it[donatePeriod] ?: timeInMillisMonth() }
 }

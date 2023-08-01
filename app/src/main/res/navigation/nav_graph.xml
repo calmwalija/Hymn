@@ -32,15 +32,15 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainFragment_to_essentialFragment"
-            app:destination="@id/essentialFragment"
+            android:id="@+id/action_mainFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainFragment_to_categoryFragment"
-            app:destination="@id/categoryFragment"
+            android:id="@+id/action_mainFragment_to_donateFragment"
+            app:destination="@id/donateFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -111,22 +111,6 @@
         <action
             android:id="@+id/action_searchFragment_to_readFragment"
             app:destination="@id/readFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/essentialFragment"
-        android:name="net.techandgraphics.hymn.presentation.fragments.essential.EssentialFragment"
-        android:label="EssentialFragment"
-        tools:layout="@layout/fragment_essential">
-        <argument
-            android:name="essential"
-            app:argType="net.techandgraphics.hymn.domain.model.Essential" />
-        <action
-            android:id="@+id/action_otherReadFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

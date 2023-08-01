@@ -143,6 +143,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
       }.launchIn(lifecycle.coroutineScope)
     }
+
+    viewModel.donatePeriod.onEach {
+      if (System.currentTimeMillis() > it) {
+        donate()
+        viewModel.donatePeriod()
+      }
+    }.launchIn(lifecycleScope)
   }
 
   private fun Activity.langBubbleShowCaseBuilder(view: View) =
@@ -197,8 +204,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
   private fun donate() {
     dialog = Dialog(requireContext()).dialog()
     dialog.apply {
+      setCancelable(false)
       setContentView(R.layout.dialog_donate)
       findViewById<View>(R.id.closeButton).setOnClickListener { dismiss() }
+      findViewById<View>(R.id.donate).setOnClickListener {
+        MainFragmentDirections
+          .actionMainFragmentToDonateFragment().apply {
+            dismiss()
+            viewModel.donatePeriod(2)
+            findNavController().navigate(this)
+          }
+      }
       dialogShow()
     }
   }

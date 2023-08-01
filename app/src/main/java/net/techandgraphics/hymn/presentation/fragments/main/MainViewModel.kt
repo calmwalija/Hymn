@@ -17,6 +17,7 @@ import net.techandgraphics.hymn.data.local.entities.Discover
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.timeInMillisMonth
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -33,6 +34,11 @@ constructor(
   val featuredHymn = MutableStateFlow<List<Discover>>(emptyList())
   val theHymn = repository.lyricRepository.theHymn.map { it.map { it.asLyric() } }
   val onBoarding = userPrefs.getOnBoarding
+  val donatePeriod = userPrefs.getDonatePeriod
+
+  fun donatePeriod(month: Int = 1) = viewModelScope.launch {
+    userPrefs.donatePeriod(timeInMillisMonth(month))
+  }
 
   fun newHymn(id: Long) =
     repository.lyricRepository.getLyricsByIdRangeLang(id).map { it.map { it.asLyric() } }

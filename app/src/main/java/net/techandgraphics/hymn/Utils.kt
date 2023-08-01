@@ -29,6 +29,7 @@ import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.Objects
@@ -222,3 +223,6 @@ fun Activity.onBubbleShowCaseBuilder(view: View, title: String, description: Str
 fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {
   logEvent(name, bundle)
 }
+
+fun timeInMillisMonth(month: Int = 1) =
+  Calendar.getInstance().apply { add(Calendar.MONTH, month) }.timeInMillis
