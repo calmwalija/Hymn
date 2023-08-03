@@ -38,7 +38,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
   private val viewModel by viewModels<MainViewModel>()
   private var changeBookGuard = 0
-  private var changeBookJob: Job? = null
+  private var job: Job? = null
   private lateinit var sharedPrefs: SharedPreferences
   private lateinit var dialog: Dialog
 
@@ -72,9 +72,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
               }
 
           is OfTheDayAdapter.Event.Favorite -> {
-            viewModel.update(it.lyric)
-            toast(it.lyric)
-            viewModel.firebaseAnalytics.tagEvent(Tag.HYMN_OF_THE_DAY_FAV, bundleOf())
+            job = viewModel.viewModelScope.launch {
+              job?.cancel()
+              delay(500)
+              viewModel.update(it.lyric)
+              toast(it.lyric)
+              viewModel.firebaseAnalytics.tagEvent(
+                Tag.HYMN_OF_THE_DAY_FAV,
+                bundleOf(Tag.HYMN_OF_THE_DAY to it.lyric.title)
+              )
+            }
           }
         }
       }.apply {
@@ -102,11 +109,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val newValue = if (isChecked.not()) versionValue.first() else versionValue.last()
         val oldValue = sharedPrefs.getString(getString(R.string.version_key), versionValue.first())
         if (oldValue == newValue) {
-          changeBookJob?.cancel()
+          job?.cancel()
           return@setOnCheckedChangeListener
         }
-        changeBookJob = viewModel.viewModelScope.launch {
-          changeBookJob?.cancel()
+        job = viewModel.viewModelScope.launch {
+          job?.cancel()
           delay(700)
           sharedPrefs.edit().putString(getString(R.string.version_key), newValue).apply()
           findNavController() onChangeBook newValue.toString()

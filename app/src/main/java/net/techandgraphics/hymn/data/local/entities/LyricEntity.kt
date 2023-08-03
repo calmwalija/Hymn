@@ -21,4 +21,7 @@ data class LyricEntity(
   val topPickHit: Int = 0,
   val title: String = "",
   val lang: String = "en",
+  val isOnPlaylist: Int = 0,
+  val justAdded: Boolean = false,
+  val millsAdded: Long = System.currentTimeMillis(),
 ) : Parcelable

@@ -29,8 +29,16 @@ interface LyricDao {
   @Query("SELECT COUNT(*) FROM lyric WHERE  lang=:version")
   suspend fun count(version: String): Int?
 
-  @Query("SELECT * FROM lyric WHERE  lang=:version GROUP BY categoryId ORDER BY CAST(number AS INT) LIMIT 6")
+  @Query("SELECT * FROM lyric  WHERE  lang=:version GROUP BY number ORDER BY timestamp DESC LIMIT 5")
   fun theHymn(version: String): Flow<List<LyricEntity>>
+
+  @Query(
+    """
+      SELECT * FROM lyric WHERE  (lang=:version AND justAdded = 1 AND millsAdded > 0)
+      GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) LIMIT 6
+  """
+  )
+  fun justAdded(version: String): Flow<List<LyricEntity>>
 
   @Query("SELECT number FROM lyric WHERE  lang=:version GROUP BY number ORDER BY number DESC LIMIT 1")
   suspend fun lastInsertedHymn(version: String): Int?
@@ -45,14 +53,8 @@ interface LyricDao {
   )
   fun observeLyrics(query: String = "", version: String): PagingSource<Int, LyricEntity>
 
-  @Query("SELECT COUNT(DISTINCT(number)) as count, * FROM lyric WHERE lang=:version  GROUP BY categoryName ORDER BY categoryName ASC")
+  @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:version  GROUP BY categoryName ORDER BY categoryName ASC")
   fun observeCategories(version: String): Flow<List<Discover>>
-
-  @Query("SELECT * FROM lyric WHERE lang=:version GROUP BY categoryName ORDER BY timestamp DESC LIMIT 3")
-  fun recent(version: String): Flow<List<LyricEntity>>
-
-  @Query("SELECT * FROM lyric  WHERE topPickHit > 0 AND lang=:version GROUP BY number ORDER BY timestamp DESC , lyricId LIMIT 6")
-  fun observeRecentLyrics(version: String): Flow<List<LyricEntity>>
 
   @Query("SELECT * FROM lyric WHERE number=:number AND lang=:version ORDER BY lyricId ASC")
   fun getLyricsById(number: Int, version: String): Flow<List<LyricEntity>>

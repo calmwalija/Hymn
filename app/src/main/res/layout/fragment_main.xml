@@ -81,7 +81,7 @@
                     style="@style/TextAppearance.Heading"
                     android:layout_weight="1"
                     android:paddingVertical="12dp"
-                    android:text="The Hymn Book" />
+                    android:text="Quick Hymn Search" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/searchIcon"

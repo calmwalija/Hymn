@@ -32,9 +32,12 @@ constructor(
 
   val ofTheDay = MutableStateFlow<List<Lyric>>(emptyList())
   val featuredHymn = MutableStateFlow<List<Discover>>(emptyList())
-  val theHymn = repository.lyricRepository.theHymn.map { it.map { it.asLyric() } }
+  val theHymn = MutableStateFlow(emptyList<Lyric>())
   val onBoarding = userPrefs.getOnBoarding
   val donatePeriod = userPrefs.getDonatePeriod
+  private val justAddedFlow = repository.lyricRepository.justAdded.map { it.map { it.asLyric() } }
+  private val theHymnFlow = repository.lyricRepository.theHymn.map { it.map { it.asLyric() } }
+  private val data = mutableListOf(emptyList<Lyric>())
 
   fun donatePeriod(month: Int = 1) = viewModelScope.launch {
     userPrefs.donatePeriod(timeInMillisMonth(month))
@@ -73,6 +76,11 @@ constructor(
   init {
     ofTheDay()
     featuredCategory()
+    combine(theHymnFlow, justAddedFlow) { hymn, justAdded ->
+      data.clear()
+      data.addAll(listOf(justAdded.plus(hymn)))
+      theHymn.value = data.flatten().distinctBy { it.lyricId }
+    }.launchIn(viewModelScope)
   }
 
   fun onBoarding() = viewModelScope.launch { userPrefs.onBoarding(true) }

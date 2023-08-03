@@ -17,19 +17,20 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="16dp">
+            android:layout_height="120dp"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
+
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image"
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:id="@+id/appCompatImageView2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="centerCrop"
                     app:blurRadius="@{5}"
                     app:blurSampling="@{1}"
@@ -38,71 +39,87 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/im_seed_time_and_harvest" />
+                    tools:src="@drawable/im_church" />
 
-
-                <androidx.appcompat.widget.AppCompatImageView
+                <View
+                    android:id="@+id/view2"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:scaleType="centerCrop"
-                    app:blurRadius="@{20}"
-                    app:blurSampling="@{10}"
-                    app:drawableRes="@{discover.lyric.categoryId}"
+                    android:background="@color/overlay_dark"
+                    android:elevation="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/linearLayoutCompat7"
-                    tools:src="@drawable/im_church" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/linearLayoutCompat7"
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/MaterialCardView.Style.Top.Let"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical"
-                    android:paddingVertical="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="32dp"
+                    android:elevation="5dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView2"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:strokeWidth="0dp">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/appCompatTextView18"
-                        android:layout_width="0dp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:paddingHorizontal="4dp"
-                        android:text="@{discover.lyric.categoryName.trim()}"
-                        android:textColor="@color/white"
-                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView16"
-                        app:layout_constraintEnd_toStartOf="@+id/appCompatTextView16"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="@string/appbar_scrolling_view_behavior" />
+                        android:orientation="vertical"
+                        android:padding="4dp">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/appCompatTextView16"
-                        setTextHymnCount="@{discover.count}"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="end|bottom"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        tools:text="@string/androidx_startup" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/appCompatTextView11"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:paddingBottom="2dp"
+                            android:text="@string/appbar_scrolling_view_behavior"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="@{discover.lyric.categoryName}" />
 
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            setTextHymnCount="@{discover.count}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView11"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView11"
+                            tools:text="#1 - Holy Holy Holy" />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            favCount="@{discover.count}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_favorite_fill_small"
+                            android:drawablePadding="1dp"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView11"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView11"
+                            tools:text="4" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
     </FrameLayout>
+
+
 </layout>

@@ -27,10 +27,11 @@ class LyricRepositoryImpl @Inject constructor(
   private val context: Context
 ) : LyricRepository {
 
+  private fun LyricEntity.toJustAdded() = copy(justAdded = true)
   override suspend fun fetch(status: (Resource<List<LyricEntity>>) -> Unit): ListenableWorker.Result {
     val lastInsertedId = db.lyricDao.lastInsertedId() ?: 0
     return try {
-      val lyrics = api.fetchLyric(lastInsertedId).map { it.asLyricEntity() }
+      val lyrics = api.fetchLyric(lastInsertedId).map { it.asLyricEntity().toJustAdded() }
       JsonParserImpl(db, context).fromJsonToLyricImpl(lyrics, runSearchTag = false)
       db.lyricDao.getLyricsByIdRange(lastInsertedId).also {
         if (lyrics.isNotEmpty())
@@ -95,10 +96,6 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.featuredHymn(version, limit)
   }
 
-  override fun observeRecentLyrics(): Flow<List<LyricEntity>> {
-    return db.lyricDao.observeRecentLyrics(version)
-  }
-
   override fun getLyricsById(number: Int): Flow<List<LyricEntity>> {
     return db.lyricDao.getLyricsById(number, version)
   }
@@ -111,7 +108,7 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.findLyricById(id, version)
   }
 
-  override val recent = db.lyricDao.recent(version)
   override val favorite = db.lyricDao.observeFavoriteLyrics(version)
   override val theHymn = db.lyricDao.theHymn(version)
+  override val justAdded = db.lyricDao.justAdded(version)
 }

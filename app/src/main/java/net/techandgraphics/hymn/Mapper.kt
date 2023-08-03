@@ -19,7 +19,10 @@ fun LyricEntity.asLyric() = Lyric(
   topPick,
   topPickHit,
   title,
-  lang
+  lang,
+  isOnPlaylist,
+  justAdded,
+  millsAdded
 )
 
 fun Lyric.asLyricEntity() = LyricEntity(
@@ -34,7 +37,10 @@ fun Lyric.asLyricEntity() = LyricEntity(
   topPick,
   topPickHit,
   title,
-  lang
+  lang,
+  isOnPlaylist,
+  justAdded,
+  millsAdded
 )
 
 fun EssentialEntity.asEssential() = Essential(resourceId, groupName, content, lang)

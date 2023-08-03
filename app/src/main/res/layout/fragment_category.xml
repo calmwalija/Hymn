@@ -11,7 +11,7 @@
 
         <variable
             name="counter"
-            type="Integer" />
+            type="String" />
 
     </data>
 
@@ -47,7 +47,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
-            style="@style/TextAppearance.AppCompat.Medium"
+            style="@style/TextAppearance.Heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="1dp"

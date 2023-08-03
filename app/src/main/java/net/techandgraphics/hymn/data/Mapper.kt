@@ -11,5 +11,6 @@ fun LyricDto.asLyricEntity() = LyricEntity(
   chorus,
   content,
   lang = lang,
-  timestamp = 0L
+  timestamp = 0L,
+  justAdded = true
 )

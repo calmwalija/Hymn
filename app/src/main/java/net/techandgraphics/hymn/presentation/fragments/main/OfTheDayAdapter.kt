@@ -35,9 +35,11 @@ class OfTheDayAdapter(
     init {
       binding.apply {
         root.setOnClickListener {
+          if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
           getItem(absoluteAdapterPosition)?.let { event.invoke(Event.Click(it)) }
         }
         favorite.setOnClickListener {
+          if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
           getItem(absoluteAdapterPosition)?.let { event.invoke(Event.Favorite(it)) }
         }
       }

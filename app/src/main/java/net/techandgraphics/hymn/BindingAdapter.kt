@@ -1,5 +1,7 @@
 package net.techandgraphics.hymn
 
+import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -7,8 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import jp.wasabeef.glide.transformations.BlurTransformation
 import net.techandgraphics.hymn.domain.model.Lyric
 import kotlin.random.Random
 
@@ -18,8 +18,14 @@ fun setTextHymnNumber(textView: AppCompatTextView, lyric: Lyric) {
 }
 
 @BindingAdapter("setTextHymnCount")
-fun setTextHymnCount(textView: AppCompatTextView, count: Int) {
-  textView.text = textView.context.resources.getQuantityString(R.plurals.hymn_count, count, count)
+fun setTextHymnCount(textView: AppCompatTextView, str: String) {
+  if (str.contains("-").not())
+    textView.text =
+      textView.context.resources.getQuantityString(R.plurals.hymn_count, str.toInt(), str.toInt())
+  else
+    str.take(str.indexOf("-")).toInt().also {
+      textView.text = textView.context.resources.getQuantityString(R.plurals.hymn_count, it, it)
+    }
 }
 
 @BindingAdapter("setTag")
@@ -53,7 +59,7 @@ fun setHymnOfTheDay(textView: AppCompatTextView, lyric: Lyric) {
 )
 fun blurTransformation(view: ImageView, p0: Int, p1: Int, p2: Int) {
   Glide.with(view.context).load(Constant.images[p0].drawableRes)
-    .apply(RequestOptions.bitmapTransform(BlurTransformation(p1, p2)))
+//    .apply(RequestOptions.bitmapTransform(BlurTransformation(p1, p2)))
     .into(view)
 }
 
@@ -71,4 +77,17 @@ fun backgroundTint(view: AppCompatTextView, color: Int) {
 fun timestamp(view: AppCompatTextView, timestamp: Long) {
   view.text = timeAgo(view.context, timestamp)
   view.isVisible = timestamp != 0L
+}
+
+@BindingAdapter("isVisible")
+fun isVisible(view: View, flag: Boolean) {
+  view.isVisible = flag
+}
+
+@BindingAdapter("favCount")
+fun favCount(textView: AppCompatTextView, str: String) {
+  str.substring(str.indexOf("-").plus(1)).toInt().also {
+    textView.isVisible = it != 0
+    textView.text = String.format("%d", it)
+  }
 }

@@ -43,6 +43,10 @@ constructor(
         }
     }
 
+  fun topPickHit(lyric: Lyric) = viewModelScope.launch {
+    repository.lyricRepository.update(lyric.asLyricEntity())
+  }
+
   fun firebaseAnalytics(lyric: Lyric) {
     firebaseAnalytics.logEvent(Tag.TITLE, bundleOf(Pair(Tag.TITLE, lyric.title)))
     firebaseAnalytics.logEvent(Tag.NUMBER, bundleOf(Pair(Tag.NUMBER, lyric.number)))

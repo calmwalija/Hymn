@@ -16,5 +16,8 @@ data class Lyric(
   val topPick: String,
   val topPickHit: Int,
   val title: String,
-  val lang: String
+  val lang: String,
+  val isOnPlaylist: Int,
+  val justAdded: Boolean,
+  val millsAdded: Long = System.currentTimeMillis(),
 ) : Parcelable

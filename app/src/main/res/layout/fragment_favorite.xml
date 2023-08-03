@@ -9,10 +9,6 @@
             name="favoriteAdapter"
             type="net.techandgraphics.hymn.presentation.fragments.favorite.FavoriteAdapter" />
 
-        <variable
-            name="recentAdapter"
-            type="net.techandgraphics.hymn.presentation.fragments.favorite.RecentAdapter" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

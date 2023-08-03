@@ -17,21 +17,42 @@
         android:layout_margin="4dp"
         android:background="?attr/selectableItemBackground">
 
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/view_circle"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/im_seed_time_and_harvest"
-            app:blurRadius="@{5}"
-            app:blurSampling="@{1}"
-            app:drawableRes="@{lyric.categoryId}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize17Percent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/im_seed_time_and_harvest"
+                app:blurRadius="@{5}"
+                app:blurSampling="@{1}"
+                app:drawableRes="@{lyric.categoryId}"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize17Percent" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/shape_round"
+                android:backgroundTint="@color/overlay_dark"
+                android:elevation="1dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                isVisible="@{lyric.favorite}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="10dp"
+                android:src="@drawable/ic_favorite_fill" />
+
+        </FrameLayout>
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -44,8 +65,8 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button"
-            app:layout_constraintStart_toEndOf="@+id/view_circle"
-            app:layout_constraintTop_toTopOf="@+id/view_circle">
+            app:layout_constraintStart_toEndOf="@+id/frameLayout"
+            app:layout_constraintTop_toTopOf="@+id/frameLayout">
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -68,17 +89,35 @@
                 tools:text="@string/androidx_startup" />
 
 
-            <androidx.appcompat.widget.AppCompatTextView
-                timestamp="@{lyric.timestamp}"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_access_time"
-                android:drawablePadding="2dp"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:textSize="12sp"
-                android:layout_marginTop="2dp"
-                tools:text="@string/app_name" />
+                android:gravity="center_vertical">
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    isVisible="@{lyric.justAdded}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:elevation="1dp"
+                    android:src="@drawable/ic_new"
+                    android:tint="?attr/colorPrimary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    timestamp="@{lyric.timestamp}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:drawableStart="@drawable/ic_access_time"
+                    android:drawablePadding="2dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textSize="12sp"
+                    tools:text="@string/app_name" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>

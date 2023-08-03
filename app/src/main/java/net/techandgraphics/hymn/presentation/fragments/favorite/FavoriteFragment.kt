@@ -60,16 +60,12 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         }
     }.also { it.stateRestorationPolicy() }
 
-    bind.recentAdapter = recentAdapter
     bind.favoriteAdapter = favoriteAdapter
-    viewModel.state.onEach {
-      recentAdapter.submitList(it.recent)
-    }.launchIn(lifecycleScope)
 
-    viewModel.state.onEach {
-      bind.noFav.isVisible = it.favorite.isEmpty()
-      bind.fav.isVisible = it.favorite.isEmpty().not()
-      favoriteAdapter.submitList(it.favorite)
+    viewModel.favorite.onEach {
+      bind.noFav.isVisible = it.isEmpty()
+      bind.fav.isVisible = it.isEmpty().not()
+      favoriteAdapter.submitList(it)
     }.launchIn(lifecycleScope)
 
     onItemTouchHelper()

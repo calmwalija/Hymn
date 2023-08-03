@@ -1,6 +1,7 @@
 package net.techandgraphics.hymn.presentation.fragments.category
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,7 +28,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     binding = FragmentCategoryBinding.bind(view)
     binding.lyric = args.discover.lyric
-
+    binding.counter = 0.toString()
     categoryAdapter = CategoryAdapter {
       when (it) {
         is CategoryAdapter.CategoryEvent.Click ->
@@ -44,7 +45,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     }.also { it.stateRestorationPolicy() }
 
     viewModel.category(args.discover.lyric).onEach {
-      binding.counter = it.size
+      binding.counter = it.size.toString()
       categoryAdapter.submitList(it)
     }.launchIn(lifecycleScope)
 

@@ -16,7 +16,6 @@ interface LyricRepository {
   fun observeLyrics(query: String = ""): Flow<PagingData<LyricEntity>>
   fun observeCategories(): Flow<List<Discover>>
   fun featuredHymn(limit: Int): Flow<List<Discover>>
-  fun observeRecentLyrics(): Flow<List<LyricEntity>>
   fun getLyricsById(number: Int): Flow<List<LyricEntity>>
   fun getLyricsByCategory(id: Int): Flow<List<LyricEntity>>
   fun findLyricById(id: Int): Flow<LyricEntity>
@@ -24,7 +23,7 @@ interface LyricRepository {
   fun getLyricsByIdRangeLang(number: Long): Flow<List<LyricEntity>>
   suspend fun count(): Int?
   suspend fun categoryCount(): List<Int>
-  val recent: Flow<List<LyricEntity>>
   val favorite: Flow<List<LyricEntity>>
   val theHymn: Flow<List<LyricEntity>>
+  val justAdded: Flow<List<LyricEntity>>
 }

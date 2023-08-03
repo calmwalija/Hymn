@@ -51,7 +51,7 @@ class HymnApplication : Application(), Configuration.Provider {
 
   private fun onCreateWorker() {
     val workRequest = PeriodicWorkRequestBuilder<HymnWorker>(1, TimeUnit.DAYS)
-      .setInitialDelay(1, TimeUnit.MINUTES)
+      .setInitialDelay(20, TimeUnit.SECONDS)
       .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
       .setBackoffCriteria(
         BackoffPolicy.EXPONENTIAL,

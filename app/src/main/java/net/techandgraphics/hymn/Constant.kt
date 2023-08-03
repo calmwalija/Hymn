@@ -136,19 +136,19 @@ object Constant {
   )
 
   val searchEntityTags = arrayListOf(
-    SearchEntity(query = "Amazing grace", tag = "amazinggrace"),
-    SearchEntity(query = "I need thee", tag = "ineedthee"),
-    SearchEntity(query = "What a friend", tag = "whatafriend"),
+    SearchEntity(query = "amazing grace", tag = "amazinggrace"),
+    SearchEntity(query = "i need thee", tag = "ineedthee"),
+    SearchEntity(query = "what a friend", tag = "whatafriend"),
     SearchEntity(query = "200", tag = "200"),
-    SearchEntity(query = "Holy Spirit", tag = "holyspirit"),
-    SearchEntity(query = "Pass me not", tag = "passmenot"),
+    SearchEntity(query = "holy spirit", tag = "holyspirit"),
+    SearchEntity(query = "pass me not", tag = "passmenot"),
 
-    SearchEntity(query = "Unakhetsedwa mwazi", tag = "unakhetsedwamwazi", lang = "ch"),
-    SearchEntity(query = "Ndi mitima", tag = "ndimitima", lang = "ch"),
-    SearchEntity(query = "Wina atikonda ife", tag = "Winaatikondaife", lang = "ch"),
-    SearchEntity(query = "Pokhala mtendere", tag = "pokhalamtendere", lang = "ch"),
-    SearchEntity(query = "Mtima wa Mbuyako", tag = "mtimawambuyako", lang = "ch"),
-    SearchEntity(query = "Bwezatu", tag = "bwezatu", lang = "ch"),
+    SearchEntity(query = "unakhetsedwa mwazi", tag = "unakhetsedwamwazi", lang = "ch"),
+    SearchEntity(query = "ndi mitima", tag = "ndimitima", lang = "ch"),
+    SearchEntity(query = "wina atikonda ife", tag = "Winaatikondaife", lang = "ch"),
+    SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = "ch"),
+    SearchEntity(query = "mtima wa Mbuyako", tag = "mtimawambuyako", lang = "ch"),
+    SearchEntity(query = "bwezatu", tag = "bwezatu", lang = "ch"),
   )
 
   val ofTheDay = arrayListOf(

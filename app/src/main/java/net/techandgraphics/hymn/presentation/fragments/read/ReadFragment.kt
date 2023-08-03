@@ -96,7 +96,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
   }
 
   private fun Lyric.topPickHit() {
-    viewModel.update(
+    viewModel.topPickHit(
       copy(
         topPickHit = args.lyric.topPickHit.plus(1),
         timestamp = System.currentTimeMillis()
