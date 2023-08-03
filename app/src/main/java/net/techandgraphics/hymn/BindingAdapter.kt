@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
