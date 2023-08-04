@@ -100,6 +100,10 @@ class LyricRepositoryImpl @Inject constructor(
     return db.lyricDao.getLyricsById(number, version)
   }
 
+  override fun getInverseLyricsById(version: String, id: Int): Flow<List<LyricEntity>> {
+    return db.lyricDao.getLyricsById(id, version)
+  }
+
   override fun getLyricsByCategory(id: Int): Flow<List<LyricEntity>> {
     return db.lyricDao.getLyricsByCategory(id, version)
   }

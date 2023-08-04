@@ -33,6 +33,13 @@ constructor(
       }
     }
 
+  fun getInverseLyricsById(version: String, lyric: Lyric) = repository.lyricRepository
+    .getInverseLyricsById(version, lyric.number).map {
+      it.map {
+        it.asLyric()
+      }
+    }
+
   fun update(lyric: Lyric) =
     viewModelScope.launch {
       repository.lyricRepository.getLyricsById(lyric.number).first().filter { it.timestamp != 0L }

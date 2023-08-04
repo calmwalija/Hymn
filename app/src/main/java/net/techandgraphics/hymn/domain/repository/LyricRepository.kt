@@ -22,6 +22,7 @@ interface LyricRepository {
   suspend fun fetch(status: (Resource<List<LyricEntity>>) -> Unit): ListenableWorker.Result
   fun getLyricsByIdRangeLang(number: Long): Flow<List<LyricEntity>>
   suspend fun count(): Int?
+  fun getInverseLyricsById(version: String, id: Int): Flow<List<LyricEntity>>
   suspend fun categoryCount(): List<Int>
   val favorite: Flow<List<LyricEntity>>
   val theHymn: Flow<List<LyricEntity>>
