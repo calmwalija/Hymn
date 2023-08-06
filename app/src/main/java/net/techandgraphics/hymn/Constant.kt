@@ -2,6 +2,7 @@ package net.techandgraphics.hymn
 
 import androidx.annotation.DrawableRes
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.domain.model.Lyric
 
 data class Category(
   val categoryId: Int,
@@ -157,5 +158,21 @@ object Constant {
     R.drawable.of_the_day3123468,
     R.drawable.of_the_day3587237,
     R.drawable.of_the_day5842978,
+  )
+
+  val fakeLyric = Lyric(
+    lyricId = 87,
+    categoryId = 4,
+    categoryName = "Redemption",
+    number = 19,
+    chorus = 0,
+    content = "To God be the glory!",
+    timestamp = 0,
+    favorite = false,
+    topPick = "",
+    topPickHit = 0,
+    title = "Glory",
+    lang = "en",
+    justAdded = false
   )
 }

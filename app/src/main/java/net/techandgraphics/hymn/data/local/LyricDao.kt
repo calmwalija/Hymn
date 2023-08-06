@@ -32,6 +32,9 @@ interface LyricDao {
   @Query("SELECT * FROM lyric  WHERE  lang=:version GROUP BY number ORDER BY timestamp DESC LIMIT 5")
   fun theHymn(version: String): Flow<List<LyricEntity>>
 
+  @Query("SELECT * FROM lyric  WHERE  lang=:version  GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT)")
+  fun queryLyrics(version: String): Flow<List<LyricEntity>>
+
   @Query(
     """
       SELECT * FROM lyric WHERE  (lang=:version AND justAdded = 1 AND millsAdded > 0)
@@ -74,14 +77,28 @@ interface LyricDao {
   @Query("UPDATE lyric SET topPickHit = 0")
   suspend fun reset()
 
-  @Query("SELECT * FROM lyric WHERE lang=:version  ORDER BY RANDOM() LIMIT 5")
-  fun queryRandom(version: String): Flow<List<LyricEntity>>
+  @Query("SELECT * FROM lyric WHERE lang=:version  ORDER BY RANDOM() LIMIT 1")
+  suspend fun queryRandom(version: String): LyricEntity?
 
   @Query("SELECT lyricId FROM lyric ORDER BY lyricId DESC LIMIT 1")
   suspend fun lastInsertedId(): Long?
 
-  @Query("SELECT COUNT(DISTINCT(number)) as count, * FROM lyric WHERE lang=:version  GROUP BY categoryName LIMIT :limit, 4")
+  @Query("SELECT COUNT(DISTINCT(number)) as count, * FROM lyric WHERE lang=:version  GROUP BY categoryName LIMIT :limit, 2")
   fun featuredHymn(version: String, limit: Int): Flow<List<Discover>>
+
+  @Query("SELECT * FROM lyric  WHERE forTheService = 1 AND lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT)")
+  fun forTheService(version: String): Flow<List<LyricEntity>>
+
+  @Query("UPDATE lyric SET forTheService =:forTheService, ftsSuggestion =:ftsSuggestion WHERE number=:number AND lang=:version")
+  suspend fun forTheServiceUpdate(
+    version: String,
+    forTheService: Boolean,
+    ftsSuggestion: Boolean,
+    number: Int
+  )
+
+  @Query("DELETE FROM lyric WHERE number=:id AND lang=:version")
+  suspend fun deleteWithNumber(id: Int, version: String)
 
   @Query("SELECT COUNT(*) FROM lyric WHERE lang=:version  GROUP BY categoryName ")
   suspend fun categoryCount(version: String): List<Int>

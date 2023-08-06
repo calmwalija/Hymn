@@ -31,5 +31,7 @@
         We can assure you that our hymn book app is not designed to generate income through data sales or ads.
         The content is available to all users without charge. Your donation will be greatly appreciated as it helps us continue our mission and includes you in our community.
     </string>
+    <string name="place_temporary_hymn">Tap to place temporary hymns for the present occasion</string>
+    <string name="add_for_the_service">The For The Service list now includes Hymn #%d</string>
 
 </resources>

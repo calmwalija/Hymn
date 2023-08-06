@@ -64,4 +64,10 @@ constructor(
   fun firebaseAnalyticsScreen() {
     Tag.screenView(firebaseAnalytics, Tag.SEARCH)
   }
+
+  fun forTheService(lyric: Lyric) = viewModelScope.launch {
+    repository.lyricRepository.update(
+      lyric.asLyricEntity().copy(forTheService = true, ftsSuggestion = false)
+    )
+  }
 }

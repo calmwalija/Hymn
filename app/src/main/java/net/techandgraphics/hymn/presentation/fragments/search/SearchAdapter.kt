@@ -9,8 +9,13 @@ import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.presentation.diffs.DiffUtils.HYMN_DIFF_UTIL
 import net.techandgraphics.hymn.presentation.fragments.search.SearchAdapter.ViewHolder
 
+sealed class SearchAdapterOnEvent {
+  class Click(val lyric: Lyric) : SearchAdapterOnEvent()
+  class Delete(val lyric: Lyric) : SearchAdapterOnEvent()
+}
+
 class SearchAdapter(
-  private val event: (Lyric) -> Unit,
+  private val event: (SearchAdapterOnEvent) -> Unit,
 ) : PagingDataAdapter<Lyric, ViewHolder>(HYMN_DIFF_UTIL) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +39,13 @@ class SearchAdapter(
     init {
       binding.root.setOnClickListener {
         if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
-        getItem(absoluteAdapterPosition)?.let { event.invoke(it) }
+        getItem(absoluteAdapterPosition)?.let { event.invoke(SearchAdapterOnEvent.Click(it)) }
+      }
+
+      binding.root.setOnLongClickListener {
+        if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnLongClickListener false
+        getItem(absoluteAdapterPosition)?.let { event.invoke(SearchAdapterOnEvent.Delete(it)) }
+        true
       }
     }
   }

@@ -188,7 +188,7 @@ fun timeAgo(context: Context, timestamp: Long): String {
   val diff = System.currentTimeMillis() - timestamp
   return when {
     diff < MINUTE_MILLIS -> "just now"
-    diff < 50 * MINUTE_MILLIS -> {
+    diff < 60 * MINUTE_MILLIS -> {
       val minutes = diff.div(MINUTE_MILLIS).toInt()
       "${context.resources.getQuantityString(R.plurals.minutes, minutes, minutes)} ago"
     }

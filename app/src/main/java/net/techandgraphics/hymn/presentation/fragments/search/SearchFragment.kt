@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
+import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.onAddTextChangedListener
 import net.techandgraphics.hymn.Utils.regexLowerCase
 import net.techandgraphics.hymn.Utils.stateRestorationPolicy
@@ -38,15 +39,30 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     binding = FragmentSearchBinding.bind(view)
     binding.searchEt.requestFocus()
     searchAdapter = SearchAdapter {
-      val searchQuery = binding.searchEt.text.toString().trim().lowercase()
-      val searchList = searchQuery.regexLowerCase().split(" ")
-      if (searchQuery.isNotBlank())
-        Search(
-          query = searchQuery,
-          tag = buildString { searchList.forEach { append(it) } },
-        ).also { viewModel.insert(it) }
-      viewModel.firebaseAnalytics.tagEvent(Tag.KEYWORD, bundleOf(Pair(Tag.KEYWORD, searchQuery)))
-      actionToReadFragment(it)
+      when (it) {
+        is SearchAdapterOnEvent.Delete -> {
+          viewModel.forTheService(it.lyric)
+          Utils.toast(
+            requireContext(),
+            requireActivity().getString(R.string.add_for_the_service, it.lyric.number)
+          )
+        }
+
+        is SearchAdapterOnEvent.Click -> {
+          val searchQuery = binding.searchEt.text.toString().trim().lowercase()
+          val searchList = searchQuery.regexLowerCase().split(" ")
+          if (searchQuery.isNotBlank())
+            Search(
+              query = searchQuery,
+              tag = buildString { searchList.forEach { append(it) } },
+            ).also { viewModel.insert(it) }
+          viewModel.firebaseAnalytics.tagEvent(
+            Tag.KEYWORD,
+            bundleOf(Pair(Tag.KEYWORD, searchQuery))
+          )
+          actionToReadFragment(it.lyric)
+        }
+      }
     }.also { it.stateRestorationPolicy() }
 
     searchTagAdapter = SearchTagAdapter { appendSearchText(it) }

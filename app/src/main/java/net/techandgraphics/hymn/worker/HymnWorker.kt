@@ -61,7 +61,7 @@ class HymnWorker @AssistedInject constructor(
     getNotificationCompat().let {
       it.setSmallIcon(R.drawable.ic_stat_name)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .setColor(ContextCompat.getColor(this, R.color.blue_300))
+        .setColor(ContextCompat.getColor(this, R.color.mellon))
         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
         .setAutoCancel(true)
         .setContentIntent(pendingIntent)

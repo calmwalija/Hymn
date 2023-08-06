@@ -20,7 +20,8 @@ fun LyricEntity.asLyric() = Lyric(
   topPickHit,
   title,
   lang,
-  isOnPlaylist,
+  forTheService,
+  ftsSuggestion,
   justAdded,
   millsAdded
 )
@@ -38,7 +39,8 @@ fun Lyric.asLyricEntity() = LyricEntity(
   topPickHit,
   title,
   lang,
-  isOnPlaylist,
+  forTheService,
+  ftsSuggestion,
   justAdded,
   millsAdded
 )

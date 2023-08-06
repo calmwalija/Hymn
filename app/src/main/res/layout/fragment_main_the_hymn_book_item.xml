@@ -17,7 +17,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="4dp"
             android:layout_marginTop="8dp"
             app:cardCornerRadius="16dp">
@@ -60,12 +60,10 @@
                         tools:text="@string/appbar_scrolling_view_behavior" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        isVisible="@{lyric.justAdded}"
                         timestamp="@{lyric.timestamp}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_access_time"
-                        app:drawableTint="@color/white"
                         android:drawablePadding="2dp"
                         android:ellipsize="end"
                         android:gravity="center"
@@ -73,7 +71,8 @@
                         android:text="@string/app_name"
                         android:textColor="@color/white"
                         android:textSize="11sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:drawableTint="@color/white" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         isVisible="@{lyric.justAdded}"
@@ -81,6 +80,17 @@
                         android:layout_height="wrap_content"
                         android:elevation="1dp"
                         android:src="@drawable/ic_new" />
+
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/suggest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:src="@drawable/ic_suggest"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

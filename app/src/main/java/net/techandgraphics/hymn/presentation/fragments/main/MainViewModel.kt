@@ -14,10 +14,12 @@ import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.asLyric
 import net.techandgraphics.hymn.asLyricEntity
 import net.techandgraphics.hymn.data.local.entities.Discover
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.timeInMillisMonth
+import java.util.Calendar
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -33,6 +35,8 @@ constructor(
   val ofTheDay = MutableStateFlow<List<Lyric>>(emptyList())
   val featuredHymn = MutableStateFlow<List<Discover>>(emptyList())
   val theHymn = MutableStateFlow(emptyList<Lyric>())
+  val forTheService = repository.lyricRepository.forTheService.map { it.map { it.asLyric() } }
+  val forTheServiceData = repository.lyricRepository.queryLyrics.map { it.map { it.asLyric() } }
   val onBoarding = userPrefs.getOnBoarding
   val donatePeriod = userPrefs.getDonatePeriod
   private val justAddedFlow = repository.lyricRepository.justAdded.map { it.map { it.asLyric() } }
@@ -73,13 +77,48 @@ constructor(
     }.launchIn(viewModelScope)
   }
 
+  private suspend fun List<Lyric>.resetJustAdded() {
+    val aWeek = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -8) }.timeInMillis
+    repository.lyricRepository.upsert(
+      map {
+        it.asLyricEntity().copy(justAdded = it.millsAdded < aWeek)
+      }
+    )
+  }
+
+  private fun deleteBecauseHeLives() = with(repository.lyricRepository) {
+    getLyricsById(385).onEach {
+      if (it.isEmpty().not())
+        deleteBecauseHeLives()
+    }.launchIn(viewModelScope)
+  }
+
   init {
     ofTheDay()
     featuredCategory()
+    forTheServiceSuggestion()
+    deleteBecauseHeLives()
     combine(theHymnFlow, justAddedFlow) { hymn, justAdded ->
       data.clear()
+      justAdded.resetJustAdded()
       data.addAll(listOf(justAdded.plus(hymn)))
       theHymn.value = data.flatten().distinctBy { it.lyricId }
+    }.launchIn(viewModelScope)
+  }
+
+  fun forTheService(lyric: Lyric) = viewModelScope.launch {
+    repository.lyricRepository.forTheServiceUpdate(
+      lyric.asLyricEntity().copy(forTheService = lyric.forTheService.not(), ftsSuggestion = false)
+    )
+  }
+
+  private fun LyricEntity.toSuggestion() = copy(forTheService = true, ftsSuggestion = true)
+  private fun forTheServiceSuggestion() {
+    forTheService.onEach {
+      if (it.isEmpty())
+        with(repository.lyricRepository) {
+          queryRandom()?.toSuggestion()?.let { forTheServiceUpdate(it) }
+        }
     }.launchIn(viewModelScope)
   }
 

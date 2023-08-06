@@ -15,18 +15,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.RecyclerView
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import net.techandgraphics.hymn.Constant.fakeLyric
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Tag
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.Utils.dialog
 import net.techandgraphics.hymn.Utils.dialogShow
+import net.techandgraphics.hymn.Utils.stateRestorationPolicy
 import net.techandgraphics.hymn.databinding.FragmentMainBinding
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.onBubbleShowCaseBuilder
@@ -102,6 +106,29 @@ class MainFragment : Fragment(R.layout.fragment_main) {
           submitList(it)
         }.launchIn(lifecycleScope)
       }
+      ftsAdapter = FtsAdapter {
+        when (it) {
+          is OnEvent.Hymn -> {
+            MainFragmentDirections
+              .actionLyricFragmentToReadFragment(it.lyric)
+              .apply {
+                findNavController().navigate(this)
+              }
+            viewModel.firebaseAnalytics.tagEvent(
+              Tag.HYMN_BOOK,
+              bundleOf(Pair(Tag.HYMN_BOOK, it.lyric.title))
+            )
+          }
+
+          OnEvent.Suggest -> forTheServiceBottomSheetDialog()
+          is OnEvent.Delete -> viewModel.forTheService(it.lyric)
+        }
+      }.apply {
+        asyncListDiffer.submitList(listOf(fakeLyric))
+        viewModel.forTheService.onEach {
+          asyncListDiffer.submitList(listOf(fakeLyric) + it)
+        }.launchIn(lifecycleScope)
+      }
 
       val versionValue = requireActivity().resources.getStringArray(R.array.version_values)
       bookSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -124,6 +151,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
       }
 
+      forTheService.setOnClickListener { forTheServiceBottomSheetDialog() }
+
       toSearch.setOnClickListener {
         MainFragmentDirections
           .actionMainFragmentToSearchFragment()
@@ -145,7 +174,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
       viewModel.onBoarding.onEach {
         if (it.not()) {
-          onBubbleShowCaseSequence(bookSwitch, toSearch, toDiscover)
+          onBubbleShowCaseSequence(bookSwitch, toSearch, forTheService, toDiscover)
           viewModel.onBoarding()
         }
       }.launchIn(lifecycle.coroutineScope)
@@ -180,14 +209,23 @@ class MainFragment : Fragment(R.layout.fragment_main) {
       "Tap here to discover new hymns"
     )
 
+  private fun Activity.ftsBubbleShowCaseBuilder(view: View) =
+    onBubbleShowCaseBuilder(
+      view,
+      "For the Service",
+      "Tap here to create dedicated temporary hymn list for easy access as needed."
+    )
+
   private fun onBubbleShowCaseSequence(
     switchLang: View,
     toSearch: View,
-    toDiscover: View
+    forTheService: View,
+    toDiscover: View,
   ) = with(requireActivity()) {
     BubbleShowCaseSequence()
       .addShowCase(langBubbleShowCaseBuilder(switchLang))
       .addShowCase(searchBubbleShowCaseBuilder(toSearch))
+      .addShowCase(ftsBubbleShowCaseBuilder(forTheService))
       .addShowCase(discoverBubbleShowCaseBuilder(toDiscover))
       .show()
   }
@@ -221,6 +259,24 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             viewModel.donatePeriod(2)
             findNavController().navigate(this)
           }
+      }
+      dialogShow()
+    }
+  }
+
+  private fun forTheServiceBottomSheetDialog() {
+    BottomSheetDialog(requireContext()).dialog().apply {
+      setContentView(R.layout.dialog_bottom_with_title_recycler_view)
+      findViewById<View>(R.id.closeButton).setOnClickListener { dismiss() }
+      findViewById<RecyclerView>(R.id.recyclerView).apply {
+        adapter = FtsDialogAdapter {
+          viewModel.forTheService(it)
+        }.apply {
+          viewModel.forTheServiceData.onEach {
+            submitList(it)
+          }.launchIn(lifecycleScope)
+          stateRestorationPolicy()
+        }
       }
       dialogShow()
     }

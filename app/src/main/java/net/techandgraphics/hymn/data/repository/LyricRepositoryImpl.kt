@@ -61,8 +61,19 @@ class LyricRepositoryImpl @Inject constructor(
     db.lyricDao.insert(lyric)
   }
 
+  override suspend fun upsert(lyric: List<LyricEntity>) {
+    db.lyricDao.upsert(lyric)
+  }
+
   override suspend fun update(lyric: LyricEntity) {
     db.lyricDao.update(lyric)
+  }
+
+  override suspend fun deleteBecauseHeLives() {
+    try {
+      db.lyricDao.deleteWithNumber(385, version)
+    } catch (_: Exception) {
+    }
   }
 
   override suspend fun lastInsertedHymn(): Int? {
@@ -71,6 +82,10 @@ class LyricRepositoryImpl @Inject constructor(
 
   override suspend fun clearFavorite() {
     db.lyricDao.clearFavorite()
+  }
+
+  override suspend fun forTheServiceUpdate(lyric: LyricEntity) {
+    db.lyricDao.forTheServiceUpdate(version, lyric.forTheService, lyric.ftsSuggestion, lyric.number)
   }
 
   override suspend fun reset() {
@@ -115,4 +130,7 @@ class LyricRepositoryImpl @Inject constructor(
   override val favorite = db.lyricDao.observeFavoriteLyrics(version)
   override val theHymn = db.lyricDao.theHymn(version)
   override val justAdded = db.lyricDao.justAdded(version)
+  override val forTheService = db.lyricDao.forTheService(version)
+  override val queryLyrics = db.lyricDao.queryLyrics(version)
+  override suspend fun queryRandom() = db.lyricDao.queryRandom(version)
 }

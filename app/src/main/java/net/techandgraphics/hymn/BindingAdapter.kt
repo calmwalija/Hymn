@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -75,12 +76,17 @@ fun backgroundTint(view: AppCompatTextView, color: Int) {
 @BindingAdapter("timestamp")
 fun timestamp(view: AppCompatTextView, timestamp: Long) {
   view.text = timeAgo(view.context, timestamp)
-  view.isVisible = timestamp != 0L
+  view.isInvisible = timestamp == 0L
 }
 
 @BindingAdapter("isVisible")
 fun isVisible(view: View, flag: Boolean) {
   view.isVisible = flag
+}
+
+@BindingAdapter("isInvisible")
+fun isInvisible(view: View, flag: Boolean) {
+  view.isInvisible = flag.not()
 }
 
 @BindingAdapter("favCount")
