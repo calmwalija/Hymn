@@ -58,7 +58,6 @@
             android:drawablePadding="2dp"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/mellon"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView16"

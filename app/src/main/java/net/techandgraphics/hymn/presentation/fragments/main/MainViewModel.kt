@@ -79,11 +79,9 @@ constructor(
 
   private suspend fun List<Lyric>.resetJustAdded() {
     val aWeek = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -8) }.timeInMillis
-    repository.lyricRepository.upsert(
-      map {
-        it.asLyricEntity().copy(justAdded = it.millsAdded < aWeek)
-      }
-    )
+    filter { it.justAdded && aWeek > it.millsAdded }.forEach {
+      repository.lyricRepository.update(it.asLyricEntity().copy(justAdded = false))
+    }
   }
 
   private fun deleteBecauseHeLives() = with(repository.lyricRepository) {
