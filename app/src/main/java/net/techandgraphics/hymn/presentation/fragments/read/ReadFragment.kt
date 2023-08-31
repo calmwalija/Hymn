@@ -45,6 +45,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
   private lateinit var sharedPrefs: SharedPreferences
   private lateinit var inverseVersion: String
   private lateinit var versionValue: Array<String>
+  private var fontThreshold = 18
 
   private fun addMenuProvider() = requireActivity()
     .addMenuProvider(
@@ -103,8 +104,8 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
   @SuppressLint("NotifyDataSetChanged")
   private fun changeFontSizeDialog() {
     changeFontSize(Dialog(requireContext()), fontSize) {
-      readAdapter.fontSize = it.plus(14).also {
-        fontSize = it.minus(14)
+      readAdapter.fontSize = it.plus(fontThreshold).also {
+        fontSize = it.minus(fontThreshold)
       }
       readAdapter.notifyDataSetChanged()
     }
@@ -135,7 +136,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
       findViewById<View>(R.id.closeButton).setOnClickListener { dismiss() }
       val title = findViewById<AppCompatTextView>(R.id.title)
       findViewById<RecyclerView>(R.id.recyclerView).apply {
-        adapter = ReadAdapter(fontSize.plus(14)).also { adapter ->
+        adapter = ReadAdapter(fontSize.plus(fontThreshold)).also { adapter ->
           viewModel.getInverseLyricsById(version, args.lyric).onEach {
             title.text = it.firstOrNull()?.title ?: ""
             adapter.submitList(it)
@@ -164,7 +165,7 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
         sharedPrefs.getString(getString(R.string.version_key), versionValue.first())
       inverseVersion =
         if (oldValue == versionValue.last()) versionValue.first() else versionValue.last()
-      readAdapter = ReadAdapter(fontSize + 14).also { adapter = it }
+      readAdapter = ReadAdapter(fontSize + fontThreshold).also { adapter = it }
       viewModel.lyric(args.lyric)
         .onEach {
           lyric = it[0]
