@@ -29,8 +29,14 @@ class CategoryAdapter(
     }
 
     init {
-      binding.root.setOnClickListener { event.invoke(CategoryEvent.Click(currentList[absoluteAdapterPosition])) }
-      binding.buttonFav.setOnClickListener { event.invoke(CategoryEvent.Favorite(currentList[absoluteAdapterPosition])) }
+      binding.root.setOnClickListener {
+        if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+        event.invoke(CategoryEvent.Click(currentList[absoluteAdapterPosition]))
+      }
+      binding.buttonFav.setOnClickListener {
+        if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+        event.invoke(CategoryEvent.Favorite(currentList[absoluteAdapterPosition]))
+      }
     }
   }
 

@@ -18,19 +18,19 @@ import net.techandgraphics.hymn.databinding.FragmentDiscoverBinding
 class DiscoverFragment : Fragment(R.layout.fragment_discover) {
 
   private val viewModel: DiscoverViewModel by viewModels()
-  private lateinit var adapter: DiscoverAdapter
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     with(FragmentDiscoverBinding.bind(view)) {
-      adapter = DiscoverAdapter {
+      discoverAdapter = DiscoverAdapter {
         DiscoverFragmentDirections
           .actionDiscoverFragmentToCategoryFragment(it)
           .apply { findNavController().navigate(this) }
-      }.also { it.stateRestorationPolicy() }
-      viewModel.discover.onEach {
-        adapter.submitList(it)
-      }.launchIn(viewModel.viewModelScope)
-      adapterRv = adapter
+      }.apply {
+        stateRestorationPolicy()
+        viewModel.discover.onEach {
+          submitList(it)
+        }.launchIn(viewModel.viewModelScope)
+      }
       Tag.screenView(viewModel.firebaseAnalytics, Tag.DISCOVER)
     }
   }

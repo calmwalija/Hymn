@@ -33,8 +33,12 @@ constructor(private val repository: Repository, val firebaseAnalytics: FirebaseA
 
   fun onLoad(init: Boolean) =
     viewModelScope.launch {
-      userPrefs.setBuild(UserPrefs.BUILD)
-      _whenRead.value = if (init.not()) false else repository.jsonParser.fromJson()
+      val data = repository.lyricRepository.count()
+      _whenRead.value = if (init.not() && data != 0) false else
+        repository.jsonParser.fromJson {
+          userPrefs.mills(UserPrefs.BUILD.toLong())
+          userPrefs.setBuild(UserPrefs.BUILD)
+        }
     }
 
   fun clearFavorite() = viewModelScope.launch { lyricRepository.clearFavorite() }

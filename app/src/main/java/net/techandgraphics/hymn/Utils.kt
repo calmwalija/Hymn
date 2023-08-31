@@ -9,28 +9,35 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
+import com.elconfidencial.bubbleshowcase.BubbleShowCase
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.dynamiclinks.DynamicLink
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.Objects
+import java.util.concurrent.TimeUnit
 
 object Utils {
+
+  const val FEATURE_LIMIT = 50
 
   fun readJsonFromAssetToString(context: Context, file: String): String? {
     return try {
@@ -63,7 +70,11 @@ object Utils {
     startActivity(Intent.createChooser(this, "Share"))
   }
 
-  fun decodeResource(context: Context, @DrawableRes drawableRes: Int): Bitmap =
+  fun decodeResource(
+    context: Context,
+    @DrawableRes
+    drawableRes: Int
+  ): Bitmap =
     BitmapFactory.decodeResource(context.resources, drawableRes)
 
   fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -89,15 +100,6 @@ object Utils {
     show()
   }
 
-  fun restartApp(activity: Activity, putExtra: Boolean = true) = activity.apply {
-    finish()
-    if (putExtra)
-      startActivity(intent.putExtra(Constant.RESTART, true))
-    else
-      startActivity(intent)
-    pendingTransition(activity)
-  }
-
   fun EditText.onAddTextChangedListener(onTextChangedCallback: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
@@ -113,77 +115,10 @@ object Utils {
   fun toast(context: Context, message: String) =
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-  fun createDynamicLink(fragment: Fragment, lyric: LyricEntity, firebaseAnalytics: FirebaseAnalytics) {
-    if (NetworkConnection(fragment.requireContext()).ifConnected().not()) {
-      toast(
-        fragment.requireContext(),
-        "Could not connect to the internet to process your request."
-      )
-      return
-    }
-    toast(fragment.requireContext(), "Processing, just a moment please ...")
-    FirebaseDynamicLinks.getInstance().createDynamicLink()
-      .setLink(Uri.parse(String.format("%s?id=%d", Constant.DEEP_LINK, lyric.lyricId)))
-      .setDomainUriPrefix(Constant.DOMAIN_URI_PREFIX)
-      .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-      .setSocialMetaTagParameters(
-        DynamicLink.SocialMetaTagParameters.Builder()
-          .setTitle(lyric.title)
-          .setDescription(lyric.content)
-          .setImageUrl(Uri.parse(Constant.LOGO_URL))
-          .build()
-      )
-      .buildShortDynamicLink()
-      .addOnSuccessListener { result ->
-        Intent(Intent.ACTION_SEND)
-          .putExtra(Intent.EXTRA_TEXT, result.shortLink.toString())
-          .setType("text/plain")
-          .also {
-            firebaseAnalytics.logEvent(
-              Tag.SHARE,
-              bundleOf(Pair(Tag.SHARE, lyric.number))
-            )
-            fragment.startActivity(
-              Intent.createChooser(it, "Share")
-            )
-          }
-      }
-      .addOnFailureListener {
-        toast(
-          fragment.requireContext(),
-          "Could not process your request, please check your internet connection."
-        )
-      }
-  }
-
-  fun shareOffline(fragment: Fragment, lyric: List<LyricEntity>, firebaseAnalytics: FirebaseAnalytics) {
-    val text = buildString {
-      lyric.map { it.content }.forEach {
-        append(it).append("\n\n")
-      }
-    }
-    Intent(Intent.ACTION_SEND)
-      .putExtra(Intent.EXTRA_TEXT, text)
-      .setType("text/plain")
-      .also {
-        firebaseAnalytics.logEvent(
-          Tag.SHARE,
-          bundleOf(Pair(Tag.SHARE, lyric.first().number))
-        )
-        fragment.startActivity(
-          Intent.createChooser(it, "Share")
-        )
-      }
-  }
-
   fun openWebsite(activity: Activity, url: String) = activity.startActivity(
     Intent(Intent.ACTION_VIEW)
       .setData(Uri.parse(url))
   )
-
-  private fun pendingTransition(activity: Activity) {
-    activity.overridePendingTransition(R.animator.slide_from_right, R.animator.slide_to_left)
-  }
 
   fun changeFontSize(dialog: Dialog, fontSize: Int, onTextChanged: (Int) -> Unit) =
     dialog.dialog().apply {
@@ -220,4 +155,74 @@ object Utils {
         override fun onStopTrackingTouch(p0: SeekBar?) = Unit
       })
   }
+
+  fun currentMillsDiff(timeInMills: Long): Boolean {
+    val today = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis())
+    val diff = TimeUnit.MILLISECONDS.toDays(timeInMills)
+    return today != diff
+  }
+
+  fun getThreshold(maxValue: Int, size: Int, random: Int): Int {
+    val percentage = random.toFloat().div(maxValue).times(100).toInt()
+    val range = size.toFloat().div(100).times(percentage).toInt()
+    return if (range.plus(FEATURE_LIMIT) > size) range.minus(FEATURE_LIMIT) else range
+  }
 }
+
+infix fun NavController.onChangeBook(str: String) {
+  val versionEntity = context.resources.getStringArray(R.array.version_entries)
+  val versionValue = context.resources.getStringArray(R.array.version_values)
+  val fragmentId = currentDestination?.id
+  popBackStack(fragmentId!!, true)
+  navigate(fragmentId)
+  val versionName = if (str == versionValue[0]) versionEntity.first() else versionEntity.last()
+  val msg = "You are now reading $versionName version."
+  Utils.toast(context, msg)
+}
+
+const val SECOND_MILLIS = 1000
+const val MINUTE_MILLIS = 60 * SECOND_MILLIS
+const val HOUR_MILLIS = 60 * MINUTE_MILLIS
+
+fun timeAgo(context: Context, timestamp: Long): String {
+  val diff = System.currentTimeMillis() - timestamp
+  return when {
+    diff < MINUTE_MILLIS -> "just now"
+    diff < 60 * MINUTE_MILLIS -> {
+      val minutes = diff.div(MINUTE_MILLIS).toInt()
+      "${context.resources.getQuantityString(R.plurals.minutes, minutes, minutes)} ago"
+    }
+
+    diff < 24 * HOUR_MILLIS -> {
+      val hours = diff.div(HOUR_MILLIS).toInt()
+      "${context.resources.getQuantityString(R.plurals.hours, hours, hours)} ago"
+    }
+
+    diff < 48 * HOUR_MILLIS -> "yesterday"
+    else -> longDateFormat(timestamp)
+  }
+}
+
+fun longDateFormat(timestamp: Long): String {
+  val simpleDateFormat = SimpleDateFormat("dd MMM, yyyy ", Locale.getDefault())
+  val currentTimeMillis = Date(timestamp)
+  return simpleDateFormat.format(currentTimeMillis)
+}
+
+fun Activity.onBubbleShowCaseBuilder(view: View, title: String, description: String) =
+  BubbleShowCaseBuilder(this)
+    .description(description)
+    .title(title)
+    .arrowPosition(BubbleShowCase.ArrowPosition.TOP)
+    .backgroundColor(Color.WHITE)
+    .textColor(Color.BLACK)
+    .targetView(view)
+    .closeActionImageResourceId(R.drawable.ic_close_44)
+    .highlightMode(BubbleShowCase.HighlightMode.VIEW_SURFACE)
+
+fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {
+  logEvent(name, bundle)
+}
+
+fun timeInMillisMonth(month: Int = 1) =
+  Calendar.getInstance().apply { add(Calendar.MONTH, month) }.timeInMillis

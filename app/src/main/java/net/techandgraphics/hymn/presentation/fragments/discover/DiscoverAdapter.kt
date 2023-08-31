@@ -30,7 +30,10 @@ class DiscoverAdapter(
     }
 
     init {
-      binding.root.setOnClickListener { itemClickListener.invoke(currentList[absoluteAdapterPosition]) }
+      binding.root.setOnClickListener {
+        if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+        itemClickListener.invoke(currentList[absoluteAdapterPosition])
+      }
     }
   }
 }

@@ -6,31 +6,182 @@
     <data>
 
         <variable
-            name="lyricAdapter"
-            type="net.techandgraphics.hymn.presentation.fragments.main.MainAdapter" />
+            name="featureAdapter"
+            type="net.techandgraphics.hymn.presentation.fragments.main.FeatureAdapter" />
+
+
+        <variable
+            name="ofTheDayAdapter"
+            type="net.techandgraphics.hymn.presentation.fragments.main.OfTheDayAdapter" />
+
+
+        <variable
+            name="theHymnBook"
+            type="net.techandgraphics.hymn.presentation.fragments.main.TheHymnBook" />
+
+
+        <variable
+            name="ftsAdapter"
+            type="net.techandgraphics.hymn.presentation.fragments.main.FtsAdapter" />
+
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_all"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:adapter="@{lyricAdapter}"
-            android:paddingTop="8dp"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:spanCount="1"
-            tools:itemCount="4"
-            tools:listitem="@layout/lyric_item" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/featureLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="24dp"
+                android:paddingEnd="8dp"
+                tools:ignore="RtlSymmetry">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Heading"
+                    android:layout_weight="1"
+                    android:text="Especially For You" />
+
+                <Switch
+                    android:id="@+id/bookSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:padding="12dp"
+                    android:thumb="@drawable/thumb_layerlist"
+                    android:track="@drawable/thumb_track"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:adapter="@{ofTheDayAdapter}"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="1"
+                tools:itemCount="1"
+                tools:listitem="@layout/fragment_main_hymn_of_the_day" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/toSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Heading"
+                    android:layout_weight="1"
+                    android:paddingVertical="12dp"
+                    android:text="Quick Hymn Search" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/searchIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    app:srcCompat="@drawable/ic_search" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adapter="@{theHymnBook}"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="1"
+                tools:itemCount="4"
+                tools:listitem="@layout/fragment_main_the_hymn_book_item" />
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/forTheService"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Heading"
+                    android:layout_weight="1"
+                    android:paddingVertical="12dp"
+                    android:text="For The Service" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:tint="?attr/colorControlNormal"
+                    app:srcCompat="@drawable/ic_push_pin" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adapter="@{ftsAdapter}"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                app:spanCount="1"
+                tools:itemCount="4"
+                tools:listitem="@layout/fragment_main_the_hymn_book_item" />
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/toDiscover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Heading"
+                    android:layout_weight="1"
+                    android:paddingVertical="12dp"
+                    android:text="Featured Category" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/discoverIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    app:srcCompat="@drawable/ic_arrow_forward" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adapter="@{featureAdapter}"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:itemCount="2"
+                tools:listitem="@layout/fragment_main_featured_hymn" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </ScrollView>
+
+
 </layout>

@@ -9,5 +9,5 @@ import net.techandgraphics.hymn.domain.model.Lyric
 data class Discover(
   @Embedded
   val lyric: Lyric,
-  val count: Int
+  val count: String
 ) : Parcelable
