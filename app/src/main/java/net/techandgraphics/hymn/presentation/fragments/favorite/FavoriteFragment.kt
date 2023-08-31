@@ -23,7 +23,7 @@ import net.techandgraphics.hymn.presentation.fragments.SwipeDecorator
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
   private lateinit var favoriteAdapter: FavoriteAdapter
-  private lateinit var mostViewedAdapter: MostViewedAdapter
+  private lateinit var recentAdapter: RecentAdapter
   private val viewModel: FavoriteViewModel by viewModels()
   private lateinit var bind: FragmentFavoriteBinding
 
@@ -46,7 +46,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     bind = FragmentFavoriteBinding.bind(view)
 
-    mostViewedAdapter = MostViewedAdapter {
+    recentAdapter = RecentAdapter {
       FavoriteFragmentDirections
         .actionFavoriteFragmentToReadFragment(it).apply {
           findNavController().navigate(this)
@@ -60,17 +60,12 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         }
     }.also { it.stateRestorationPolicy() }
 
-    bind.mostViewedAdapter = mostViewedAdapter
     bind.favoriteAdapter = favoriteAdapter
-    viewModel.state.onEach {
-      mostViewedAdapter.submitList(it.mostVisited)
-      bind.recent.isVisible = it.mostVisited.isEmpty().not() && it.mostVisited.size > 3
-    }.launchIn(lifecycleScope)
 
-    viewModel.state.onEach {
-      bind.noFav.isVisible = it.favorite.isEmpty()
-      bind.fav.isVisible = it.favorite.isEmpty().not()
-      favoriteAdapter.submitList(it.favorite)
+    viewModel.favorite.onEach {
+      bind.noFav.isVisible = it.isEmpty()
+      bind.fav.isVisible = it.isEmpty().not()
+      favoriteAdapter.submitList(it)
     }.launchIn(lifecycleScope)
 
     onItemTouchHelper()

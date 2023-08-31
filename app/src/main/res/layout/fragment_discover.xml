@@ -6,21 +6,28 @@
     <data>
 
         <variable
-            name="adapter_rv"
+            name="discoverAdapter"
             type="net.techandgraphics.hymn.presentation.fragments.discover.DiscoverAdapter" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextAppearance.Heading"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="Browse Hymn By Category" />
 
         <net.techandgraphics.hymn.presentation.view.BaseRecyclerView
-            android:id="@+id/browse_rv"
-            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-             android:adapter="@{adapter_rv}"
+            android:adapter="@{discoverAdapter}"
             android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2"
             tools:listitem="@layout/fragment_discover_category_item" />
 

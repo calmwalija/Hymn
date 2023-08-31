@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/bookSwitch"
+        android:icon="@drawable/ic_book_ch_menu"
+        android:title="Switch Book"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/font_size"
         android:title="Change font size"
         app:showAsAction="never" />

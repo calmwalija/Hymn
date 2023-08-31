@@ -1,9 +1,12 @@
 package net.techandgraphics.hymn.services
 
+import android.Manifest
 import android.app.Notification
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -62,6 +65,13 @@ class NotificationService : FirebaseMessagingService() {
           NotificationCompat.BigPictureStyle()
             .bigPicture(bitmap)
         )
+      }
+      if (ActivityCompat.checkSelfPermission(
+          this,
+          Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED
+      ) {
+        return
       }
       NotificationManagerCompat.from(this).notify(Random.nextInt(), it.build())
     }

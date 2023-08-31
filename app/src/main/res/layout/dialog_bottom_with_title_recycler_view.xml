@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/closeButton"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/actionBarItemBackground"
+            android:contentDescription="Close Dialog"
+            android:padding="8dp"
+            android:src="@drawable/ic_close_44"
+            android:tint="?attr/colorControlNormal" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            style="@style/TextAppearance.Heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="Heading"
+            android:gravity="center"
+            android:padding="8dp"
+             android:text="Compile a dedicated temporary hymn list for easy access as needed." />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="1"
+            tools:itemCount="9"
+            tools:listitem="@layout/fragment_main_suggest_item" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>
+
+
+

@@ -29,7 +29,10 @@ class SearchTagAdapter(
     }
 
     init {
-      binding.root.setOnClickListener { click.invoke(currentList[absoluteAdapterPosition]) }
+      binding.root.setOnClickListener {
+        if (absoluteAdapterPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+        click.invoke(currentList[absoluteAdapterPosition])
+      }
     }
   }
 }

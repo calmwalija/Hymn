@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.Tag
@@ -32,8 +33,26 @@ constructor(
       }
     }
 
+  fun getInverseLyricsById(version: String, lyric: Lyric) = repository.lyricRepository
+    .getInverseLyricsById(version, lyric.number).map {
+      it.map {
+        it.asLyric()
+      }
+    }
+
   fun update(lyric: Lyric) =
-    viewModelScope.launch { repository.lyricRepository.update(lyric.asLyricEntity()) }
+    viewModelScope.launch {
+      repository.lyricRepository.getLyricsById(lyric.number).first().filter { it.timestamp != 0L }
+        .let {
+          val timestamp =
+            if (it.isEmpty().not()) it.first().timestamp else System.currentTimeMillis()
+          repository.lyricRepository.update(lyric.asLyricEntity().copy(timestamp = timestamp))
+        }
+    }
+
+  fun topPickHit(lyric: Lyric) = viewModelScope.launch {
+    repository.lyricRepository.update(lyric.asLyricEntity())
+  }
 
   fun firebaseAnalytics(lyric: Lyric) {
     firebaseAnalytics.logEvent(Tag.TITLE, bundleOf(Pair(Tag.TITLE, lyric.title)))

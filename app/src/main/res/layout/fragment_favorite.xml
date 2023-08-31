@@ -9,10 +9,6 @@
             name="favoriteAdapter"
             type="net.techandgraphics.hymn.presentation.fragments.favorite.FavoriteAdapter" />
 
-        <variable
-            name="mostViewedAdapter"
-            type="net.techandgraphics.hymn.presentation.fragments.favorite.MostViewedAdapter" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,42 +16,16 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView2"
-            style="@style/TextAppearance.AppCompat.Medium"
+            android:id="@+id/appCompatTextView3"
+            style="@style/TextAppearance.Heading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:text="most viewed"
+            android:layout_marginTop="24dp"
+            android:text="Favorite Hymn List"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/most_viewed_rc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:adapter="@{mostViewedAdapter}"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
-            app:spanCount="2"
-            tools:itemCount="6"
-            tools:listitem="@layout/fragment_favorite_most_viewed_item" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView3"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="favorites"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/most_viewed_rc" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -84,24 +54,26 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/most_viewed_rc"
-            app:layout_constraintVertical_bias="0.13">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="160dp"
                 app:lottie_autoPlay="true"
-                app:lottie_loop="false"
+                app:lottie_loop="true"
                 app:lottie_rawRes="@raw/lf30_favorite" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:gravity="center"
-                android:padding="30dp"
-                android:text="You do not have favorite hymns, to add, click on heart icon at the top when reading a hymn."
+                android:paddingHorizontal="40dp"
+                android:text="You do not have favorite hymns, to add, click on the heart icon at the top when reading a hymn."
                 tools:ignore="HardcodedText" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -111,17 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="recyclerView_all,appCompatTextView3"
-            tools:layout_editor_absoluteX="270dp"
-            tools:layout_editor_absoluteY="266dp" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/recent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="appCompatTextView2,most_viewed_rc"
-            tools:layout_editor_absoluteX="132dp"
-            tools:layout_editor_absoluteY="6dp" />
+            tools:visibility="visible"
+            app:constraint_referenced_ids="recyclerView_all,appCompatTextView3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

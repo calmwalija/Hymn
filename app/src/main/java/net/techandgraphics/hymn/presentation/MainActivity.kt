@@ -1,20 +1,26 @@
 package net.techandgraphics.hymn.presentation
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import net.techandgraphics.hymn.databinding.ActivityMainBinding
@@ -26,14 +32,18 @@ class MainActivity : AppCompatActivity() {
   private lateinit var navController: NavController
   private val viewModel by viewModels<BaseViewModel>()
 
+  private val requestPermissionLauncher =
+    registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
+  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
   @SuppressLint("SourceLockedOrientationActivity")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     viewModel.userPrefs.getBuild
-      .asLiveData()
-      .observe(this) {
+      .onEach {
         viewModel.onLoad(it != UserPrefs.BUILD)
-      }
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+      }.launchIn(lifecycleScope)
     installSplashScreen().apply {
       setKeepOnScreenCondition { viewModel.whenRead.value }
     }
@@ -59,12 +69,16 @@ class MainActivity : AppCompatActivity() {
         when (it.itemId) {
           R.id.mainFragment ->
             navController.navigate(R.id.mainFragment, null, options)
+
           R.id.discoverFragment ->
             navController.navigate(R.id.discoverFragment, null, options)
+
           R.id.searchFragment ->
             navController.navigate(R.id.searchFragment, null, options)
+
           R.id.favoriteFragment ->
             navController.navigate(R.id.favoriteFragment, null, options)
+
           R.id.settingsFragment ->
             navController.navigate(R.id.settingsFragment, null, options)
         }
@@ -91,3 +105,8 @@ class MainActivity : AppCompatActivity() {
     super.onResume()
   }
 }
+
+// val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+// val uri: Uri = Uri.parse("package:$packageName")
+// intent.data = uri
+// startActivity(intent)
