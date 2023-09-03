@@ -9,6 +9,7 @@
         app:showAsAction="always" />
 
     <item
+        android:visible="false"
         android:id="@+id/bookSwitch"
         android:icon="@drawable/ic_book_ch_menu"
         android:title="Switch Book"

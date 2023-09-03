@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -21,6 +22,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -121,12 +123,19 @@ class ReadFragment : Fragment(R.layout.fragment_read) {
   }
 
   private fun inverseHymn(lyric: Lyric) {
-    menu.getItem(1).icon = ContextCompat.getDrawable(
-      requireContext(),
-      if (lyric.lang == versionValue.last()) R.drawable.ic_book_en_menu else R.drawable.ic_book_ch_menu
-    )
     viewModel.getInverseLyricsById(inverseVersion, args.lyric).onEach {
-      menu.getItem(1).isVisible = it.isEmpty().not()
+      try {
+        if (menu.size > 0)
+          with(menu.getItem(1)) {
+            icon = ContextCompat.getDrawable(
+              requireContext(),
+              if (lyric.lang == versionValue.last()) R.drawable.ic_book_en_menu else R.drawable.ic_book_ch_menu
+            )
+            isVisible = it.isEmpty().not()
+          }
+      } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+      }
     }.launchIn(lifecycleScope)
   }
 
