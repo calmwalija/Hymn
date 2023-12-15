@@ -1,15 +1,12 @@
 package net.techandgraphics.hymn.data.local.entities
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
+import net.techandgraphics.hymn.data.local.Lang
 
 @Entity(tableName = "lyric")
-@Parcelize
 data class LyricEntity(
-  @PrimaryKey(autoGenerate = false)
-  val lyricId: Int,
+  @PrimaryKey(autoGenerate = false) val lyricId: Int,
   val categoryId: Int,
   val categoryName: String,
   val number: Int,
@@ -20,9 +17,9 @@ data class LyricEntity(
   val topPick: String = "0",
   val topPickHit: Int = 0,
   val title: String = "",
-  val lang: String = "en",
+  val lang: String = Lang.EN.name.lowercase(),
   val forTheService: Boolean = false,
   val ftsSuggestion: Boolean = false,
   val justAdded: Boolean = false,
   val millsAdded: Long = System.currentTimeMillis(),
-) : Parcelable
+)

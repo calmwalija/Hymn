@@ -15,7 +15,6 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.Resource
 import net.techandgraphics.hymn.Tag.NOTIFICATION_HYMN_THRESHOLD
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.services.getNotificationCompat
@@ -31,25 +30,7 @@ class HymnWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, params) {
 
   override suspend fun doWork(): Result {
-    return repository.lyricRepository.fetch {
-      when (it) {
-        is Resource.Success -> it.data?.let {
-          val list = StringBuilder()
-          var size: Int
-          it.distinctBy { it.number }.also { size = it.size }.forEach {
-            list.append("#").append(it.number).append(".").append(it.title).append("\n")
-          }
-          String.format(
-            "Hooray \uD83C\uDF89 We have added %d new %s",
-            size, context.resources.getQuantityString(R.plurals.hymn, size, size)
-          ).also {
-            context.showNotification(it, list.toString(), size)
-          }
-        }
-
-        else -> Unit
-      }
-    }
+    return Result.success()
   }
 
   private fun Context.showNotification(p0: String, p1: String, p2: Int) {
