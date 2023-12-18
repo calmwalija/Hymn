@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting">
         <activity
-            android:name="net.techandgraphics.hymn.presentation.MainActivity"
+            android:name="net.techandgraphics.hymn.ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
