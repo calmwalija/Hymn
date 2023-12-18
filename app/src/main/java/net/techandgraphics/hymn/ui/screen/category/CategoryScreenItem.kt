@@ -39,11 +39,11 @@ fun CategoryScreenItem(
 ) {
   val context = LocalContext.current
   val configuration = LocalConfiguration.current
-  val widthInDp = configuration.screenWidthDp.dp
+  val widthInDp = (configuration.screenWidthDp.dp / 2) - 8.dp
   Box(
     modifier = Modifier
-      .padding(4.dp)
-      .width(widthInDp.div(2))
+      .padding(vertical = 4.dp)
+      .width(widthInDp)
       .height(IntrinsicSize.Max)
       .clip(shape = RoundedCornerShape(6))
       .clickable { event.invoke(CategoryEvent.Click(category.lyric.categoryId)) }

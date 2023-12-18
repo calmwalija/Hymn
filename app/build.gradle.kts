@@ -180,4 +180,6 @@ dependencies {
     }
   }
 
+  implementation("com.google.accompanist:accompanist-flowlayout:0.23.1")
+
 }

@@ -22,7 +22,7 @@ class ReadViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   operator fun invoke(id: Int) = with(id) {
-    database.lyricDao.queryById(this, version).onEach {
+    database.lyricDao.queryByNumber(this, version).onEach {
       _state.value = _state.value.copy(lyrics = it)
     }.launchIn(viewModelScope)
   }
