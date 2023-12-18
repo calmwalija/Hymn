@@ -36,9 +36,10 @@ import net.techandgraphics.hymn.ui.screen.category.CategoryScreen
 import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
-import net.techandgraphics.hymn.ui.screen.manage.ManageScreen
+import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscellaneousScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadViewModel
+import net.techandgraphics.hymn.ui.screen.search.SearchEvent
 import net.techandgraphics.hymn.ui.screen.search.SearchScreen
 import net.techandgraphics.hymn.ui.screen.search.SearchViewModel
 
@@ -97,6 +98,7 @@ fun AppScreen(
           val mainViewModel: MainViewModel = hiltViewModel()
           val state = mainViewModel.state.collectAsState().value
           MainScreen(
+            mainEvent = mainViewModel::onEvent,
             state = state,
             categoryEvent = { event ->
               navController.navigate(Event.category(event)) {
@@ -123,19 +125,23 @@ fun AppScreen(
 
         composable(route = Route.Search.title) {
           val searchViewModel: SearchViewModel = hiltViewModel()
-          val state = searchViewModel.state.collectAsState().value
-          SearchScreen(
-            state,
-            readEvent = { event ->
-              navController.navigate(Event.read(event)) {
-                launchSingleTop = true
+          with(searchViewModel) {
+            val state = state.collectAsState().value
+            SearchScreen(
+              state = state,
+              event = this::onEvent,
+              readEvent = { event ->
+                if (state.searchQuery.trim().isNotBlank()) onEvent(SearchEvent.InsertSearchTag)
+                navController.navigate(Event.read(event)) {
+                  launchSingleTop = true
+                }
               }
-            }
-          )
+            )
+          }
         }
 
-        composable(route = Route.Manage.title) {
-          ManageScreen()
+        composable(route = Route.Miscellaneous.title) {
+          MiscellaneousScreen()
         }
 
         composable(
@@ -149,7 +155,7 @@ fun AppScreen(
               readViewModel.invoke(lyricId)
             }
             val state = state.collectAsState().value
-            ReadScreen(state, navController)
+            ReadScreen(state, navController, readViewModel::onEvent)
           }
         }
 
@@ -165,7 +171,8 @@ fun AppScreen(
             }
             val state = state.collectAsState().value
             CategorisationScreen(
-              state,
+              state = state,
+              event = categorisationViewModel::onEvent,
               readEvent = { event ->
                 navController.navigate(Event.read(event)) {
                   launchSingleTop = true

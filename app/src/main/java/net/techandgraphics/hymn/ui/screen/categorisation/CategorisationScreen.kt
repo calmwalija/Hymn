@@ -33,6 +33,7 @@ import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 fun CategorisationScreen(
   state: CategorisationState,
   readEvent: (ReadEvent) -> Unit,
+  event: (CategorisationEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
@@ -93,7 +94,7 @@ fun CategorisationScreen(
 
     LazyColumn {
       items(state.lyric, key = { it.lyricId }) {
-        CategorisationScreenItem(it, readEvent)
+        CategorisationScreenItem(it, readEvent, event)
       }
     }
   }

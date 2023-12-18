@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,5 +26,16 @@ class CategorisationViewModel @Inject constructor(
       .zip(database.categoryDao.queryById(this, version)) { lyric, category ->
         _state.value = _state.value.copy(lyric = lyric, category = category)
       }.launchIn(viewModelScope)
+  }
+
+  fun favorite(lyric: LyricEntity) =
+    viewModelScope.launch {
+      database.lyricDao.upsert(listOf(lyric.copy(favorite = !lyric.favorite)))
+    }
+
+  fun onEvent(event: CategorisationEvent) {
+    when (event) {
+      is CategorisationEvent.Favorite -> favorite(event.data)
+    }
   }
 }

@@ -15,8 +15,8 @@ val bottomNavigationList = listOf(
     unSelectedIcon = R.drawable.ic_search,
   ),
   BottomNavigationItem(
-    title = Route.Category.title,
-    selectedIcon = R.drawable.ic_filled_category,
-    unSelectedIcon = R.drawable.ic_outline_category,
+    title = Route.Miscellaneous.title,
+    selectedIcon = R.drawable.ic_filled_miscellaneous,
+    unSelectedIcon = R.drawable.ic_outline_miscellaneous,
   )
 )

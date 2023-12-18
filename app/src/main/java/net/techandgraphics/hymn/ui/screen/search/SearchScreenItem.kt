@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,16 +69,35 @@ fun SearchScreenItem(
       Text(
         text = "#${data.number}",
         fontWeight = FontWeight.Bold,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+        style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.primary
       )
 
+      Row {
+        AnimatedVisibility(visible = data.favorite) {
+          Icon(
+            imageVector = Icons.Default.Favorite,
+            contentDescription = null,
+            modifier = Modifier
+              .size(16.dp)
+              .padding(end = 2.dp),
+            tint = MaterialTheme.colorScheme.primary
+          )
+        }
+        Text(
+          text = data.content.trimIndent(),
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodyMedium,
+        )
+      }
+
       Text(
-        text = data.content.trimIndent(),
-        maxLines = 2,
+        text = data.categoryName.trimIndent(),
+        maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-        lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
+        style = MaterialTheme.typography.bodySmall,
+        textDecoration = TextDecoration.Underline,
       )
 
       AnimatedVisibility(visible = data.timestamp != 0L) {

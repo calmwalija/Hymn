@@ -26,6 +26,7 @@ fun MainScreen(
   state: MainState,
   categoryEvent: (CategoryEvent) -> Unit,
   readEvent: (ReadEvent) -> Unit,
+  mainEvent: (MainEvent) -> Unit,
 ) {
 
   LazyColumn {
@@ -42,7 +43,7 @@ fun MainScreen(
       )
 
       if (state.ofTheDay.isNotEmpty())
-        HymnOfTheDayScreen(state.ofTheDay.first())
+        HymnOfTheDayScreen(state.ofTheDay.first(), mainEvent, readEvent)
     }
 
     item {

@@ -17,6 +17,7 @@ object Event {
     return when (event) {
       is ReadEvent.Click ->
         String.format("%s/%d", Route.Read.title, event.number)
+      else -> javaClass.simpleName
     }
   }
 }

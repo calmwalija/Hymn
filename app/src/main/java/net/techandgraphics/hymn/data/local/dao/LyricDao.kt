@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
+import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 
 @Dao
@@ -15,9 +16,9 @@ interface LyricDao {
                title LIKE'%' || :query || '%'  OR
                number LIKE'%' || :query || '%'  OR
                categoryName  LIKE'%' || :query || '%' )
-              AND  lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT)"""
+              AND  lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC"""
   )
-  fun query(query: String = "", version: String): Flow<List<LyricEntity>>
+  fun query(query: String = "", version: String = Lang.EN.name): Flow<List<LyricEntity>>
 
   @Query("SELECT * FROM lyric WHERE categoryId=:id AND lang=:version GROUP BY number ORDER BY lyricId ASC")
   fun queryByCategory(id: Int, version: String): Flow<List<LyricEntity>>

@@ -45,20 +45,20 @@ class MainViewModel @Inject constructor(
         userPrefs.ofTheDay(random)
       }
       if (number == null) return@combine
-      database.lyricDao.queryById(30, version).collect {
+      database.lyricDao.queryById(2, version).collect {
         _state.value = _state.value.copy(ofTheDay = it)
       }
     }.launchIn(viewModelScope)
   }
 
-  fun timestamp(lyric: LyricEntity) =
+  fun favorite(lyric: LyricEntity) =
     viewModelScope.launch {
-      database.lyricDao.upsert(listOf(lyric.copy(timestamp = System.currentTimeMillis())))
+      database.lyricDao.upsert(listOf(lyric.copy(favorite = !lyric.favorite)))
     }
 
   fun onEvent(event: MainEvent) {
     when (event) {
-      is MainEvent.Timestamp -> timestamp(event.data)
+      is MainEvent.Favorite -> favorite(event.data)
     }
   }
 }

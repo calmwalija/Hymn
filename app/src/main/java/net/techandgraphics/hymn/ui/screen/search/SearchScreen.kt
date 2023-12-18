@@ -1,6 +1,8 @@
 package net.techandgraphics.hymn.ui.screen.search
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -22,50 +24,63 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
+val searchFilters = listOf("Number", "Category", "Favorite")
+val searchOrders = listOf("Ascending", "Descending")
+
 @Composable
 fun SearchScreen(
   state: SearchState,
-  readEvent: (ReadEvent) -> Unit
+  readEvent: (ReadEvent) -> Unit,
+  event: (SearchEvent) -> Unit,
 ) {
 
   Column(
     modifier = Modifier.fillMaxSize()
   ) {
     Spacer(modifier = Modifier.height(16.dp))
-
-    Text(
-      text = "Quick Hymn Search",
-      fontSize = 20.sp,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.padding(16.dp)
-    )
-
-    ChatBoxScreen()
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    Text(
-      text = "#search-tag-history",
-      fontSize = 14.sp,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.padding(horizontal = 8.dp)
-    )
-
-    LazyVerticalGrid(
-      columns = GridCells.Fixed(3)
+    Row(
+      modifier = Modifier
+        .padding(end = 8.dp)
     ) {
-      items(state.search, key = { it.query }) {
-        ElevatedButton(
-          onClick = { },
-          modifier = Modifier.padding(horizontal = 4.dp),
-          shape = RoundedCornerShape(8),
+      Text(
+        text = "Quick Hymn Search",
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+          .padding(16.dp)
+          .weight(1f)
+      )
+    }
+
+    ChatBoxScreen(state, event)
+
+    AnimatedVisibility(visible = state.searchQuery.isEmpty()) {
+      Column {
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+          text = "#search-tag-history",
+          fontSize = 14.sp,
+          fontWeight = FontWeight.Bold,
+          modifier = Modifier.padding(horizontal = 8.dp)
+        )
+
+        LazyVerticalGrid(
+          columns = GridCells.Fixed(3)
         ) {
-          Text(
-            text = "#${it.tag}",
-            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-          )
+          items(state.search, key = { it.query }) {
+            ElevatedButton(
+              onClick = { event(SearchEvent.SearchQueryTag(it.query)) },
+              modifier = Modifier.padding(horizontal = 4.dp),
+              shape = RoundedCornerShape(8),
+            ) {
+              Text(
+                text = "#${it.tag}",
+                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+              )
+            }
+          }
         }
       }
     }

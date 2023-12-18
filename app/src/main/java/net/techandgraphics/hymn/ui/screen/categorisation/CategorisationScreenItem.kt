@@ -7,11 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +33,8 @@ import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 @Composable
 fun CategorisationScreenItem(
   data: LyricEntity = Faker.lyricEntity,
-  readEvent: (ReadEvent) -> Unit
+  readEvent: (ReadEvent) -> Unit,
+  event: (CategorisationEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
@@ -60,8 +62,7 @@ fun CategorisationScreenItem(
         text = data.content.trimIndent(),
         maxLines = 3,
         overflow = TextOverflow.Ellipsis,
-        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-        lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
+        style = MaterialTheme.typography.bodyMedium
       )
 
       AnimatedVisibility(visible = data.timestamp != 0L) {
@@ -83,14 +84,13 @@ fun CategorisationScreenItem(
       }
     }
 
-    Icon(
-      imageVector = Icons.Default.FavoriteBorder,
-      contentDescription = null,
-      modifier = Modifier
-        .size(32.dp)
-        .padding(end = 12.dp),
-      tint = MaterialTheme.colorScheme.primary
-    )
+    IconButton(onClick = { event(CategorisationEvent.Favorite(data)) }) {
+      Icon(
+        imageVector = if (data.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.primary
+      )
+    }
 
     Spacer(modifier = Modifier.width(8.dp))
   }

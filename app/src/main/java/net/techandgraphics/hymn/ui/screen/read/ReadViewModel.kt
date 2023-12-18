@@ -24,11 +24,25 @@ class ReadViewModel @Inject constructor(
   operator fun invoke(id: Int) = with(id) {
     database.lyricDao.queryById(this, version).onEach {
       _state.value = _state.value.copy(lyrics = it)
-      if (it.isNotEmpty()) {
-        timestamp(it.first())
-//        topPickHit(it.first())
-      }
     }.launchIn(viewModelScope)
+  }
+
+  private fun tag(data: LyricEntity) = with(data) {
+//    timestamp(this)
+//    topPickHit(this)
+  }
+
+  fun favorite(lyric: LyricEntity) =
+    viewModelScope.launch {
+      database.lyricDao.upsert(listOf(lyric.copy(favorite = !lyric.favorite)))
+    }
+
+  fun onEvent(event: ReadEvent) {
+    when (event) {
+      is ReadEvent.Favorite -> favorite(event.data)
+      is ReadEvent.Click -> Unit
+      is ReadEvent.Tag -> tag(event.data)
+    }
   }
 
   private fun timestamp(data: LyricEntity) = viewModelScope.launch {

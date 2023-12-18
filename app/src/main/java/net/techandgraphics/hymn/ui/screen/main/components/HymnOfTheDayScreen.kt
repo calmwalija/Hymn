@@ -3,6 +3,7 @@ package net.techandgraphics.hymn.ui.screen.main.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -40,11 +41,16 @@ import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.toTimeAgo
-import net.techandgraphics.hymn.ui.theme.HymnTheme
+import net.techandgraphics.hymn.ui.screen.main.MainEvent
+import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import kotlin.random.Random
 
 @Composable
-fun HymnOfTheDayScreen(data: LyricEntity = Faker.lyricEntity) {
+fun HymnOfTheDayScreen(
+  data: LyricEntity = Faker.lyricEntity,
+  event: (MainEvent) -> Unit,
+  readEvent: (ReadEvent) -> Unit,
+) {
   val context = LocalContext.current
   val ofTheDay by remember {
     mutableStateOf(Constant.ofTheDay[Random.nextInt(5)])
@@ -55,7 +61,8 @@ fun HymnOfTheDayScreen(data: LyricEntity = Faker.lyricEntity) {
       .padding(8.dp)
       .fillMaxWidth()
       .height(IntrinsicSize.Max)
-      .clip(RoundedCornerShape(8)),
+      .clip(RoundedCornerShape(8))
+      .clickable { readEvent(ReadEvent.Click(data.number)) },
   ) {
 
     AsyncImage(
@@ -74,30 +81,29 @@ fun HymnOfTheDayScreen(data: LyricEntity = Faker.lyricEntity) {
     )
 
     Row(
-      modifier = Modifier.padding(16.dp)
+      modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
       Column(
         modifier = Modifier.weight(1f)
       ) {
         Text(
-          text = "Hymn Of\nThe Day",
-          fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+          text = "Hymn Of The Day",
+          fontSize = MaterialTheme.typography.headlineSmall.fontSize,
           fontWeight = FontWeight.Bold,
-          lineHeight = 32.sp,
-          color = Color.White,
+          color = Color.White
         )
         Text(
           text = "#${data.number} - ${data.title}",
           fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(bottom = 8.dp, top = 2.dp),
+          modifier = Modifier.padding(bottom = 16.dp, top = 4.dp),
+          style = MaterialTheme.typography.bodyMedium,
           color = Color.White,
         )
         Text(
           text = data.content,
           maxLines = 3,
           overflow = TextOverflow.Ellipsis,
-          fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-          lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
+          style = MaterialTheme.typography.bodyMedium,
           color = Color.White,
         )
 
@@ -123,22 +129,14 @@ fun HymnOfTheDayScreen(data: LyricEntity = Faker.lyricEntity) {
       }
 
       IconButton(
-        onClick = { }, modifier = Modifier.align(Alignment.Bottom)
+        onClick = { event(MainEvent.Favorite(data)) }, modifier = Modifier.align(Alignment.Bottom)
       ) {
         Icon(
-          imageVector = Icons.Default.FavoriteBorder,
+          imageVector = if (data.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
           contentDescription = null,
           tint = Color.White
         )
       }
     }
-  }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HymnOfTheDayScreenPreview() {
-  HymnTheme {
-    HymnOfTheDayScreen()
   }
 }
