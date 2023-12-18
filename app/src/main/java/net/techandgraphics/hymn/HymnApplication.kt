@@ -61,10 +61,9 @@ class HymnApplication : Application(), Configuration.Provider {
     WorkManager.getInstance(this).enqueue(workRequest)
   }
 
-  override fun getWorkManagerConfiguration(): Configuration {
-    return Configuration.Builder()
+  override val workManagerConfiguration: Configuration
+    get() = Configuration.Builder()
       .setWorkerFactory(workerFactory)
       .setMinimumLoggingLevel(Log.ERROR)
       .build()
-  }
 }

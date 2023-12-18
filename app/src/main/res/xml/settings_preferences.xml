@@ -36,7 +36,7 @@
             android:dialogTitle="Choose theme"
             android:entries="@array/theme_entries"
             android:entryValues="@array/theme_values"
-            android:icon="@drawable/ic_brightness"
+            android:icon="@drawable/ic_theme"
             android:key="@string/theme_key"
             android:title="Theme" />
 

@@ -12,8 +12,5 @@ interface RemoteSource {
   }
 
   @GET("lyric/{lastInsertedId}/")
-  suspend fun fetchLyric(
-    @Path("lastInsertedId")
-    id: Long
-  ): List<LyricDto>
+  suspend fun fetchLyric(@Path("lastInsertedId") id: Long): List<LyricDto>
 }
