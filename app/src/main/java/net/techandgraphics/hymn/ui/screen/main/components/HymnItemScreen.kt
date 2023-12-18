@@ -1,19 +1,18 @@
 package net.techandgraphics.hymn.ui.screen.main.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,15 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Faker
@@ -46,12 +44,12 @@ fun HymnItemScreen(
 ) {
   val context = LocalContext.current
   val configuration = LocalConfiguration.current
-  val widthInDp = configuration.screenWidthDp.dp
+  val widthInDp = (configuration.screenWidthDp.dp / 2) - 8.dp
 
   Box(
     modifier = Modifier
-      .padding(4.dp)
-      .width(widthInDp.div(2))
+      .padding(vertical = 4.dp)
+      .width(widthInDp)
       .height(IntrinsicSize.Max)
       .clip(RoundedCornerShape(8))
       .clickable { event(ReadEvent.Click(data.number)) },
@@ -63,59 +61,64 @@ fun HymnItemScreen(
       contentScale = ContentScale.Crop
     )
 
-    Box(
+    Card(
+      colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+      ),
+      shape = RoundedCornerShape(topStart = 12.dp),
       modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .background(Color(0x99000000))
-
-    )
-
-    Column(
-      modifier = Modifier
-        .padding(vertical = 8.dp, horizontal = 12.dp),
-      verticalArrangement = Arrangement.Center
+        .padding(top = 24.dp)
+        .fillMaxWidth(0.85f)
+        .align(Alignment.BottomEnd)
     ) {
-
-      Text(
-        text = "#${data.number}",
-        fontWeight = FontWeight.Bold,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-        color = Color.White
-      )
-
-      Text(
-        text = data.content,
-        color = Color.White,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-        lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
-      )
-
-      Spacer(modifier = Modifier.height(2.dp))
-
-      val visibility = if (data.timestamp != 0L) 1f else 0f
-
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.alpha(visibility)
+      Column(
+        modifier = Modifier
+          .padding(vertical = 8.dp, horizontal = 12.dp),
+        verticalArrangement = Arrangement.Center
       ) {
-        Icon(
-          painter = painterResource(id = R.drawable.ic_access_time),
-          contentDescription = null,
-          tint = Color.White,
-          modifier = Modifier.padding(end = 4.dp)
+
+        Text(
+          text = "#${data.number}",
+          fontWeight = FontWeight.Bold,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodyLarge,
         )
         Text(
-          text = data.timestamp.toTimeAgo(context),
-          color = Color.White,
+          text = data.content.replace("\n", ""),
+          maxLines = 1,
+          color = MaterialTheme.colorScheme.primary,
           overflow = TextOverflow.Ellipsis,
-          fontSize = MaterialTheme.typography.bodySmall.fontSize,
-          letterSpacing = 0.sp
+          style = MaterialTheme.typography.bodyMedium,
         )
+        Text(
+          text = data.categoryName,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodySmall,
+          textDecoration = TextDecoration.Underline,
+        )
+
+        val visibility = if (data.timestamp != 0L) 1f else 0f
+
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier
+            .padding(top = 4.dp)
+            .alpha(visibility)
+        ) {
+          Icon(
+            painter = painterResource(id = R.drawable.ic_access_time),
+            contentDescription = null,
+            modifier = Modifier.padding(end = 4.dp),
+            tint = MaterialTheme.colorScheme.primary
+          )
+          Text(
+            text = data.timestamp.toTimeAgo(context),
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodySmall,
+          )
+        }
       }
     }
   }

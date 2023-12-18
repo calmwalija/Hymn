@@ -34,6 +34,7 @@ import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
 import net.techandgraphics.hymn.ui.screen.category.CategoryScreen
 import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.main.MainNavigator
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscellaneousScreen
@@ -108,6 +109,12 @@ fun AppScreen(
             readEvent = { event ->
               navController.navigate(Event.read(event)) {
                 launchSingleTop = true
+              }
+            },
+            navigator = { navigation ->
+              when (navigation) {
+                MainNavigator.NavigateToCategory -> navController.navigate(Route.Category.title)
+                MainNavigator.NavigateToSearch -> navController.navigate(Route.Search.title)
               }
             }
           )
