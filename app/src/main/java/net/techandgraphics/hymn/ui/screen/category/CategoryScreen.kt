@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.category
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -29,7 +30,11 @@ fun CategoryScreen(
         modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
       )
     }
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+    LazyVerticalGrid(
+      columns = GridCells.Fixed(2),
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      modifier = Modifier.padding(horizontal = 4.dp)
+    ) {
       items(state.categories, key = { it.lyric.categoryId }) {
         CategoryScreenItem(it, event)
       }
