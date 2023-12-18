@@ -5,16 +5,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.data.prefs.UserPrefs
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -23,37 +18,29 @@ class MainViewModel @Inject constructor(
   private val userPrefs: UserPrefs
 ) : ViewModel() {
 
-  private val theHymn = database.lyricDao.theHymn(version)
   private val _state = MutableStateFlow(MainState())
-
   val state = _state.asStateFlow()
 
   init {
-    ofTheDay()
     viewModelScope.launch {
-      _state.value = _state.value.copy(featured = database.categoryDao.featured(version))
-      theHymn.onEach { _state.value = _state.value.copy(theHymn = it) }.launchIn(this)
+      with(database) {
+        val queryId = lyricDao.queryId(version)
+        _state.value = _state.value.copy(
+          queryId = queryId,
+          featured = categoryDao.featured(version),
+          theHymn = lyricDao.theHymn(version),
+          ofTheDay = lyricDao.queryById(queryId),
+        )
+      }
     }
-  }
-
-  private fun ofTheDay() {
-    userPrefs.getMills.combine(userPrefs.getOfTheDay) { mills, number ->
-      val maxValue = database.lyricDao.lastInsertedId(version) ?: return@combine
-      val random = Random.nextInt(maxValue)
-      if (mills == null || Utils.currentMillsDiff(mills)) {
-        userPrefs.mills(System.currentTimeMillis())
-        userPrefs.ofTheDay(random)
-      }
-      if (number == null) return@combine
-      database.lyricDao.queryById(2, version).collect {
-        _state.value = _state.value.copy(ofTheDay = it)
-      }
-    }.launchIn(viewModelScope)
   }
 
   fun favorite(lyric: LyricEntity) =
     viewModelScope.launch {
-      database.lyricDao.upsert(listOf(lyric.copy(favorite = !lyric.favorite)))
+      with(lyric.copy(favorite = !lyric.favorite)) {
+        database.lyricDao.favorite(favorite, number, version)
+      }
+      _state.value = _state.value.copy(ofTheDay = database.lyricDao.queryById(state.value.queryId))
     }
 
   fun onEvent(event: MainEvent) {

@@ -7,4 +7,5 @@ data class MainState(
   val featured: List<Category> = emptyList(),
   val ofTheDay: List<LyricEntity> = emptyList(),
   val theHymn: List<LyricEntity> = emptyList(),
+  var queryId: Int = 1,
 )
