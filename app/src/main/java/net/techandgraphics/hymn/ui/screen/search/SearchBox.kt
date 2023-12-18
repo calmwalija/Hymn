@@ -16,6 +16,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +73,7 @@ fun ChatBoxScreen(
       modifier = Modifier
         .focusRequester(focusRequester)
         .fillMaxWidth(),
+      textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.secondary),
       decorationBox = { innerTextField ->
         Row(
           verticalAlignment = Alignment.CenterVertically,
@@ -129,7 +132,8 @@ fun ChatBoxScreen(
               Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = null,
-                modifier = Modifier.padding(1.dp)
+                modifier = Modifier.padding(1.dp),
+                tint = MaterialTheme.colorScheme.primary
               )
             }
           }
