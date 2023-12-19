@@ -1,8 +1,8 @@
 package net.techandgraphics.hymn
 
 import androidx.annotation.DrawableRes
+import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
-import net.techandgraphics.hymn.domain.model.Lyric
 
 data class Category(
   val categoryId: Int,
@@ -137,42 +137,23 @@ object Constant {
   )
 
   val searchEntityTags = arrayListOf(
+    SearchEntity(query = "jesus loves me", tag = "jesuslovesme"),
     SearchEntity(query = "amazing grace", tag = "amazinggrace"),
-    SearchEntity(query = "i need thee", tag = "ineedthee"),
+    SearchEntity(query = "o happy day", tag = "ohappyday"),
     SearchEntity(query = "what a friend", tag = "whatafriend"),
-    SearchEntity(query = "200", tag = "200"),
-    SearchEntity(query = "holy spirit", tag = "holyspirit"),
-    SearchEntity(query = "pass me not", tag = "passmenot"),
+    SearchEntity(query = "blessed assurance", tag = "blessedassurance"),
 
-    SearchEntity(query = "unakhetsedwa mwazi", tag = "unakhetsedwamwazi", lang = "ch"),
-    SearchEntity(query = "ndi mitima", tag = "ndimitima", lang = "ch"),
-    SearchEntity(query = "wina atikonda ife", tag = "Winaatikondaife", lang = "ch"),
-    SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = "ch"),
-    SearchEntity(query = "mtima wa Mbuyako", tag = "mtimawambuyako", lang = "ch"),
-    SearchEntity(query = "bwezatu", tag = "bwezatu", lang = "ch"),
+    SearchEntity(query = "unakhetsedwa mwazi", tag = "unakhetsedwamwazi", lang = Lang.CH.name),
+    SearchEntity(query = "mbuye yesu lowani", tag = "mbuyeyesulowani", lang = Lang.CH.name),
+    SearchEntity(query = "wina atikonda ife", tag = "winaatikondaife", lang = Lang.CH.name),
+    SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = Lang.CH.name),
+    SearchEntity(query = "mtima wa mbuyako", tag = "mtimawambuyako", lang = Lang.CH.name),
   )
 
   val ofTheDay = arrayListOf(
     R.drawable.of_the_day1420830,
-    R.drawable.of_the_day1835447,
     R.drawable.of_the_day3123468,
     R.drawable.of_the_day3587237,
     R.drawable.of_the_day5842978,
-  )
-
-  val fakeLyric = Lyric(
-    lyricId = 87,
-    categoryId = 4,
-    categoryName = "Redemption",
-    number = 19,
-    chorus = 0,
-    content = "To God be the glory!",
-    timestamp = 0,
-    favorite = false,
-    topPick = "",
-    topPickHit = 0,
-    title = "Glory",
-    lang = "en",
-    justAdded = false
   )
 }
