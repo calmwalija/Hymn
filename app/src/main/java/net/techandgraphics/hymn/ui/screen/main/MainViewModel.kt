@@ -45,7 +45,8 @@ class MainViewModel @Inject constructor(
     sharedPrefs.getString(
       userPrefs.context.getString(
         R.string.version_key
-      ), Lang.EN.name
+      ),
+      Lang.EN.name
     )?.let {
       _state.value = _state.value.copy(lang = it)
     }

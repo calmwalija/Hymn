@@ -44,7 +44,6 @@ import net.techandgraphics.hymn.ui.screen.main.components.HymnItemScreen
 import net.techandgraphics.hymn.ui.screen.main.components.HymnOfTheDayScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
-
 @Composable
 fun MainScreen(
   state: MainState,
@@ -121,7 +120,6 @@ fun MainScreen(
                 .rotate(rotateDegree)
                 .size(16.dp)
             )
-
           }
           DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             versionEntries.forEach {
@@ -132,12 +130,12 @@ fun MainScreen(
                   expanded = false
                   onLangInvoke = true
                   onLanguageChange(versionValue[versionEntries.indexOf(it)])
-                })
+                }
+              )
             }
           }
         }
       }
-
 
       if (state.ofTheDay.isNotEmpty())
         HymnOfTheDayScreen(state.ofTheDay.first(), mainEvent, readEvent)

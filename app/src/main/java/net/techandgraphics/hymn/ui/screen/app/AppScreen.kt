@@ -120,9 +120,14 @@ fun AppScreen(
             }
           }
         ) { lang ->
-          mainViewModel.onEvent(MainEvent.LanguageChange(lang, onFinish = {
-            navController onLanguageChange lang
-          }))
+          mainViewModel.onEvent(
+            MainEvent.LanguageChange(
+              lang,
+              onFinish = {
+                navController onLanguageChange lang
+              }
+            )
+          )
         }
       }
 
