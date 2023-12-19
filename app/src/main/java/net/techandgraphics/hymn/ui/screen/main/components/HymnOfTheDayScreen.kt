@@ -53,7 +53,7 @@ fun HymnOfTheDayScreen(
 ) {
   val context = LocalContext.current
   val ofTheDay by remember {
-    mutableStateOf(Constant.ofTheDay[Random.nextInt(5)])
+    mutableStateOf(Constant.ofTheDay[Random.nextInt(Constant.ofTheDay.size)])
   }
 
   Box(
