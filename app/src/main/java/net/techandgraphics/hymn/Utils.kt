@@ -3,7 +3,7 @@ package net.techandgraphics.hymn
 import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.Calendar
 import java.util.Locale
@@ -46,7 +46,7 @@ object Utils {
   }
 }
 
-infix fun NavController.onChangeBook(str: String) {
+infix fun NavHostController.onLanguageChange(str: String) {
   val versionEntity = context.resources.getStringArray(R.array.version_entries)
   val versionValue = context.resources.getStringArray(R.array.version_values)
   val fragmentId = currentDestination?.id

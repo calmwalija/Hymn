@@ -28,12 +28,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import net.techandgraphics.hymn.capitalizeFirst
+import net.techandgraphics.hymn.onLanguageChange
 import net.techandgraphics.hymn.ui.Route
 import net.techandgraphics.hymn.ui.screen.Event
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
 import net.techandgraphics.hymn.ui.screen.category.CategoryScreen
 import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.main.MainNavigator
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
@@ -92,103 +94,106 @@ fun AppScreen(
     NavHost(
       navController = navController,
       startDestination = Route.Home.title,
-      modifier = Modifier.padding(it),
-      builder = {
+      modifier = Modifier.padding(it)
+    ) {
 
-        composable(route = Route.Home.title) {
-          val mainViewModel: MainViewModel = hiltViewModel()
-          val state = mainViewModel.state.collectAsState().value
-          MainScreen(
-            mainEvent = mainViewModel::onEvent,
+      composable(route = Route.Home.title) {
+        val mainViewModel: MainViewModel = hiltViewModel()
+        val state = mainViewModel.state.collectAsState().value
+        MainScreen(
+          mainEvent = mainViewModel::onEvent,
+          state = state,
+          categoryEvent = { event ->
+            navController.navigate(Event.category(event)) {
+              launchSingleTop = true
+            }
+          },
+          readEvent = { event ->
+            navController.navigate(Event.read(event)) {
+              launchSingleTop = true
+            }
+          },
+          navigator = { navigation ->
+            when (navigation) {
+              MainNavigator.NavigateToCategory -> navController.navigate(Route.Category.title)
+              MainNavigator.NavigateToSearch -> navController.navigate(Route.Search.title)
+            }
+          }
+        ) { lang ->
+          mainViewModel.onEvent(MainEvent.LanguageChange(lang, onFinish = {
+            navController onLanguageChange lang
+          }))
+        }
+      }
+
+      composable(route = Route.Category.title) {
+        val categoryViewModel: CategoryViewModel = hiltViewModel()
+        val state = categoryViewModel.state.collectAsState().value
+        CategoryScreen(state) { event ->
+          navController.navigate(Event.category(event)) {
+            launchSingleTop = true
+          }
+        }
+      }
+
+      composable(route = Route.Search.title) {
+        val searchViewModel: SearchViewModel = hiltViewModel()
+        with(searchViewModel) {
+          val state = state.collectAsState().value
+          SearchScreen(
             state = state,
-            categoryEvent = { event ->
-              navController.navigate(Event.category(event)) {
-                launchSingleTop = true
-              }
-            },
+            event = this::onEvent,
             readEvent = { event ->
+              if (state.searchQuery.trim().isNotBlank()) onEvent(SearchEvent.InsertSearchTag)
               navController.navigate(Event.read(event)) {
                 launchSingleTop = true
-              }
-            },
-            navigator = { navigation ->
-              when (navigation) {
-                MainNavigator.NavigateToCategory -> navController.navigate(Route.Category.title)
-                MainNavigator.NavigateToSearch -> navController.navigate(Route.Search.title)
               }
             }
           )
         }
+      }
 
-        composable(route = Route.Category.title) {
-          val categoryViewModel: CategoryViewModel = hiltViewModel()
-          val state = categoryViewModel.state.collectAsState().value
-          CategoryScreen(state) { event ->
-            navController.navigate(Event.category(event)) {
-              launchSingleTop = true
-            }
+      composable(route = Route.Miscellaneous.title) {
+        MiscellaneousScreen()
+      }
+
+      composable(
+        route = Route.Read.route,
+        arguments = listOf(navArgument("id") { type = NavType.IntType })
+      ) {
+        val lyricId = backStackEntry?.arguments?.getInt("id") ?: 4
+        val readViewModel: ReadViewModel = hiltViewModel()
+        with(readViewModel) {
+          LaunchedEffect(key1 = true) {
+            readViewModel.invoke(lyricId)
           }
-        }
-
-        composable(route = Route.Search.title) {
-          val searchViewModel: SearchViewModel = hiltViewModel()
-          with(searchViewModel) {
-            val state = state.collectAsState().value
-            SearchScreen(
-              state = state,
-              event = this::onEvent,
-              readEvent = { event ->
-                if (state.searchQuery.trim().isNotBlank()) onEvent(SearchEvent.InsertSearchTag)
-                navController.navigate(Event.read(event)) {
-                  launchSingleTop = true
-                }
-              }
-            )
-          }
-        }
-
-        composable(route = Route.Miscellaneous.title) {
-          MiscellaneousScreen()
-        }
-
-        composable(
-          route = Route.Read.route,
-          arguments = listOf(navArgument("id") { type = NavType.IntType })
-        ) {
-          val lyricId = backStackEntry?.arguments?.getInt("id") ?: 4
-          val readViewModel: ReadViewModel = hiltViewModel()
-          with(readViewModel) {
-            LaunchedEffect(key1 = true) {
-              readViewModel.invoke(lyricId)
-            }
-            val state = state.collectAsState().value
-            ReadScreen(state, navController, readViewModel::onEvent)
-          }
-        }
-
-        composable(
-          route = Route.Categorisation.route,
-          arguments = listOf(navArgument("id") { type = NavType.IntType })
-        ) {
-          val categoryId = backStackEntry?.arguments?.getInt("id") ?: 0
-          val categorisationViewModel: CategorisationViewModel = hiltViewModel()
-          with(categorisationViewModel) {
-            LaunchedEffect(key1 = true) {
-              categorisationViewModel.invoke(categoryId)
-            }
-            val state = state.collectAsState().value
-            CategorisationScreen(
-              state = state,
-              event = categorisationViewModel::onEvent,
-              readEvent = { event ->
-                navController.navigate(Event.read(event)) {
-                  launchSingleTop = true
-                }
-              }
-            )
-          }
+          val state = state.collectAsState().value
+          ReadScreen(state, navController, readViewModel::onEvent)
         }
       }
-    )
+
+      composable(
+        route = Route.Categorisation.route,
+        arguments = listOf(navArgument("id") { type = NavType.IntType })
+      ) {
+        val categoryId = backStackEntry?.arguments?.getInt("id") ?: 0
+        val categorisationViewModel: CategorisationViewModel = hiltViewModel()
+        with(categorisationViewModel) {
+          LaunchedEffect(key1 = true) {
+            categorisationViewModel.invoke(categoryId)
+          }
+          val state = state.collectAsState().value
+          CategorisationScreen(
+            state = state,
+            event = categorisationViewModel::onEvent,
+            readEvent = { event ->
+              navController.navigate(Event.read(event)) {
+                launchSingleTop = true
+              }
+            }
+          )
+        }
+      }
+    }
   }
 }
