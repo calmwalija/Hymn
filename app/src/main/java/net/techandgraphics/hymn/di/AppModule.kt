@@ -2,6 +2,7 @@ package net.techandgraphics.hymn.di
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import dagger.Module
@@ -31,4 +32,9 @@ object AppModule {
   fun providesLang(app: Application): String =
     PreferenceManager.getDefaultSharedPreferences(app)
       .getString(app.getString(R.string.version_key), "en")!!
+
+  @Provides
+  @Singleton
+  fun providesSharedPreferences(app: Application): SharedPreferences =
+    PreferenceManager.getDefaultSharedPreferences(app)
 }

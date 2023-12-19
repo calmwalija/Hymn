@@ -18,7 +18,7 @@ import javax.inject.Singleton
 @Singleton
 class UserPrefs @Inject constructor(
   @ApplicationContext
-  context: Context
+  val context: Context
 ) {
 
   private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "net.techandgraphics.hymn.data.prefs")
