@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,7 +57,7 @@ fun SearchScreenItem(
       contentScale = ContentScale.Crop,
       modifier = Modifier
         .padding(horizontal = 8.dp)
-        .size(62.dp)
+        .size(72.dp)
         .clip(RoundedCornerShape(16))
     )
 
@@ -74,19 +73,9 @@ fun SearchScreenItem(
       )
 
       Row {
-        AnimatedVisibility(visible = data.favorite) {
-          Icon(
-            imageVector = Icons.Default.Favorite,
-            contentDescription = null,
-            modifier = Modifier
-              .size(16.dp)
-              .padding(end = 2.dp),
-            tint = MaterialTheme.colorScheme.primary
-          )
-        }
         Text(
           text = data.content.trimIndent(),
-          maxLines = 1,
+          maxLines = 2,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodyMedium,
         )
