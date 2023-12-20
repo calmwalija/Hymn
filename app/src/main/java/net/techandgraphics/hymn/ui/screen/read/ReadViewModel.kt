@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
@@ -21,27 +19,36 @@ class ReadViewModel @Inject constructor(
   private val _state = MutableStateFlow(ReadState())
   val state = _state.asStateFlow()
 
-  operator fun invoke(id: Int) = with(id) {
-    database.lyricDao.queryByNumber(this, version).onEach {
-      _state.value = _state.value.copy(lyrics = it)
-    }.launchIn(viewModelScope)
+  operator fun invoke(id: Int) = viewModelScope.launch {
+    var index = 1
+    database.lyricDao.queryByNumber(id, version)
+      .map { lyric ->
+        LyricEntityKey(
+          key = if (lyric.chorus == 0) (index++).toString() else "Chorus",
+          lyric = lyric
+        )
+      }.also {
+        _state.value = _state.value.copy(lyricEntityKey = it)
+      }
   }
 
-  private fun tag(data: LyricEntity) = with(data) {
-//    timestamp(this)
-//    topPickHit(this)
+  private fun read(data: LyricEntity) = with(data) {
+    viewModelScope.launch { database.lyricDao.read(number, topPickHit + 1, version = version) }
   }
 
   fun favorite(lyric: LyricEntity) =
     viewModelScope.launch {
-      database.lyricDao.upsert(listOf(lyric.copy(favorite = !lyric.favorite)))
+      with(lyric.copy(favorite = !lyric.favorite)) {
+        database.lyricDao.favorite(favorite, number, version)
+      }
+      invoke(lyric.number)
     }
 
   fun onEvent(event: ReadEvent) {
     when (event) {
       is ReadEvent.Favorite -> favorite(event.data)
       is ReadEvent.Click -> Unit
-      is ReadEvent.Tag -> tag(event.data)
+      is ReadEvent.Read -> read(event.data)
     }
   }
 

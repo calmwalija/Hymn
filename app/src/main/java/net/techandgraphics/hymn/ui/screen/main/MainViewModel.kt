@@ -26,17 +26,18 @@ class MainViewModel @Inject constructor(
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
 
-  init {
+  fun init() {
     getLangConfig()
     viewModelScope.launch {
       with(database) {
-        val queryId = lyricDao.queryId(version)
-        _state.value = _state.value.copy(
-          queryId = queryId,
-          featured = categoryDao.featured(version),
-          theHymn = lyricDao.theHymn(version),
-          ofTheDay = lyricDao.queryById(queryId),
-        )
+        lyricDao.queryId(version)?.let {
+          _state.value = _state.value.copy(
+            queryId = it,
+            featured = categoryDao.featured(version),
+            theHymn = lyricDao.theHymn(version),
+            ofTheDay = lyricDao.queryById(it),
+          )
+        }
       }
     }
   }
@@ -46,7 +47,7 @@ class MainViewModel @Inject constructor(
       userPrefs.context.getString(
         R.string.version_key
       ),
-      Lang.EN.name
+      Lang.EN.lowercase()
     )?.let {
       _state.value = _state.value.copy(lang = it)
     }

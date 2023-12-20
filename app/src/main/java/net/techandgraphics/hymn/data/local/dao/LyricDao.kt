@@ -30,7 +30,7 @@ interface LyricDao {
   suspend fun lastInsertedId(version: String): Int?
 
   @Query("SELECT * FROM lyric WHERE number=:number AND lang=:version ORDER BY lyricId ASC")
-  fun queryByNumber(number: Int, version: String): Flow<List<LyricEntity>>
+  suspend fun queryByNumber(number: Int, version: String): List<LyricEntity>
 
   @Query("SELECT * FROM lyric  WHERE  lang=:version GROUP BY number ORDER BY timestamp DESC LIMIT 2")
   suspend fun theHymn(version: String): List<LyricEntity>
@@ -42,8 +42,16 @@ interface LyricDao {
   suspend fun queryById(lyricId: Int): List<LyricEntity>
 
   @Query("SELECT lyricId FROM lyric WHERE lang=:version ORDER BY RANDOM() LIMIT 1")
-  suspend fun queryId(version: String = Lang.EN.name): Int
+  suspend fun queryId(version: String = Lang.EN.name): Int?
 
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:version")
   suspend fun favorite(favorite: Boolean, number: Int, version: String = Lang.EN.name): Int
+
+  @Query("UPDATE lyric SET timestamp=:timestamp, topPickHit=:topPickHit WHERE number=:number AND lang=:version")
+  suspend fun read(
+    number: Int,
+    topPickHit: Int,
+    timestamp: Long = System.currentTimeMillis(),
+    version: String = Lang.EN.name
+  ): Int
 }
