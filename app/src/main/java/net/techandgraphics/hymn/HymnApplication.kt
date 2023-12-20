@@ -5,30 +5,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
-import androidx.work.BackoffPolicy
-import androidx.work.Configuration
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
-import net.techandgraphics.hymn.worker.HymnWorker
-import net.techandgraphics.hymn.worker.HymnWorkerFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltAndroidApp
-class HymnApplication : Application(), Configuration.Provider {
+class HymnApplication : Application() {
 
   @Inject
-  lateinit var workerFactory: HymnWorkerFactory
 
   override fun onCreate() {
     super.onCreate()
     onCreateNotificationChannel()
-    onCreateWorker()
   }
 
   companion object {
@@ -48,22 +35,4 @@ class HymnApplication : Application(), Configuration.Provider {
         )
     }
   }
-
-  private fun onCreateWorker() {
-    val workRequest = PeriodicWorkRequestBuilder<HymnWorker>(1, TimeUnit.DAYS)
-      .setInitialDelay(2, TimeUnit.MINUTES)
-      .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
-      .setBackoffCriteria(
-        BackoffPolicy.EXPONENTIAL,
-        PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS,
-        TimeUnit.MILLISECONDS
-      ).build()
-    WorkManager.getInstance(this).enqueue(workRequest)
-  }
-
-  override val workManagerConfiguration: Configuration
-    get() = Configuration.Builder()
-      .setWorkerFactory(workerFactory)
-      .setMinimumLoggingLevel(Log.ERROR)
-      .build()
 }
