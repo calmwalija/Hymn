@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.ui.screen.read
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,7 +37,7 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.Route
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadScreen(
   state: ReadState,
@@ -46,15 +45,13 @@ fun ReadScreen(
   event: (ReadEvent) -> Unit
 ) {
 
-  var indexPosition = 1
-
   Scaffold(
     topBar = {
       TopAppBar(
         title = {
-          if (state.lyrics.isNotEmpty()) {
-            val lyric = state.lyrics.first()
-            event(ReadEvent.Tag(lyric))
+          if (state.lyricEntityKey.isNotEmpty()) {
+            val lyric = state.lyricEntityKey.first().lyric
+            event(ReadEvent.Read(lyric))
             Row(
               verticalAlignment = Alignment.CenterVertically
             ) {
@@ -99,12 +96,12 @@ fun ReadScreen(
           }
         },
         actions = {
-          if (state.lyrics.isNotEmpty()) {
+          if (state.lyricEntityKey.isNotEmpty()) {
             IconButton(
-              onClick = { event(ReadEvent.Favorite(state.lyrics.first())) },
+              onClick = { event(ReadEvent.Favorite(state.lyricEntityKey.first().lyric)) },
             ) {
               Icon(
-                imageVector = if (state.lyrics.first().favorite)
+                imageVector = if (state.lyricEntityKey.first().lyric.favorite)
                   Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                 contentDescription = "Favorite",
                 modifier = Modifier.size(20.dp)
@@ -130,7 +127,7 @@ fun ReadScreen(
     LazyColumn(
       contentPadding = paddingValues
     ) {
-      items(state.lyrics, key = { it.lyricId }) { lyric ->
+      items(state.lyricEntityKey, key = { it.lyric.lyricId }) { lyric ->
 
         Column(
           modifier = Modifier
@@ -139,15 +136,15 @@ fun ReadScreen(
         ) {
 
           Text(
-            text = if (lyric.chorus == 1) "Chorus" else (indexPosition++).toString(),
+            text = lyric.key,
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.displaySmall.fontSize,
             color = MaterialTheme.colorScheme.primary
           )
 
           Text(
-            text = lyric.content,
-            fontStyle = if (lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
+            text = lyric.lyric.content,
+            fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
             modifier = Modifier
               .fillMaxWidth()
               .padding(horizontal = 16.dp, vertical = 8.dp),
