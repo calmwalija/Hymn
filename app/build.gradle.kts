@@ -130,7 +130,6 @@ dependencies {
 
   // Dagger Hilt
   implementation("com.google.dagger:hilt-android:2.43.2")
-  implementation("androidx.hilt:hilt-work:1.0.0")
   kapt("com.google.dagger:hilt-android-compiler:2.43.2")
   kapt("androidx.hilt:hilt-compiler:1.0.0")
   implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
@@ -163,9 +162,6 @@ dependencies {
 
   // Splash Screen
   implementation("androidx.core:core-splashscreen:1.0.1")
-
-  //Work Manager
-  implementation("androidx.work:work-runtime-ktx:2.9.0")
 
   implementation("io.github.raamcosta.compose-destinations:core:1.8.42-beta")
   ksp("io.github.raamcosta.compose-destinations:ksp:1.8.42-beta")
