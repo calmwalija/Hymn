@@ -9,5 +9,5 @@ data class MainState(
   val ofTheDay: List<LyricEntity> = emptyList(),
   val theHymn: List<LyricEntity> = emptyList(),
   var queryId: Int = 1,
-  val lang: String = Lang.EN.name,
+  val lang: String = Lang.EN.lowercase(),
 )

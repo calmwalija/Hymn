@@ -10,9 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(private val jsonParser: JsonParser) : ViewModel() {
 
-  init {
-    viewModelScope.launch {
-//      jsonParser.invoke { }
-    }
+  fun init() = viewModelScope.launch {
+    jsonParser.invoke { }
   }
 }

@@ -1,7 +1,7 @@
 package net.techandgraphics.hymn
 
 import androidx.annotation.DrawableRes
-import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.local.Lang.CH
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 
 data class Category(
@@ -143,11 +143,11 @@ object Constant {
     SearchEntity(query = "what a friend", tag = "whatafriend"),
     SearchEntity(query = "blessed assurance", tag = "blessedassurance"),
 
-    SearchEntity(query = "unakhetsedwa mwazi", tag = "unakhetsedwamwazi", lang = Lang.CH.name),
-    SearchEntity(query = "mbuye yesu lowani", tag = "mbuyeyesulowani", lang = Lang.CH.name),
-    SearchEntity(query = "wina atikonda ife", tag = "winaatikondaife", lang = Lang.CH.name),
-    SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = Lang.CH.name),
-    SearchEntity(query = "mtima wa mbuyako", tag = "mtimawambuyako", lang = Lang.CH.name),
+    SearchEntity(query = "unakhetsedwa mwazi", tag = "unakhetsedwamwazi", lang = CH.lowercase()),
+    SearchEntity(query = "mbuye yesu lowani", tag = "mbuyeyesulowani", lang = CH.lowercase()),
+    SearchEntity(query = "wina atikonda ife", tag = "winaatikondaife", lang = CH.lowercase()),
+    SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = CH.lowercase()),
+    SearchEntity(query = "mtima wa mbuyako", tag = "mtimawambuyako", lang = CH.lowercase()),
   )
 
   val ofTheDay = arrayListOf(

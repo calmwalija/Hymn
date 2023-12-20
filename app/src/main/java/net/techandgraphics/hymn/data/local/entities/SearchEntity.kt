@@ -7,6 +7,6 @@ import net.techandgraphics.hymn.data.local.Lang
 data class SearchEntity(
   val query: String,
   val tag: String,
-  val lang: String = Lang.EN.name,
+  val lang: String = Lang.EN.lowercase(),
   val id: Long = System.currentTimeMillis(),
 )
