@@ -85,18 +85,19 @@ fun HymnItemScreen(
           style = MaterialTheme.typography.bodyLarge,
         )
         Text(
-          text = data.content.replace("\n", ""),
-          maxLines = 1,
-          color = MaterialTheme.colorScheme.primary,
-          overflow = TextOverflow.Ellipsis,
-          style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
           text = data.categoryName,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodySmall,
           textDecoration = TextDecoration.Underline,
+        )
+        Text(
+          text = data.content.replace("\n", ""),
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodyMedium,
+          modifier = Modifier
+            .padding(vertical = 2.dp)
         )
 
         val visibility = if (data.timestamp != 0L) 1f else 0f
@@ -104,7 +105,6 @@ fun HymnItemScreen(
         Row(
           verticalAlignment = Alignment.CenterVertically,
           modifier = Modifier
-            .padding(top = 4.dp)
             .alpha(visibility)
         ) {
           Icon(

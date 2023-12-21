@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -57,7 +58,7 @@ fun SearchScreenItem(
       contentScale = ContentScale.Crop,
       modifier = Modifier
         .padding(horizontal = 8.dp)
-        .size(72.dp)
+        .size(64.dp)
         .clip(RoundedCornerShape(16))
     )
 
@@ -75,7 +76,7 @@ fun SearchScreenItem(
       Row {
         Text(
           text = data.content.trimIndent(),
-          maxLines = 2,
+          maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodyMedium,
         )
@@ -89,6 +90,7 @@ fun SearchScreenItem(
         textDecoration = TextDecoration.Underline,
       )
 
+      Spacer(modifier = Modifier.height(2.dp))
       AnimatedVisibility(visible = data.timestamp != 0L) {
         Row(
           verticalAlignment = Alignment.CenterVertically,
