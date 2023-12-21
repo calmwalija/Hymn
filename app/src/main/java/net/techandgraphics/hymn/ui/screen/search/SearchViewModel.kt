@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.Utils.regexLowerCase
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.prefs.UserPrefs
+import net.techandgraphics.hymn.removeSymbols
 import javax.inject.Inject
 
 @HiltViewModel
@@ -92,7 +92,7 @@ class SearchViewModel @Inject constructor(
 
   private fun onInsertSearchTag() = viewModelScope.launch {
     val searchQuery = state.value.searchQuery.trim().lowercase()
-    val searchList = searchQuery.regexLowerCase().split(" ")
+    val searchList = searchQuery.removeSymbols().split(" ")
     SearchEntity(query = searchQuery, tag = buildString { searchList.forEach { append(it) } })
       .also { database.searchDao.upsert(listOf(it)) }
   }

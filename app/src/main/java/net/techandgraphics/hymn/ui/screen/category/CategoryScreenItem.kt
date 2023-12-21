@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.data.local.join.Category
 import net.techandgraphics.hymn.hymnCount
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreenItem(
   category: Category,

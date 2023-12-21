@@ -26,7 +26,7 @@ class MainViewModel @Inject constructor(
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
 
-  fun init() {
+  init {
     getLangConfig()
     viewModelScope.launch {
       with(database) {

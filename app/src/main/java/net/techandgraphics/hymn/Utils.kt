@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.Calendar
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object Utils {
@@ -18,15 +17,6 @@ object Utils {
       context.assets.open(file).bufferedReader().use { it.readText() }
     } catch (e: Exception) {
       null
-    }
-  }
-
-  fun String.regexLowerCase() = replace(Regex("[_',.;!-\"?]"), "").lowercase()
-  fun String.capitaliseWord() = split(" ").joinToString(" ") {
-    it.replaceFirstChar {
-      if (it.isLowerCase()) it.titlecase(
-        Locale.getDefault()
-      ) else it.toString()
     }
   }
 
@@ -53,7 +43,7 @@ infix fun NavHostController.onLanguageChange(str: String) {
   popBackStack(fragmentId!!, true)
   navigate(fragmentId)
   val versionName = if (str == versionValue[0]) versionEntity.first() else versionEntity.last()
-  val msg = "You are now reading $versionName version."
+  val msg = context.getString(R.string.change_book_translation, versionName)
   Utils.toast(context, msg)
 }
 

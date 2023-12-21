@@ -2,7 +2,6 @@ package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,15 +19,9 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -37,7 +30,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import kotlinx.coroutines.delay
 import net.techandgraphics.hymn.R
 
 @Composable
@@ -46,24 +38,12 @@ fun ChatBoxScreen(
   event: (SearchEvent) -> Unit
 ) {
 
-  val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lf30_qhwxkcno))
-
-  val showKeyboard = remember { mutableStateOf(true) }
-  val focusRequester = remember { FocusRequester() }
-  val keyboard = LocalSoftwareKeyboardController.current
-
-  LaunchedEffect(focusRequester) {
-    if (showKeyboard.equals(true)) {
-      focusRequester.requestFocus()
-      delay(100)
-      keyboard?.show()
-    }
-  }
+  val lottieComposition by
+  rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lf30_qhwxkcno))
 
   Card(
     modifier = Modifier
-      .padding(horizontal = 8.dp)
-      .clickable { showKeyboard.value = true },
+      .padding(horizontal = 8.dp),
     shape = RoundedCornerShape(50)
   ) {
     BasicTextField(
@@ -71,7 +51,6 @@ fun ChatBoxScreen(
       onValueChange = { if (it.text.length <= 20) event(SearchEvent.OnSearchQuery(it.text)) },
       maxLines = 1,
       modifier = Modifier
-        .focusRequester(focusRequester)
         .fillMaxWidth(),
       textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.secondary),
       decorationBox = { innerTextField ->
