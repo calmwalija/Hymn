@@ -7,10 +7,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Utils
-import net.techandgraphics.hymn.Utils.capitaliseWord
-import net.techandgraphics.hymn.Utils.regexLowerCase
+import net.techandgraphics.hymn.capitaliseWord
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.removeSymbols
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -53,12 +53,12 @@ class JsonParser @Inject constructor(
       }
 
       val title = try {
-        it.content.substring(0, it.content.indexOf("\n")).regexLowerCase().capitaliseWord()
+        it.content.substring(0, it.content.indexOf("\n")).removeSymbols().capitaliseWord()
       } catch (e: Exception) {
-        it.content.regexLowerCase().capitaliseWord()
+        it.content.removeSymbols().capitaliseWord()
       }
 
-      it.copy(topPick = data.regexLowerCase().replace(" ", ""), title = title)
+      it.copy(topPick = data.removeSymbols().replace(" ", ""), title = title)
     }
     lyricRepo.upsert(data)
     if (runSearchTag) db.searchDao.upsert(Constant.searchEntityTags)

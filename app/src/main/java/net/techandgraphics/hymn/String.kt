@@ -14,3 +14,14 @@ fun String.hymnCount(context: Context): String {
       return context.resources.getQuantityString(R.plurals.hymn_count, it, it)
     }
 }
+
+fun String.removeSymbols() =
+  replace(Regex("[_',.;!-\"?]"), "").lowercase()
+
+fun String.capitaliseWord() = split(" ").joinToString(" ") {
+  it.replaceFirstChar { char ->
+    if (char.isLowerCase()) char.titlecase(
+      Locale.getDefault()
+    ) else it
+  }
+}

@@ -29,5 +29,6 @@
     </string>
     <string name="place_temporary_hymn">Tap to place temporary hymns for the present occasion</string>
     <string name="add_for_the_service">The For The Service list now includes Hymn #%d</string>
+    <string name="change_book_translation">You are now viewing %s translation.</string>
 
 </resources>
