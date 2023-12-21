@@ -33,6 +33,7 @@ class MainViewModel @Inject constructor(
     getLangConfig()
     viewModelScope.launch {
       with(database) {
+        _state.value = _state.value.copy(spotlighted = categoryDao.spotlighted(version))
         lyricDao.queryId(version)?.let {
           lyricDao.theHymn(version).zip(lyricDao.queryById(it)) { theHymn, uniquelyCrafted ->
             _state.value = _state.value.copy(
@@ -41,7 +42,6 @@ class MainViewModel @Inject constructor(
               uniquelyCrafted = uniquelyCrafted,
             )
           }.launchIn(viewModelScope)
-            .also { _state.value = _state.value.copy(spotlighted = categoryDao.spotlighted(version)) }
         }
       }
     }
