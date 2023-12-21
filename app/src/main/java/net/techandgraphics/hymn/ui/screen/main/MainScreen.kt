@@ -122,17 +122,19 @@ fun MainScreen(
             )
           }
           DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            versionEntries.forEach {
-              DropdownMenuItem(
-                text = { Text(text = it) },
-                enabled = versionValue[versionEntries.indexOf(it)] != state.lang,
-                onClick = {
-                  expanded = false
-                  onLangInvoke = true
-                  onLanguageChange(versionValue[versionEntries.indexOf(it)])
-                }
-              )
-            }
+            versionEntries
+              .filter { versionValue[versionEntries.indexOf(it)] != state.lang }
+              .forEach {
+                DropdownMenuItem(
+                  text = { Text(text = it) },
+                  enabled = versionValue[versionEntries.indexOf(it)] != state.lang,
+                  onClick = {
+                    expanded = false
+                    onLangInvoke = true
+                    onLanguageChange(versionValue[versionEntries.indexOf(it)])
+                  }
+                )
+              }
           }
         }
       }
