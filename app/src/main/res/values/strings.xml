@@ -1,34 +1,16 @@
 <resources>
     <string name="app_name">Hymn Book</string>
-    <string name="about">We would like to thank you for downloading the Hymn App and using it,
-        for it gives us encouragement and makes it possible for this app to be available for free.</string>
-    <string name="developer">This app was designed and developed by TAG in close collaboration with Zonse Media. </string>
-    <string name="share">Share hymn</string>
-    <string name="font">Change font size</string>
-    <string name="favorite">Favorite hymn</string>
+    <string name="about">This app was designed and developed by TAG in close collaboration with Zonse Media</string>
+    <string name="feedback">Get in touch with us if a hymn is missing or a typo to ensure accuracy of the content</string>
+    <string name="rate">Share your thoughts and experiences with us by leaving a rating or review on Google Play Store</string>
     <string name="add_favorite">Hymn #%d has been added to favorites</string>
     <string name="remove_favorite">Hymn #%d has been removed from favorites</string>
-    <!-- Preference Titles -->
-
-    <!-- Messages Preferences -->
+    <string name="change_book_translation">You are now viewing %s translation.</string>
 
     <!-- Preferences -->
     <string name="theme_key">theme_key</string>
     <string name="font_key">font_key</string>
-    <string name="version_key">version_key</string>
-    <string name="clear_favorite_key">clear_favorite_key</string>
-    <string name="feedback_key">feedback_key</string>
-    <string name="rate_key">rate_key</string>
-    <string name="about_key">about_key</string>
+    <string name="translation_key">translation_key</string>
     <string name="donate_key">donate_key</string>
-
-    <string name="hymn_number">#%d</string>
-    <string name="donate_message">
-        We can assure you that our hymn book app is not designed to generate income through data sales or ads.
-        The content is available to all users without charge. Your donation will be greatly appreciated as it helps us continue our mission and includes you in our community.
-    </string>
-    <string name="place_temporary_hymn">Tap to place temporary hymns for the present occasion</string>
-    <string name="add_for_the_service">The For The Service list now includes Hymn #%d</string>
-    <string name="change_book_translation">You are now viewing %s translation.</string>
 
 </resources>
