@@ -137,8 +137,8 @@ fun MainScreen(
         }
       }
 
-      if (state.ofTheDay.isNotEmpty())
-        HymnOfTheDayScreen(state.ofTheDay.first(), mainEvent, readEvent)
+      if (state.uniquelyCrafted.isNotEmpty())
+        HymnOfTheDayScreen(state.uniquelyCrafted.first(), mainEvent, readEvent)
     }
 
     item {
@@ -226,7 +226,7 @@ fun MainScreen(
         modifier = Modifier
           .padding(horizontal = 4.dp)
       ) {
-        state.featured.forEach {
+        state.spotlighted.forEach {
           CategoryScreenItem(it, categoryEvent)
         }
       }

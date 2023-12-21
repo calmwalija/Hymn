@@ -7,6 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.Database
@@ -31,12 +34,14 @@ class MainViewModel @Inject constructor(
     viewModelScope.launch {
       with(database) {
         lyricDao.queryId(version)?.let {
-          _state.value = _state.value.copy(
-            queryId = it,
-            featured = categoryDao.featured(version),
-            theHymn = lyricDao.theHymn(version),
-            ofTheDay = lyricDao.queryById(it),
-          )
+          lyricDao.theHymn(version).zip(lyricDao.queryById(it)) { theHymn, uniquelyCrafted ->
+            _state.value = _state.value.copy(
+              queryId = it,
+              theHymn = theHymn,
+              uniquelyCrafted = uniquelyCrafted,
+            )
+          }.launchIn(viewModelScope)
+            .also { _state.value = _state.value.copy(spotlighted = categoryDao.spotlighted(version)) }
         }
       }
     }
@@ -65,7 +70,9 @@ class MainViewModel @Inject constructor(
       with(lyric.copy(favorite = !lyric.favorite)) {
         database.lyricDao.favorite(favorite, number, version)
       }
-      _state.value = _state.value.copy(ofTheDay = database.lyricDao.queryById(state.value.queryId))
+      database.lyricDao.queryById(state.value.queryId).onEach {
+        _state.value = _state.value.copy(uniquelyCrafted = it)
+      }.launchIn(this)
     }
 
   fun onEvent(event: MainEvent) {

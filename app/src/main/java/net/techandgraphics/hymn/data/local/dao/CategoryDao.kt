@@ -17,7 +17,7 @@ interface CategoryDao : BaseDao<LyricEntity> {
 
   @Transaction
   @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:version  GROUP BY categoryName ORDER BY RANDOM() LIMIT 4")
-  suspend fun featured(version: String): List<Category>
+  suspend fun spotlighted(version: String): List<Category>
 
   @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:version AND categoryId=:id  GROUP BY categoryName ORDER BY categoryName ASC")
   fun queryById(id: Int, version: String): Flow<List<Category>>
