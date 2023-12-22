@@ -2,7 +2,9 @@ package net.techandgraphics.hymn.ui.screen.read
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,14 +14,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
@@ -44,6 +56,8 @@ fun ReadScreen(
   navController: NavHostController,
   event: (ReadEvent) -> Unit
 ) {
+
+  var fontSizeShow by remember { mutableStateOf(false) }
 
   Scaffold(
     topBar = {
@@ -109,7 +123,7 @@ fun ReadScreen(
             }
           }
           IconButton(
-            onClick = { },
+            onClick = { fontSizeShow = true },
             modifier = Modifier
               .padding(end = 8.dp)
           ) {
@@ -124,6 +138,59 @@ fun ReadScreen(
       )
     },
   ) { paddingValues ->
+
+    if (fontSizeShow) {
+      Dialog(onDismissRequest = { fontSizeShow = false }) {
+        Card(
+          modifier = Modifier.padding(16.dp),
+          colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+          ),
+          elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
+          ),
+        ) {
+          Column(
+            modifier = Modifier.padding(16.dp),
+          ) {
+            Text(
+              text = "Change lyrics font size",
+              modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Slider(
+                value = state.fontSize.toFloat(),
+                onValueChange = { event(ReadEvent.FontSize(it.toInt())) },
+                colors = SliderDefaults.colors(
+                  thumbColor = MaterialTheme.colorScheme.primary,
+                  activeTrackColor = MaterialTheme.colorScheme.primary,
+                ),
+                thumb = {
+                  Icon(
+                    painter = painterResource(id = R.drawable.ic_filled_circle),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                  )
+                },
+                valueRange = 1f..12f,
+                modifier = Modifier
+                  .weight(1f)
+                  .padding(end = 16.dp),
+              )
+              Text(
+                text = state.fontSize.toString(),
+                modifier = Modifier.padding(end = 8.dp)
+              )
+            }
+          }
+        }
+      }
+    }
+
     LazyColumn(
       contentPadding = paddingValues
     ) {
@@ -148,7 +215,9 @@ fun ReadScreen(
             modifier = Modifier
               .fillMaxWidth()
               .padding(horizontal = 16.dp, vertical = 8.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            lineHeight = state.fontSize.plus(20).sp,
+            fontSize = (state.fontSize.plus(17)).sp
           )
         }
       }
