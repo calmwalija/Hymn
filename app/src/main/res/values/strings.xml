@@ -8,9 +8,7 @@
     <string name="change_book_translation">You are now viewing %s translation.</string>
 
     <!-- Preferences -->
-    <string name="theme_key">theme_key</string>
     <string name="font_key">font_key</string>
     <string name="translation_key">translation_key</string>
-    <string name="donate_key">donate_key</string>
 
 </resources>

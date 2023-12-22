@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.local.Migration
 import net.techandgraphics.hymn.data.local.Migration.MIGRATION_3_4
 import javax.inject.Singleton
@@ -31,7 +32,7 @@ object AppModule {
   @Provides
   fun providesLang(app: Application): String =
     PreferenceManager.getDefaultSharedPreferences(app)
-      .getString(app.getString(R.string.version_key), "en")!!
+      .getString(app.getString(R.string.translation_key), Lang.EN.lowercase())!!
 
   @Provides
   @Singleton
