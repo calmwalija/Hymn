@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -124,7 +125,8 @@ fun ChatBoxScreen(
             }
           }
         }
-      }
+      },
+      cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary)
     )
   }
 }
