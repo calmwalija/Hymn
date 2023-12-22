@@ -140,7 +140,7 @@ fun MiscScreen(
     item {
       Spacer(modifier = Modifier.height(16.dp))
       Text(
-        text = "Contact Us & Updates",
+        text = "Contact",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
