@@ -2,7 +2,10 @@
     <string name="app_name">Hymn Book</string>
     <string name="about">This app was designed and developed by TAG in close collaboration with Zonse Media</string>
     <string name="feedback">Get in touch with us if a hymn is missing or a typo to ensure accuracy of the content</string>
-    <string name="rate">Share your thoughts and experiences with us by leaving a rating or review on Google Play Store</string>
+    <string name="rate">Share your thoughts &amp; experiences with us by rating or review on Google Play Store</string>
+    <string name="favorite">Cherished hymns that hold a special place in your heart.</string>
+    <string name="no_fav_hymn">You do not have favorite hymns</string>
+    <string name="updates">Ensure that you have the most recent information by checking for updates</string>
     <string name="add_favorite">Hymn #%d has been added to favorites</string>
     <string name="remove_favorite">Hymn #%d has been removed from favorites</string>
     <string name="change_book_translation">You are now viewing %s translation.</string>

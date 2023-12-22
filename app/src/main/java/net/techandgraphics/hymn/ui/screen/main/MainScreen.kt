@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -81,6 +82,12 @@ fun MainScreen(
 
         Card(
           shape = RoundedCornerShape(50),
+          colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+          ),
+          elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
+          ),
         ) {
           Row(
             verticalAlignment = Alignment.CenterVertically,

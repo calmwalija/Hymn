@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -44,7 +45,13 @@ fun ChatBoxScreen(
   Card(
     modifier = Modifier
       .padding(horizontal = 8.dp),
-    shape = RoundedCornerShape(50)
+    shape = RoundedCornerShape(50),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.surface
+    ),
+    elevation = CardDefaults.cardElevation(
+      defaultElevation = 1.dp
+    ),
   ) {
     BasicTextField(
       value = TextFieldValue(state.searchQuery, selection = TextRange(state.searchQuery.length)),
