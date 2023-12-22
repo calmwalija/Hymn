@@ -50,7 +50,7 @@ class MainViewModel @Inject constructor(
   private fun getLangConfig() {
     sharedPrefs.getString(
       userPrefs.context.getString(
-        R.string.version_key
+        R.string.translation_key
       ),
       Lang.EN.lowercase()
     )?.let {
@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
   }
 
   private fun languageChange(lang: String, onFinish: () -> Unit) = viewModelScope.launch {
-    sharedPrefs.edit().putString(userPrefs.context.getString(R.string.version_key), lang).apply()
+    sharedPrefs.edit().putString(userPrefs.context.getString(R.string.translation_key), lang).apply()
     _state.value = _state.value.copy(lang = lang)
     delay(1000)
     onFinish.invoke()
