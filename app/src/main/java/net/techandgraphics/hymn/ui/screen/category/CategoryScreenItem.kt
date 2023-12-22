@@ -81,7 +81,7 @@ fun CategoryScreenItem(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Badge(
-          containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+          containerColor = MaterialTheme.colorScheme.primary,
         ) {
           Text(
             text = category.count.hymnCount(context),

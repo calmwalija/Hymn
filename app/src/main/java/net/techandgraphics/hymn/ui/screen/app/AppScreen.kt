@@ -39,7 +39,8 @@ import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.main.MainNavigator
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
-import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscellaneousScreen
+import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscScreen
+import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
 import net.techandgraphics.hymn.ui.screen.read.ReadScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadViewModel
 import net.techandgraphics.hymn.ui.screen.search.SearchEvent
@@ -159,7 +160,16 @@ fun AppScreen(
       }
 
       composable(route = Route.Miscellaneous.title) {
-        MiscellaneousScreen()
+        val miscViewModel: MiscViewModel = hiltViewModel()
+        val state = miscViewModel.state.collectAsState().value
+        MiscScreen(
+          state,
+          readEvent = { event ->
+            navController.navigate(Event.read(event)) {
+              launchSingleTop = true
+            }
+          }
+        )
       }
 
       composable(
