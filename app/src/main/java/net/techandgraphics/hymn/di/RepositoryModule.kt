@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import net.techandgraphics.hymn.data.ComplementaryParser
 import net.techandgraphics.hymn.data.JsonParser
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.remote.RemoteSource
@@ -35,4 +36,10 @@ object RepositoryModule {
     db: Database,
     @ApplicationContext context: Context
   ) = JsonParser(db, context)
+
+  @Provides
+  fun providesComplementaryParser(
+    db: Database,
+    @ApplicationContext context: Context
+  ) = ComplementaryParser(db, context)
 }

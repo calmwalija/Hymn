@@ -54,4 +54,7 @@ interface LyricDao {
     timestamp: Long = System.currentTimeMillis(),
     version: String = Lang.EN.name
   ): Int
+
+  @Query("SELECT * FROM lyric WHERE favorite = 1 AND lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC")
+  fun favorites(version: String = Lang.EN.name): Flow<List<LyricEntity>>
 }
