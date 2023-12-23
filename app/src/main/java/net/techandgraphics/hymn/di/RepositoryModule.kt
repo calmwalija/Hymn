@@ -9,7 +9,6 @@ import dagger.hilt.components.SingletonComponent
 import net.techandgraphics.hymn.data.ComplementaryParser
 import net.techandgraphics.hymn.data.JsonParser
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.remote.RemoteSource
 import net.techandgraphics.hymn.data.repository.LyricRepositoryImpl
 import net.techandgraphics.hymn.data.repository.Repository
 import net.techandgraphics.hymn.data.repository.SearchRepositoryImpl
@@ -22,11 +21,10 @@ object RepositoryModule {
   fun providesRepository(
     db: Database,
     version: String,
-    remoteSource: RemoteSource,
     @ApplicationContext context: Context
   ): Repository {
     return Repository(
-      LyricRepositoryImpl(db, version, remoteSource, context),
+      LyricRepositoryImpl(db, version, context),
       SearchRepositoryImpl(db, version),
     )
   }
