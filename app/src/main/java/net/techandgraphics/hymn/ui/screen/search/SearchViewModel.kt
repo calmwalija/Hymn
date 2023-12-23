@@ -2,8 +2,10 @@ package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,12 +31,18 @@ class SearchViewModel @Inject constructor(
   private val search = database.searchDao.query(version = version)
   private val _state = MutableStateFlow(SearchState())
   val state = _state.asStateFlow()
+  private val pageSize = 20
 
-  private fun CoroutineScope.queryLyrics() =
-    database.lyricDao.query(
-      version = version,
-      query = _state.value.searchQuery,
-    ).onEach { _state.value = _state.value.copy(lyric = it) }.launchIn(this)
+  private fun queryLyrics() = Pager(
+    config = PagingConfig(
+      pageSize = pageSize,
+      maxSize = pageSize.times(3)
+    ),
+    pagingSourceFactory = { database.lyricDao.query(_state.value.searchQuery, version) }
+  )
+    .flow
+    .also { _state.value = _state.value.copy(lyricsPaged = it) }
+    .cachedIn(viewModelScope)
 
   init {
     with(viewModelScope) {
@@ -74,7 +82,7 @@ class SearchViewModel @Inject constructor(
         _state.value = _state.value.copy(searchQuery = event.searchQuery, isSearching = true)
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-          delay(delayDuration)
+          delay(600)
           queryLyrics()
           delay(delayDuration.times(600))
           _state.value = _state.value.copy(isSearching = false)
