@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -18,7 +19,7 @@ interface LyricDao {
                categoryName  LIKE'%' || :query || '%' )
               AND  lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC"""
   )
-  fun query(query: String = "", version: String = Lang.EN.name): Flow<List<LyricEntity>>
+  fun query(query: String = "", version: String = Lang.EN.name): PagingSource<Int, LyricEntity>
 
   @Query("SELECT * FROM lyric WHERE categoryId=:id AND lang=:version GROUP BY number ORDER BY lyricId ASC")
   fun queryByCategory(id: Int, version: String): Flow<List<LyricEntity>>
