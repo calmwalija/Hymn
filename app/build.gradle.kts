@@ -88,13 +88,7 @@ android {
     }
     useBuildCache = true
   }
-
-  applicationVariants.all {
-    addJavaSourceFoldersToModel(
-      File(buildDir, "generated/ksp/$name/kotlin")
-    )
-  }
-
+  
 }
 
 dependencies {
