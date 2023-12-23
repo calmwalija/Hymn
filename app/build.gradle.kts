@@ -1,13 +1,13 @@
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
-  id("org.jetbrains.kotlin.kapt")
   id("com.diffplug.spotless")
   id("dagger.hilt.android.plugin")
   id("com.google.gms.google-services")
 //  id("com.google.firebase.crashlytics")
   id("com.google.firebase.firebase-perf")
   id("com.google.devtools.ksp") version "1.8.10-1.0.9"
+  id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -140,14 +140,13 @@ dependencies {
   //Gson
   implementation("com.google.code.gson:gson:2.10.1")
 
-
   // DataStore
   implementation("androidx.datastore:datastore-preferences:1.1.0-alpha07")
 
   // Coil
   implementation("io.coil-kt:coil-compose:2.5.0")
 
-  // Third party
+  // Lottie
   implementation("com.airbnb.android:lottie-compose:6.2.0")
 
   // Preference
@@ -156,16 +155,7 @@ dependencies {
   // Splash Screen
   implementation("androidx.core:core-splashscreen:1.0.1")
 
-  // Kotlin stdlib
-  constraints {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
-      because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
-    }
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
-      because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
-    }
-  }
-
+  // Accompanist
   implementation("com.google.accompanist:accompanist-flowlayout:0.23.1")
 
 }
