@@ -86,7 +86,6 @@ fun CategoryScreenItem(
           Text(
             text = category.count.hymnCount(context),
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onPrimary
           )
         }
       }
