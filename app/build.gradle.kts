@@ -88,13 +88,7 @@ android {
     }
     useBuildCache = true
   }
-
-  applicationVariants.all {
-    addJavaSourceFoldersToModel(
-      File(buildDir, "generated/ksp/$name/kotlin")
-    )
-  }
-
+  
 }
 
 dependencies {
@@ -161,9 +155,6 @@ dependencies {
 
   // Splash Screen
   implementation("androidx.core:core-splashscreen:1.0.1")
-
-  implementation("io.github.raamcosta.compose-destinations:core:1.8.42-beta")
-  ksp("io.github.raamcosta.compose-destinations:ksp:1.8.42-beta")
 
   // Kotlin stdlib
   constraints {
