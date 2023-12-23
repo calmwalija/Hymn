@@ -42,8 +42,7 @@ fun SearchScreen(
     ) {
       Text(
         text = "Quick Hymn Search",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
         modifier = Modifier
           .padding(16.dp)
           .weight(1f)

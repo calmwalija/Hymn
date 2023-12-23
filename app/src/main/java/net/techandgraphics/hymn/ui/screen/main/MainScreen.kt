@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.SizeMode
 import net.techandgraphics.hymn.R
@@ -76,7 +77,7 @@ fun MainScreen(
       ) {
         Text(
           text = "Uniquely Crafted",
-          style = MaterialTheme.typography.titleLarge,
+          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
           modifier = Modifier.weight(1f)
         )
 
@@ -161,7 +162,7 @@ fun MainScreen(
       ) {
         Text(
           text = "Dive Into",
-          style = MaterialTheme.typography.titleLarge,
+          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
           modifier = Modifier
             .weight(1f)
         )
@@ -206,7 +207,7 @@ fun MainScreen(
       ) {
         Text(
           text = "Spotlighted",
-          style = MaterialTheme.typography.titleLarge,
+          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
           modifier = Modifier
             .weight(1f)
         )
