@@ -2,7 +2,6 @@ package net.techandgraphics.hymn.data.repository
 
 import android.content.Context
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.remote.RemoteSource
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,7 +12,6 @@ const val SIZE = 20
 class LyricRepositoryImpl @Inject constructor(
   private val db: Database,
   private val version: String,
-  private val api: RemoteSource,
   private val context: Context
 ) : LyricRepository {
 //
