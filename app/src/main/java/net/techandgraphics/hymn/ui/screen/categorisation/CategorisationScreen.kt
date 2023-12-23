@@ -81,7 +81,7 @@ fun CategorisationScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Badge(
-              containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+              containerColor = MaterialTheme.colorScheme.primary,
             ) {
               Text(
                 text = data.count.hymnCount(context),

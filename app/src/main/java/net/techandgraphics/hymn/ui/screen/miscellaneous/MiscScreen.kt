@@ -70,9 +70,8 @@ fun MiscScreen(
       Spacer(modifier = Modifier.height(24.dp))
       Text(
         text = "About Hymn Book App",
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
+        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+        modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
       )
 
       Card(
@@ -141,9 +140,8 @@ fun MiscScreen(
       Spacer(modifier = Modifier.height(16.dp))
       Text(
         text = "Contact",
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
+        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+        modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
       )
       Card(
         elevation = CardDefaults.cardElevation(
@@ -218,9 +216,8 @@ fun MiscScreen(
         Spacer(modifier = Modifier.height(32.dp))
         Text(
           text = "Complementary",
-          style = MaterialTheme.typography.titleMedium,
-          fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
+          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+          modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
         )
         Card(
           elevation = CardDefaults.cardElevation(

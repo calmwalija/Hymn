@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -106,7 +107,9 @@ fun ChatBoxScreen(
             if (state.searchQuery.isEmpty())
               Text(
                 text = "Which hymn are you looking for?",
-                color = LocalContentColor.current.copy(alpha = 0.5f)
+                color = LocalContentColor.current.copy(alpha = 0.5f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
               )
           }
 
