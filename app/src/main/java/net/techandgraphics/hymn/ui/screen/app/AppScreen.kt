@@ -164,6 +164,7 @@ fun AppScreen(
         val state = miscViewModel.state.collectAsState().value
         MiscScreen(
           state,
+          event = miscViewModel::onEvent,
           readEvent = { event ->
             navController.navigate(Event.read(event)) {
               launchSingleTop = true
