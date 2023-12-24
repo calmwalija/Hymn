@@ -59,7 +59,7 @@ class JsonParser @Inject constructor(
         it.content.removeSymbols().capitaliseWord()
       }
 
-      it.copy(topPick = data.removeSymbols().replace(" ", ""), title = title)
+      it.copy(title = title)
     }
     database.withTransaction {
       with(dao.backup()) {

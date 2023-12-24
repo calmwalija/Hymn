@@ -48,10 +48,9 @@ interface LyricDao {
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:version")
   suspend fun favorite(favorite: Boolean, number: Int, version: String = Lang.EN.name)
 
-  @Query("UPDATE lyric SET timestamp=:timestamp, topPickHit=:topPickHit WHERE number=:number AND lang=:version")
+  @Query("UPDATE lyric SET timestamp=:timestamp WHERE number=:number AND lang=:version")
   suspend fun read(
     number: Int,
-    topPickHit: Int,
     timestamp: Long = System.currentTimeMillis(),
     version: String = Lang.EN.name
   )
