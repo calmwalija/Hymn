@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.asTimestamp
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.data.prefs.UserPrefs
@@ -28,7 +29,7 @@ class ReadViewModel @Inject constructor(
 
   private var fontJob: Job? = null
 
-  operator fun invoke(id: Int) = viewModelScope.launch {
+  operator fun invoke(id: Int, timestamp: Boolean = true) = viewModelScope.launch {
     var index = 1
     database.lyricDao.queryByNumber(id, version)
       .map { lyric ->
@@ -42,11 +43,15 @@ class ReadViewModel @Inject constructor(
           fontSize = sharedPreferences
             .getInt(userPrefs.context.getString(R.string.font_key), 2)
         )
+        if (timestamp) onEvent(ReadEvent.Read(it.first().lyric))
       }
   }
 
   private fun read(data: LyricEntity) = with(data) {
-    viewModelScope.launch { database.lyricDao.read(number, topPickHit + 1, version = version) }
+    viewModelScope.launch {
+      database.lyricDao.read(number, version = version)
+      database.timestampDao.upsert(listOf(data.asTimestamp()))
+    }
   }
 
   fun favorite(lyric: LyricEntity) =
@@ -54,7 +59,7 @@ class ReadViewModel @Inject constructor(
       with(lyric.copy(favorite = !lyric.favorite)) {
         database.lyricDao.favorite(favorite, number, version)
       }
-      invoke(lyric.number)
+      invoke(lyric.number, false)
     }
 
   fun onEvent(event: ReadEvent) {
@@ -77,13 +82,5 @@ class ReadViewModel @Inject constructor(
           .getInt(userPrefs.context.getString(R.string.font_key), font)
       )
     }
-  }
-
-  private fun timestamp(data: LyricEntity) = viewModelScope.launch {
-    database.lyricDao.upsert(listOf(data.copy(timestamp = System.currentTimeMillis())))
-  }
-
-  private fun topPickHit(data: LyricEntity) = viewModelScope.launch {
-    database.lyricDao.upsert(listOf(data.copy(topPickHit = data.topPickHit.plus(1))))
   }
 }

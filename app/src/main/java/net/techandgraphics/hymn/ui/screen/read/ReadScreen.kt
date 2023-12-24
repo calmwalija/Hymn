@@ -65,7 +65,6 @@ fun ReadScreen(
         title = {
           if (state.lyricEntityKey.isNotEmpty()) {
             val lyric = state.lyricEntityKey.first().lyric
-            event(ReadEvent.Read(lyric))
             Row(
               verticalAlignment = Alignment.CenterVertically
             ) {

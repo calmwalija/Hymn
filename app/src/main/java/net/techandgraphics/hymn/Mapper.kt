@@ -2,6 +2,7 @@ package net.techandgraphics.hymn
 
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.data.local.entities.TimestampEntity
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.model.Search
 
@@ -14,14 +15,8 @@ fun Lyric.asEntity() = LyricEntity(
   content = content,
   timestamp = timestamp,
   favorite = favorite,
-  topPick = topPick,
-  topPickHit = topPickHit,
   title = title,
   lang = lang,
-  forTheService = forTheService,
-  ftsSuggestion = ftsSuggestion,
-  justAdded = justAdded,
-  millsAdded = millsAdded
 )
 
 fun SearchEntity.asModel() = Search(
@@ -36,4 +31,9 @@ fun Search.asEntity() = SearchEntity(
   tag = tag,
   lang = lang,
   id = id
+)
+
+fun LyricEntity.asTimestamp() = TimestampEntity(
+  number = number,
+  lang = lang
 )
