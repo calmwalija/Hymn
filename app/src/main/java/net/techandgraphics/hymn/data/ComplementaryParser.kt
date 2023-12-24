@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.local.entities.EssentialEntity
+import net.techandgraphics.hymn.data.local.entities.OtherEntity
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,15 +23,15 @@ class ComplementaryParser @Inject constructor(
 
   private suspend fun readJsonFromAssetToString(onCompleted: suspend () -> Unit) {
     withContext(Dispatchers.IO) {
-      val ofType: Type = object : TypeToken<List<EssentialEntity>>() {}.type
-      val json = Gson().fromJson<List<EssentialEntity>>(
+      val ofType: Type = object : TypeToken<List<OtherEntity>>() {}.type
+      val json = Gson().fromJson<List<OtherEntity>>(
         Utils.readJsonFromAssetToString(context, filename)!!,
         ofType
       )
       with(database) {
         withTransaction {
-          essentialDao.clearAll()
-          essentialDao.upsert(json)
+          otherDao.clearAll()
+          otherDao.upsert(json)
           onCompleted.invoke()
         }
       }

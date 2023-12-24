@@ -30,7 +30,9 @@ class CategorisationViewModel @Inject constructor(
 
   fun favorite(lyric: LyricEntity) =
     viewModelScope.launch {
-      database.lyricDao.upsert(listOf(lyric.copy(favorite = !lyric.favorite)))
+      with(lyric.copy(favorite = !lyric.favorite)) {
+        database.lyricDao.favorite(favorite, number, version)
+      }
     }
 
   fun onEvent(event: CategorisationEvent) {

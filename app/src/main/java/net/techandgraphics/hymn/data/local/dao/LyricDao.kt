@@ -46,7 +46,7 @@ interface LyricDao {
   suspend fun queryId(version: String = Lang.EN.name): Int?
 
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:version")
-  suspend fun favorite(favorite: Boolean, number: Int, version: String = Lang.EN.name): Int
+  suspend fun favorite(favorite: Boolean, number: Int, version: String = Lang.EN.name)
 
   @Query("UPDATE lyric SET timestamp=:timestamp, topPickHit=:topPickHit WHERE number=:number AND lang=:version")
   suspend fun read(
@@ -54,8 +54,11 @@ interface LyricDao {
     topPickHit: Int,
     timestamp: Long = System.currentTimeMillis(),
     version: String = Lang.EN.name
-  ): Int
+  )
 
   @Query("SELECT * FROM lyric WHERE favorite = 1 AND lang=:version GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC")
   fun favorites(version: String = Lang.EN.name): Flow<List<LyricEntity>>
+
+  @Query("SELECT * FROM lyric WHERE timestamp > 0 OR favorite = 1")
+  suspend fun backup(): List<LyricEntity>
 }
