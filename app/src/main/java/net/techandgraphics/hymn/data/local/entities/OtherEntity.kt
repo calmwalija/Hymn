@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import net.techandgraphics.hymn.data.local.Lang
 
 @Entity(tableName = "Other")
-data class EssentialEntity(
+data class OtherEntity(
   val groupName: String,
   val content: String,
   val lang: String = Lang.EN.lowercase(),

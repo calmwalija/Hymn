@@ -25,7 +25,7 @@ class MiscViewModel @Inject constructor(
       database.lyricDao.favorites(version).onEach { favorites ->
         _state.value = _state.value.copy(
           favorites = favorites,
-          complementary = database.essentialDao.query(version)
+          complementary = database.otherDao.query(version)
         )
       }.launchIn(this)
     }

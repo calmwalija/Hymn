@@ -93,8 +93,6 @@ class SearchViewModel @Inject constructor(
 
       SearchEvent.InsertSearchTag -> onInsertSearchTag()
       SearchEvent.ClearSearchQuery -> clearSearchQuery()
-      is SearchEvent.FilterBy -> viewModelScope.launch { prefs.setFilterBy(event.filter) }
-      is SearchEvent.SortBy -> viewModelScope.launch { prefs.setSortBy(event.sort) }
     }
   }
 

@@ -1,6 +1,7 @@
 package net.techandgraphics.hymn.data
 
 import android.content.Context
+import androidx.room.withTransaction
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -17,11 +18,11 @@ import javax.inject.Singleton
 
 @Singleton
 class JsonParser @Inject constructor(
-  private val db: Database,
+  private val database: Database,
   private val context: Context,
 ) {
 
-  private val lyricRepo = db.lyricDao
+  private val dao = database.lyricDao
   private val filename = "lyrics.json"
 
   private suspend fun readJsonFromAssetToString(event: suspend () -> Unit) {
@@ -60,8 +61,14 @@ class JsonParser @Inject constructor(
 
       it.copy(topPick = data.removeSymbols().replace(" ", ""), title = title)
     }
-    lyricRepo.upsert(data)
-    if (runSearchTag) db.searchDao.upsert(Constant.searchEntityTags)
+    database.withTransaction {
+      with(dao.backup()) {
+        dao.upsert(data)
+        dao.upsert(this)
+      }
+      if (runSearchTag)
+        database.searchDao.upsert(Constant.searchEntityTags)
+    }
     event.invoke()
   }
 
