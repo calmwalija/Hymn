@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,4 +31,17 @@ class MiscViewModel @Inject constructor(
       }.launchIn(this)
     }
   }
+
+  fun onEvent(event: MiscEvent) {
+    when (event) {
+      is MiscEvent.RemoveFav -> favorite(event.data)
+    }
+  }
+
+  private fun favorite(lyric: LyricEntity) =
+    viewModelScope.launch {
+      with(lyric.copy(favorite = !lyric.favorite)) {
+        database.lyricDao.favorite(favorite, number, version)
+      }
+    }
 }
