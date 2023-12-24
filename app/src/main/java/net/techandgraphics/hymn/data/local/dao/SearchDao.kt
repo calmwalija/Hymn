@@ -11,12 +11,12 @@ import net.techandgraphics.hymn.data.local.entities.SearchEntity
 interface SearchDao {
 
   @Upsert
-  suspend fun upsert(searchEntities: List<SearchEntity>)
+  suspend fun upsert(data: List<SearchEntity>)
 
   @Delete
-  suspend fun delete(searchEntity: SearchEntity)
+  suspend fun delete(data: SearchEntity)
 
-  @Query("DELETE  FROM  Search")
+  @Query("DELETE FROM Search")
   suspend fun clear()
 
   @Query("SELECT * FROM Search WHERE lang=:version ORDER BY id DESC LIMIT 9")
