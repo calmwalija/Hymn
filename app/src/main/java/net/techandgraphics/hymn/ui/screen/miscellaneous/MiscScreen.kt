@@ -4,26 +4,34 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri.parse
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,17 +49,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MiscScreen(
   state: MiscState,
-  readEvent: (ReadEvent) -> Unit
+  readEvent: (ReadEvent) -> Unit,
+  event: (MiscEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
@@ -61,6 +73,9 @@ fun MiscScreen(
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
   var favoriteShow by remember { mutableStateOf(false) }
+
+  val lottieComposition by
+  rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.elq73h_del))
 
   LazyColumn(
     modifier = Modifier.padding(horizontal = 8.dp)
@@ -229,7 +244,7 @@ fun MiscScreen(
           modifier = Modifier.padding(4.dp)
         ) {
 
-          if (favoriteShow) {
+          if (favoriteShow && state.favorites.isNotEmpty()) {
             ModalBottomSheet(onDismissRequest = { favoriteShow = false }) {
 
               Text(
@@ -241,55 +256,96 @@ fun MiscScreen(
               )
 
               Spacer(modifier = Modifier.height(16.dp))
-              LazyColumn {
+              LazyColumn(
+                state = rememberLazyListState()
+              ) {
                 items(state.favorites, key = { it.lyricId }) {
-                  Column(
-                    modifier = Modifier
-                      .clickable {
-                        readEvent(ReadEvent.Click(it.number))
-                        favoriteShow = false
-                      }
-                      .fillMaxWidth()
-                      .padding(horizontal = 24.dp, vertical = 8.dp)
-                  ) {
-                    Text(
-                      text = "#${it.number}",
-                      fontWeight = FontWeight.Bold,
-                      style = MaterialTheme.typography.bodyLarge,
-                      color = MaterialTheme.colorScheme.primary,
-                    )
-                    Text(
-                      text = it.content.replace("\n", ""),
-                      maxLines = 1,
-                      overflow = TextOverflow.Ellipsis,
-                      style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Text(
-                      text = it.categoryName.trimIndent(),
-                      maxLines = 1,
-                      overflow = TextOverflow.Ellipsis,
-                      style = MaterialTheme.typography.bodySmall,
-                      textDecoration = TextDecoration.Underline,
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    AnimatedVisibility(visible = it.timestamp != 0L) {
+                  val dismissState = rememberDismissState(
+                    confirmValueChange = { dismissValue ->
+                      if (dismissValue == DismissValue.DismissedToEnd)
+                        event(MiscEvent.RemoveFav(it))
+                      true
+                    },
+                    positionalThreshold = { 150.dp.toPx() },
+                  )
+                  SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.StartToEnd),
+                    background = {
                       Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                          .fillMaxSize()
+                          .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                       ) {
-                        Icon(
-                          painter = painterResource(id = R.drawable.ic_access_time),
-                          contentDescription = null,
-                          modifier = Modifier.padding(end = 4.dp)
+                        LottieAnimation(
+                          composition = lottieComposition,
+                          isPlaying = dismissState.dismissDirection == DismissDirection.StartToEnd,
+                          speed = 2f,
+                          modifier = Modifier
+                            .fillMaxWidth(.2f)
                         )
-                        Text(
-                          text = it.timestamp.toTimeAgo(context),
-                          overflow = TextOverflow.Ellipsis,
-                          fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                          letterSpacing = 0.sp
+                      }
+                    },
+                    dismissContent = {
+                      Card(
+                        modifier = Modifier
+                          .clickable {
+                            readEvent(ReadEvent.Click(it.number))
+                            favoriteShow = false
+                          }
+                          .fillMaxWidth()
+                          .padding(8.dp),
+                        shape = RoundedCornerShape(0),
+                        colors = CardDefaults.cardColors(
+                          containerColor = MaterialTheme.colorScheme.surface
                         )
+                      ) {
+                        Column(
+                          modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                        ) {
+                          Text(
+                            text = "#${it.number}",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                          )
+                          Text(
+                            text = it.content.replace("\n", ""),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                          )
+                          Text(
+                            text = it.categoryName.trimIndent(),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodySmall,
+                            textDecoration = TextDecoration.Underline,
+                          )
+                          Spacer(modifier = Modifier.height(2.dp))
+                          AnimatedVisibility(visible = it.timestamp != 0L) {
+                            Row(
+                              verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                              Icon(
+                                painter = painterResource(id = R.drawable.ic_access_time),
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 4.dp)
+                              )
+                              Text(
+                                text = it.timestamp.toTimeAgo(context),
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                letterSpacing = 0.sp
+                              )
+                            }
+                          }
+                        }
                       }
                     }
-                  }
+                  )
                 }
               }
               Spacer(modifier = Modifier.height(32.dp))
