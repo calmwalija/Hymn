@@ -1,12 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -14,11 +8,4 @@
 .cxx
 local.properties
 /app/src/main/assets/
-/.idea/deploymentTargetDropDown.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/compiler.xml
-.idea/kotlinc.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/misc.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/kotlinScripting.xml
+.idea
