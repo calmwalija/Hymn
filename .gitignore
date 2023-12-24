@@ -9,3 +9,7 @@
 local.properties
 /app/src/main/assets/
 .idea/
+.idea/misc.xml
+.idea/compiler.xml
+.idea/deploymentTargetDropDown.xml
+.idea/gradle.xml
