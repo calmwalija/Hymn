@@ -16,11 +16,4 @@ data class LyricEntity(
   val title: String = "",
   val lang: String = Lang.EN.name.lowercase(),
   val timestamp: Long = System.currentTimeMillis(),
-
-//  val topPickHit: Int = 0,
-//  val topPick: String = "0",
-//  val forTheService: Boolean = false,
-//  val ftsSuggestion: Boolean = false,
-//  val justAdded: Boolean = false,
-//  val millsAdded: Long = System.currentTimeMillis(),
 )

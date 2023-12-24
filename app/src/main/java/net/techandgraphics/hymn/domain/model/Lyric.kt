@@ -11,10 +11,4 @@ data class Lyric(
   val lang: String,
   val timestamp: Long,
   val favorite: Boolean,
-
-//  val topPick: String,
-//  val justAdded: Boolean,
-//  val forTheService: Boolean = false,
-//  val ftsSuggestion: Boolean = false,
-//  val millsAdded: Long = System.currentTimeMillis(),
 )
