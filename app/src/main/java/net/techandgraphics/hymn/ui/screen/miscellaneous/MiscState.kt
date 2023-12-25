@@ -5,5 +5,6 @@ import net.techandgraphics.hymn.data.local.entities.OtherEntity
 
 data class MiscState(
   val favorites: List<LyricEntity> = emptyList(),
-  val complementary: List<OtherEntity> = emptyList()
+  val complementary: List<OtherEntity> = emptyList(),
+  val fontSize: Int = 2
 )
