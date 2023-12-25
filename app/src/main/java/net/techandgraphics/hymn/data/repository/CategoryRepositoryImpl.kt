@@ -8,9 +8,7 @@ import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Category
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class CategoryRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) :
   CategoryRepository {
 

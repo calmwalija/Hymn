@@ -7,9 +7,7 @@ import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Other
 import net.techandgraphics.hymn.domain.repository.OtherRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class OtherRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) :
   OtherRepository {
 

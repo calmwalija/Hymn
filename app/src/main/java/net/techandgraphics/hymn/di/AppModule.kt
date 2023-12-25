@@ -27,6 +27,5 @@ object AppModule {
     .build()
 
   @Provides
-  @Singleton
   fun providesSharedPreferences(@ApplicationContext context: Context): Prefs = Prefs(context)
 }
