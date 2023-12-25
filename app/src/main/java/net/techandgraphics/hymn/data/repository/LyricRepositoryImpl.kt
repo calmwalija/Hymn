@@ -13,9 +13,7 @@ import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class LyricRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) : LyricRepository {
 
   private val dao = database.lyricDao
