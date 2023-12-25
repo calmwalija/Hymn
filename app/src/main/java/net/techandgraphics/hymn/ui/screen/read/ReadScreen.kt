@@ -1,5 +1,7 @@
 package net.techandgraphics.hymn.ui.screen.read
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -58,6 +61,11 @@ fun ReadScreen(
 ) {
 
   var fontSizeShow by remember { mutableStateOf(false) }
+  val rotateDegree by animateFloatAsState(
+    targetValue = if (state.translationInverse) 180f else 0f,
+    label = "Rotate Icon",
+    animationSpec = tween(durationMillis = 1000, delayMillis = 400)
+  )
 
   Scaffold(
     topBar = {
@@ -121,13 +129,26 @@ fun ReadScreen(
               )
             }
           }
+          if (state.lyricEntityKeyInverse.isNotEmpty()) {
+            IconButton(
+              onClick = { event(ReadEvent.TranslationInverse) },
+              modifier = Modifier
+                .padding(end = 8.dp)
+            ) {
+              Icon(
+                painter = painterResource(id = R.drawable.ic_toggle_translation),
+                contentDescription = "Translation",
+                modifier = Modifier.rotate(rotateDegree)
+              )
+            }
+          }
           IconButton(
             onClick = { fontSizeShow = true },
             modifier = Modifier
               .padding(end = 8.dp)
           ) {
             Icon(
-              painter = painterResource(id = R.drawable.ic_font),
+              painter = painterResource(id = R.drawable.ic_font_size),
               contentDescription = "Font"
             )
           }
@@ -193,8 +214,10 @@ fun ReadScreen(
     LazyColumn(
       contentPadding = paddingValues
     ) {
-      items(state.lyricEntityKey, key = { it.lyric.lyricId }) { lyric ->
-
+      items(
+        items = state.lyrics,
+        key = { it.lyric.lyricId }
+      ) { lyric ->
         Column(
           modifier = Modifier
             .padding(top = 16.dp),
