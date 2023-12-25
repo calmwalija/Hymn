@@ -2,8 +2,6 @@ package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -13,40 +11,30 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
-import net.techandgraphics.hymn.data.prefs.UserPrefs
+import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.domain.repository.SearchRepository
 import net.techandgraphics.hymn.removeSymbols
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-  private val database: Database,
-  private val version: String,
-  private val prefs: UserPrefs
+  private val searchRepo: SearchRepository,
+  private val lyricRepo: LyricRepository,
 ) : ViewModel() {
 
   private var searchJob: Job? = null
   private val delayDuration = 3L
-  private val search = database.searchDao.query(version = version)
   private val _state = MutableStateFlow(SearchState())
   val state = _state.asStateFlow()
-  private val pageSize = 20
 
-  private fun queryLyrics() = Pager(
-    config = PagingConfig(
-      pageSize = pageSize,
-      maxSize = pageSize.times(3)
-    ),
-    pagingSourceFactory = { database.lyricDao.query(_state.value.searchQuery, version) }
-  )
-    .flow
+  private fun queryLyrics() = lyricRepo.query(_state.value.searchQuery)
     .also { _state.value = _state.value.copy(lyricsPaged = it) }
     .cachedIn(viewModelScope)
 
   init {
     with(viewModelScope) {
-      search.onEach { _state.value = _state.value.copy(search = it) }.launchIn(this)
+      searchRepo.query().onEach { _state.value = _state.value.copy(search = it) }.launchIn(this)
       queryLyrics()
     }
   }
@@ -100,6 +88,6 @@ class SearchViewModel @Inject constructor(
     val searchQuery = state.value.searchQuery.trim().lowercase()
     val searchList = searchQuery.removeSymbols().split(" ")
     SearchEntity(query = searchQuery, tag = buildString { searchList.forEach { append(it) } })
-      .also { database.searchDao.upsert(listOf(it)) }
+      .also { searchRepo.upsert(listOf(it)) }
   }
 }

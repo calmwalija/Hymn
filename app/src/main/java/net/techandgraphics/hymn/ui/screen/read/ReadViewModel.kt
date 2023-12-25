@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.ui.screen.read
 
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,18 +9,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.asTimestamp
-import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
-import net.techandgraphics.hymn.data.prefs.UserPrefs
+import net.techandgraphics.hymn.data.prefs.Prefs
+import net.techandgraphics.hymn.domain.asModel
+import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.domain.repository.TimestampRepository
+import net.techandgraphics.hymn.domain.toTimestampEntity
 import javax.inject.Inject
 
 @HiltViewModel
 class ReadViewModel @Inject constructor(
-  private val database: Database,
-  private val version: String,
-  private val sharedPreferences: SharedPreferences,
-  private val userPrefs: UserPrefs,
+  private val lyricRepo: LyricRepository,
+  private val timestampRepo: TimestampRepository,
+  private val prefs: Prefs
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(ReadState())
@@ -30,40 +30,31 @@ class ReadViewModel @Inject constructor(
   private var fontJob: Job? = null
   private var translationJob: Job? = null
 
-  operator fun invoke(id: Int, timestamp: Boolean = true) = viewModelScope.launch {
-    var index = 1
-    with(database.lyricDao.queryByNumber(id)) {
-      filter { it.lang == version }
-        .map { lyric ->
-          LyricEntityKey(
-            key = if (lyric.chorus == 0) (index++).toString() else "Chorus",
-            lyric = lyric
-          )
-        }.also {
-          _state.value = _state.value.copy(
-            lyricEntityKey = it,
-            fontSize = sharedPreferences
-              .getInt(userPrefs.context.getString(R.string.font_key), 2)
-          )
-        }
+  private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<LyricKey> {
+    var currentPosition = 1
+    return filter { if (inverse.not()) it.lang == prefs.lang else (it.lang != prefs.lang) }
+      .map { lyric ->
+        LyricKey(
+          key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(R.string.chorus),
+          lyric = lyric
+        )
+      }
+  }
 
-      index = 1
-      filter { it.lang != version }
-        .map { lyric ->
-          LyricEntityKey(
-            key = if (lyric.chorus == 0) (index++).toString() else "Chorus",
-            lyric = lyric
-          )
-        }.also { _state.value = _state.value.copy(lyricEntityKeyInverse = it) }
+  operator fun invoke(id: Int) = viewModelScope.launch {
+    with(lyricRepo.queryByNumber(id)) {
+      _state.value = _state.value.copy(
+        lyricKeyInverse = mapLyricKey(true),
+        lyricKey = mapLyricKey(false)
+      )
+      setLyricsData()
     }
-
-    setLyricsData()
   }
 
   private fun setLyricsData() = with(state.value) {
     viewModelScope.launch {
       _state.value = _state.value.copy(translationInverse = !state.value.translationInverse)
-      val data = if (translationInverse) lyricEntityKeyInverse else lyricEntityKey
+      val data = if (translationInverse) lyricKeyInverse else lyricKey
       _state.value = _state.value.copy(lyrics = data)
       translationJob?.cancel()
       delay(1000)
@@ -71,25 +62,25 @@ class ReadViewModel @Inject constructor(
     }
   }
 
-  private fun read(data: LyricEntity) = with(data) {
+  private fun read(data: Lyric) = with(data) {
     viewModelScope.launch {
-      database.lyricDao.read(number, version = data.lang)
-      database.timestampDao.upsert(listOf(data.asTimestamp()))
+      lyricRepo.read(number, System.currentTimeMillis())
+      timestampRepo.upsert(data.toTimestampEntity().asModel())
     }
   }
 
-  fun favorite(lyric: LyricEntity) =
+  fun favorite(lyric: Lyric) =
     viewModelScope.launch {
       with(lyric.copy(favorite = !lyric.favorite)) {
-        database.lyricDao.favorite(favorite, number, version)
+        lyricRepo.favorite(favorite, number)
       }
-      invoke(lyric.number, false)
+      invoke(lyric.number)
     }
 
   fun onEvent(event: ReadEvent) {
     when (event) {
-      is ReadEvent.Favorite -> favorite(event.data)
       is ReadEvent.Click -> Unit
+      is ReadEvent.Favorite -> favorite(event.data)
       is ReadEvent.FontSize -> fontSize(event.size)
       ReadEvent.TranslationInverse -> {
         setLyricsData()
@@ -102,10 +93,9 @@ class ReadViewModel @Inject constructor(
     fontJob = viewModelScope.launch {
       fontJob?.cancel()
       delay(1000)
-      sharedPreferences.edit().putInt(userPrefs.context.getString(R.string.font_key), font).apply()
+      prefs.setFontSize(font)
       _state.value = _state.value.copy(
-        fontSize = sharedPreferences
-          .getInt(userPrefs.context.getString(R.string.font_key), font)
+        fontSize = prefs.fontSize
       )
     }
   }

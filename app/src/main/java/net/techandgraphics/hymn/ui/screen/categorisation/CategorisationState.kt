@@ -1,9 +1,9 @@
 package net.techandgraphics.hymn.ui.screen.categorisation
 
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
-import net.techandgraphics.hymn.data.local.join.Category
+import net.techandgraphics.hymn.domain.model.Category
+import net.techandgraphics.hymn.domain.model.Lyric
 
 data class CategorisationState(
-  val lyric: List<LyricEntity> = emptyList(),
+  val lyric: List<Lyric> = emptyList(),
   val category: List<Category> = emptyList(),
 )

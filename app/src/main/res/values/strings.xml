@@ -13,5 +13,6 @@
     <!-- Preferences -->
     <string name="font_key">font_key</string>
     <string name="translation_key">translation_key</string>
+    <string name="chorus">Chorus</string>
 
 </resources>

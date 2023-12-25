@@ -1,30 +1,33 @@
 package net.techandgraphics.hymn.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.data.prefs.Prefs
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SearchRepositoryImpl @Inject constructor(
-  db: Database,
-  val version: String,
-) : SearchRepository {
+class SearchRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) :
+  SearchRepository {
 
-  private val dao = db.searchDao
+  private val dao = database.searchDao
+  private val lang = prefs.lang
 
-  override suspend fun upsert(searchEntities: List<SearchEntity>) {
-    dao.upsert(searchEntities.map { it.copy(lang = version, query = it.query.lowercase().trim()) })
+  override suspend fun upsert(data: List<SearchEntity>) {
+    dao.upsert(data)
   }
 
-  override suspend fun delete(searchEntity: SearchEntity) {
-    dao.delete(searchEntity)
+  override suspend fun delete(data: SearchEntity) {
+    dao.delete(data)
   }
 
   override suspend fun clear() {
     dao.clear()
   }
 
-  override val query = dao.query(version)
+  override fun query(): Flow<List<SearchEntity>> {
+    return dao.query(lang)
+  }
 }

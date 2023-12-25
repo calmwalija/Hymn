@@ -25,7 +25,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
-val searchFilters = listOf("Number", "Category", "Favorite")
+val searchFilters = listOf("Number", "CategoryEmbedded", "Favorite")
 val searchOrders = listOf("Ascending", "Descending")
 
 @Composable

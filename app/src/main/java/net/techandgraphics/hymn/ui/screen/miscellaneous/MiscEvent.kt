@@ -1,7 +1,7 @@
 package net.techandgraphics.hymn.ui.screen.miscellaneous
 
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.domain.model.Lyric
 
 sealed class MiscEvent {
-  class RemoveFav(val data: LyricEntity) : MiscEvent()
+  class RemoveFav(val data: Lyric) : MiscEvent()
 }

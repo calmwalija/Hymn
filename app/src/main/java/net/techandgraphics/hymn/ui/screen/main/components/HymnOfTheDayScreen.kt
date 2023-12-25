@@ -37,9 +37,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
-import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
@@ -47,7 +46,7 @@ import kotlin.random.Random
 
 @Composable
 fun HymnOfTheDayScreen(
-  data: LyricEntity = Faker.lyricEntity,
+  data: Lyric,
   event: (MainEvent) -> Unit,
   readEvent: (ReadEvent) -> Unit,
 ) {

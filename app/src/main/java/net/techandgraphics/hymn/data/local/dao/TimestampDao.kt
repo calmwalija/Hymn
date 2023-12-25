@@ -8,5 +8,5 @@ import net.techandgraphics.hymn.data.local.entities.TimestampEntity
 interface TimestampDao {
 
   @Upsert
-  suspend fun upsert(data: List<TimestampEntity>)
+  suspend fun upsert(data: TimestampEntity)
 }

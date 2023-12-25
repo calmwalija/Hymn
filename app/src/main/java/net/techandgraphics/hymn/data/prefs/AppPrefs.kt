@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserPrefs @Inject constructor(
+class AppPrefs @Inject constructor(
   @ApplicationContext
   val context: Context
 ) {
