@@ -30,15 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
-import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @Composable
 fun SearchScreenItem(
-  data: LyricEntity = Faker.lyricEntity,
+  data: Lyric,
   readEvent: (ReadEvent) -> Unit
 ) {
 

@@ -1,10 +1,10 @@
 package net.techandgraphics.hymn.ui.screen.miscellaneous
 
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
-import net.techandgraphics.hymn.data.local.entities.OtherEntity
+import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.model.Other
 
 data class MiscState(
-  val favorites: List<LyricEntity> = emptyList(),
-  val complementary: List<OtherEntity> = emptyList(),
+  val favorites: List<Lyric> = emptyList(),
+  val complementary: List<Other> = emptyList(),
   val fontSize: Int = 2
 )

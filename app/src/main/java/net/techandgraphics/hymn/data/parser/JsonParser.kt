@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.data
+package net.techandgraphics.hymn.data.parser
 
 import android.content.Context
 import androidx.room.withTransaction
