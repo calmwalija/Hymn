@@ -6,9 +6,7 @@ import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.prefs.Prefs
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class SearchRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) :
   SearchRepository {
 
