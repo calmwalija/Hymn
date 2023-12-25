@@ -71,8 +71,8 @@ fun ReadScreen(
     topBar = {
       TopAppBar(
         title = {
-          if (state.lyricEntityKey.isNotEmpty()) {
-            val lyric = state.lyricEntityKey.first().lyric
+          if (state.lyricKey.isNotEmpty()) {
+            val lyric = state.lyricKey.first().lyric
             Row(
               verticalAlignment = Alignment.CenterVertically
             ) {
@@ -117,19 +117,19 @@ fun ReadScreen(
           }
         },
         actions = {
-          if (state.lyricEntityKey.isNotEmpty()) {
+          if (state.lyricKey.isNotEmpty()) {
             IconButton(
-              onClick = { event(ReadEvent.Favorite(state.lyricEntityKey.first().lyric)) },
+              onClick = { event(ReadEvent.Favorite(state.lyricKey.first().lyric)) },
             ) {
               Icon(
-                imageVector = if (state.lyricEntityKey.first().lyric.favorite)
+                imageVector = if (state.lyricKey.first().lyric.favorite)
                   Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                 contentDescription = "Favorite",
                 modifier = Modifier.size(20.dp)
               )
             }
           }
-          if (state.lyricEntityKeyInverse.isNotEmpty()) {
+          if (state.lyricKeyInverse.isNotEmpty()) {
             IconButton(
               onClick = { event(ReadEvent.TranslationInverse) },
               modifier = Modifier

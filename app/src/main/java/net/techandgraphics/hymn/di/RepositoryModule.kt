@@ -1,43 +1,36 @@
 package net.techandgraphics.hymn.di
 
-import android.content.Context
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.techandgraphics.hymn.data.ComplementaryParser
-import net.techandgraphics.hymn.data.JsonParser
-import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.data.repository.CategoryRepositoryImpl
 import net.techandgraphics.hymn.data.repository.LyricRepositoryImpl
-import net.techandgraphics.hymn.data.repository.Repository
+import net.techandgraphics.hymn.data.repository.OtherRepositoryImpl
 import net.techandgraphics.hymn.data.repository.SearchRepositoryImpl
+import net.techandgraphics.hymn.data.repository.TimestampRepositoryImpl
+import net.techandgraphics.hymn.domain.repository.CategoryRepository
+import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.domain.repository.OtherRepository
+import net.techandgraphics.hymn.domain.repository.SearchRepository
+import net.techandgraphics.hymn.domain.repository.TimestampRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+abstract class RepositoryModule {
 
-  @Provides
-  fun providesRepository(
-    db: Database,
-    version: String,
-    @ApplicationContext context: Context
-  ): Repository {
-    return Repository(
-      LyricRepositoryImpl(db, version, context),
-      SearchRepositoryImpl(db, version),
-    )
-  }
+  @Binds
+  abstract fun providesLyricRepository(p0: LyricRepositoryImpl): LyricRepository
 
-  @Provides
-  fun providesJsonParser(
-    db: Database,
-    @ApplicationContext context: Context
-  ) = JsonParser(db, context)
+  @Binds
+  abstract fun providesCategoryRepository(p0: CategoryRepositoryImpl): CategoryRepository
 
-  @Provides
-  fun providesComplementaryParser(
-    db: Database,
-    @ApplicationContext context: Context
-  ) = ComplementaryParser(db, context)
+  @Binds
+  abstract fun providesOtherRepository(p0: OtherRepositoryImpl): OtherRepository
+
+  @Binds
+  abstract fun providesSearchRepository(p0: SearchRepositoryImpl): SearchRepository
+
+  @Binds
+  abstract fun providesTimestampRepository(p0: TimestampRepositoryImpl): TimestampRepository
 }

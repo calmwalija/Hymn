@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
-import net.techandgraphics.hymn.data.local.join.Category
+import net.techandgraphics.hymn.domain.model.Category
 import net.techandgraphics.hymn.hymnCount
 
 @OptIn(ExperimentalMaterial3Api::class)

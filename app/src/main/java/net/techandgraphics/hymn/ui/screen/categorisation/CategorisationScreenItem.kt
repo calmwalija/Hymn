@@ -24,15 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @Composable
 fun CategorisationScreenItem(
-  data: LyricEntity = Faker.lyricEntity,
+  data: Lyric,
   readEvent: (ReadEvent) -> Unit,
   event: (CategorisationEvent) -> Unit,
 ) {

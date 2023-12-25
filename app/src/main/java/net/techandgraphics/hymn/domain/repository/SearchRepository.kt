@@ -4,9 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 
 interface SearchRepository {
-  suspend fun upsert(searchEntities: List<SearchEntity>)
-  suspend fun delete(searchEntity: SearchEntity)
+  suspend fun upsert(data: List<SearchEntity>)
+  suspend fun delete(data: SearchEntity)
   suspend fun clear()
-
-  val query: Flow<List<SearchEntity>>
+  fun query(): Flow<List<SearchEntity>>
 }

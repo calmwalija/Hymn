@@ -7,8 +7,8 @@ data class Lyric(
   val number: Int,
   val chorus: Int,
   val content: String,
+  val favorite: Boolean,
   val title: String,
   val lang: String,
   val timestamp: Long,
-  val favorite: Boolean,
 )

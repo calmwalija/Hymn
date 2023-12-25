@@ -7,22 +7,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import net.techandgraphics.hymn.data.local.Database
+import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-  database: Database,
-  version: String,
+  categoryRepo: CategoryRepository
 ) : ViewModel() {
 
-  private val query = database.categoryDao.query(version)
   private val _state = MutableStateFlow(CategoryState())
-
   val state = _state.asStateFlow()
 
   init {
-    query.onEach { _state.value = _state.value.copy(categories = it) }
+    categoryRepo.query().onEach { _state.value = _state.value.copy(categories = it) }
       .launchIn(viewModelScope)
   }
 }

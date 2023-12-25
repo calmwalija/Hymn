@@ -1,6 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.category
 
-import net.techandgraphics.hymn.data.local.join.Category
+import net.techandgraphics.hymn.domain.model.Category
 
 data class CategoryState(
   val categories: List<Category> = emptyList(),

@@ -8,30 +8,31 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.repository.CategoryRepository
+import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class CategorisationViewModel @Inject constructor(
-  private val database: Database,
-  private val version: String,
+  private val lyricRepo: LyricRepository,
+  private val categoryRepo: CategoryRepository,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(CategorisationState())
   val state = _state.asStateFlow()
 
   operator fun invoke(id: Int) = with(id) {
-    database.lyricDao.queryByCategory(this, version)
-      .zip(database.categoryDao.queryById(this, version)) { lyric, category ->
+    lyricRepo.queryByCategory(this)
+      .zip(categoryRepo.queryById(this)) { lyric, category ->
         _state.value = _state.value.copy(lyric = lyric, category = category)
       }.launchIn(viewModelScope)
   }
 
-  fun favorite(lyric: LyricEntity) =
+  fun favorite(lyric: Lyric) =
     viewModelScope.launch {
       with(lyric.copy(favorite = !lyric.favorite)) {
-        database.lyricDao.favorite(favorite, number, version)
+        lyricRepo.favorite(favorite, number)
       }
     }
 
