@@ -412,6 +412,7 @@ fun MiscScreen(
               ModalBottomSheet(onDismissRequest = { lordsPrayerShow = false }) {
                 Column(
                   horizontalAlignment = Alignment.CenterHorizontally,
+                  modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                   Text(
                     text = state.complementary.first().groupName,
@@ -423,7 +424,9 @@ fun MiscScreen(
                     text = state.complementary.first().content,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    lineHeight = state.fontSize.plus(20).sp,
+                    fontSize = (state.fontSize.plus(15)).sp
                   )
                   Spacer(modifier = Modifier.height(32.dp))
                 }
@@ -465,7 +468,8 @@ fun MiscScreen(
             if (apostleCreedShow) {
               ModalBottomSheet(onDismissRequest = { apostleCreedShow = false }) {
                 Column(
-                  horizontalAlignment = Alignment.CenterHorizontally
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                   Text(
                     text = state.complementary.last().groupName,
@@ -477,7 +481,9 @@ fun MiscScreen(
                     text = state.complementary.last().content,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    lineHeight = state.fontSize.plus(20).sp,
+                    fontSize = (state.fontSize.plus(15)).sp
                   )
                   Spacer(modifier = Modifier.height(32.dp))
                 }

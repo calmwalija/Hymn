@@ -239,7 +239,7 @@ fun ReadScreen(
               .padding(horizontal = 16.dp, vertical = 8.dp),
             textAlign = TextAlign.Center,
             lineHeight = state.fontSize.plus(20).sp,
-            fontSize = (state.fontSize.plus(17)).sp
+            fontSize = (state.fontSize.plus(15)).sp
           )
         }
       }
