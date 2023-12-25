@@ -30,8 +30,8 @@ interface LyricDao {
   @Query("SELECT number FROM lyric WHERE  lang=:version GROUP BY number ORDER BY number DESC LIMIT 1")
   suspend fun lastInsertedId(version: String): Int?
 
-  @Query("SELECT * FROM lyric WHERE number=:number AND lang=:version ORDER BY lyricId ASC")
-  suspend fun queryByNumber(number: Int, version: String): List<LyricEntity>
+  @Query("SELECT * FROM lyric WHERE number=:number ORDER BY lyricId ASC")
+  suspend fun queryByNumber(number: Int): List<LyricEntity>
 
   @Query("SELECT * FROM lyric  WHERE  lang=:version GROUP BY number ORDER BY timestamp DESC LIMIT 2")
   fun theHymn(version: String): Flow<List<LyricEntity>>

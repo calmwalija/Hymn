@@ -28,28 +28,52 @@ class ReadViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   private var fontJob: Job? = null
+  private var translationJob: Job? = null
 
   operator fun invoke(id: Int, timestamp: Boolean = true) = viewModelScope.launch {
     var index = 1
-    database.lyricDao.queryByNumber(id, version)
-      .map { lyric ->
-        LyricEntityKey(
-          key = if (lyric.chorus == 0) (index++).toString() else "Chorus",
-          lyric = lyric
-        )
-      }.also {
-        _state.value = _state.value.copy(
-          lyricEntityKey = it,
-          fontSize = sharedPreferences
-            .getInt(userPrefs.context.getString(R.string.font_key), 2)
-        )
-        if (timestamp) onEvent(ReadEvent.Read(it.first().lyric))
-      }
+    with(database.lyricDao.queryByNumber(id)) {
+      filter { it.lang == version }
+        .map { lyric ->
+          LyricEntityKey(
+            key = if (lyric.chorus == 0) (index++).toString() else "Chorus",
+            lyric = lyric
+          )
+        }.also {
+          _state.value = _state.value.copy(
+            lyricEntityKey = it,
+            fontSize = sharedPreferences
+              .getInt(userPrefs.context.getString(R.string.font_key), 2)
+          )
+        }
+
+      index = 1
+      filter { it.lang != version }
+        .map { lyric ->
+          LyricEntityKey(
+            key = if (lyric.chorus == 0) (index++).toString() else "Chorus",
+            lyric = lyric
+          )
+        }.also { _state.value = _state.value.copy(lyricEntityKeyInverse = it) }
+    }
+
+    setLyricsData()
+  }
+
+  private fun setLyricsData() = with(state.value) {
+    viewModelScope.launch {
+      _state.value = _state.value.copy(translationInverse = !state.value.translationInverse)
+      val data = if (translationInverse) lyricEntityKeyInverse else lyricEntityKey
+      _state.value = _state.value.copy(lyrics = data)
+      translationJob?.cancel()
+      delay(1000)
+      read(data.first().lyric)
+    }
   }
 
   private fun read(data: LyricEntity) = with(data) {
     viewModelScope.launch {
-      database.lyricDao.read(number, version = version)
+      database.lyricDao.read(number, version = data.lang)
       database.timestampDao.upsert(listOf(data.asTimestamp()))
     }
   }
@@ -66,8 +90,10 @@ class ReadViewModel @Inject constructor(
     when (event) {
       is ReadEvent.Favorite -> favorite(event.data)
       is ReadEvent.Click -> Unit
-      is ReadEvent.Read -> read(event.data)
       is ReadEvent.FontSize -> fontSize(event.size)
+      ReadEvent.TranslationInverse -> {
+        setLyricsData()
+      }
     }
   }
 
