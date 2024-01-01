@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.data.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -8,18 +9,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.prefs.Prefs
+import net.techandgraphics.hymn.data.prefs.SharedPrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 
-class LyricRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) : LyricRepository {
+class LyricRepositoryImpl @Inject constructor(database: Database, sharedPrefs: SharedPrefs) : LyricRepository {
 
   private val dao = database.lyricDao
-  private val lang = prefs.lang
+  private val lang = sharedPrefs.lang
   private val pageSize = 20
 
+  init {
+    Log.e("TAG", " lang $lang ",)
+  }
   override fun query(query: String): Flow<PagingData<Lyric>> {
     return Pager(
       config = PagingConfig(
@@ -36,8 +40,8 @@ class LyricRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) 
     return dao.queryByCategory(id, lang).map { it.map { it.asModel() } }
   }
 
-  override fun theHymn(): Flow<List<Lyric>> {
-    return dao.theHymn(lang).map { it.map { it.asModel() } }
+  override fun diveInto(): Flow<List<Lyric>> {
+    return dao.diveInto(lang).map { it.map { it.asModel() } }
   }
 
   override fun queryById(lyricId: Int): Flow<List<Lyric>> {

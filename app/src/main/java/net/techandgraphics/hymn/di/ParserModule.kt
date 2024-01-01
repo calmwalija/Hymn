@@ -7,8 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.parser.ComplementaryParser
-import net.techandgraphics.hymn.data.parser.JsonParser
+import net.techandgraphics.hymn.data.parser.LyricParser
+import net.techandgraphics.hymn.data.parser.OtherParser
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -18,11 +18,11 @@ object ParserModule {
   fun providesJsonParser(
     db: Database,
     @ApplicationContext context: Context
-  ) = JsonParser(db, context)
+  ) = LyricParser(db, context)
 
   @Provides
   fun providesComplementaryParser(
     db: Database,
     @ApplicationContext context: Context
-  ) = ComplementaryParser(db, context)
+  ) = OtherParser(db, context)
 }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri.parse
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,12 +52,12 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.toTimeAgo
+import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiscScreen(
   state: MiscState,
@@ -356,7 +355,7 @@ fun MiscScreen(
             modifier = Modifier
               .clickable {
                 if (state.favorites.isEmpty()) {
-                  Utils.toast(context, context.getString(R.string.no_fav_hymn))
+                  context toast context.getString(R.string.no_fav_hymn)
                   return@clickable
                 }
                 favoriteShow = true

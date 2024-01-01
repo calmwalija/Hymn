@@ -9,6 +9,13 @@ enum class Lang : ToLowerCase {
   }
 }
 
+fun String.toLang() = when (this) {
+  Lang.EN.name.lowercase() -> Lang.EN
+  Lang.CH.name.lowercase() -> Lang.CH
+  else -> Lang.EN
+}
+
 interface ToLowerCase {
   fun lowercase(): String
+//  fun fromString(value: String): Lang
 }
