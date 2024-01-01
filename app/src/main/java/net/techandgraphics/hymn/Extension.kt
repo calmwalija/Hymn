@@ -6,35 +6,17 @@ import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
-object Utils {
-
-  const val FEATURE_LIMIT = 50
-
-  fun readJsonFromAssetToString(context: Context, file: String): String? {
-    return try {
-      context.assets.open(file).bufferedReader().use { it.readText() }
-    } catch (e: Exception) {
-      null
-    }
-  }
-
-  fun toast(context: Context, message: String) =
-    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-
-  fun currentMillsDiff(timeInMills: Long): Boolean {
-    val today = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis())
-    val diff = TimeUnit.MILLISECONDS.toDays(timeInMills)
-    return today != diff
-  }
-
-  fun getThreshold(maxValue: Int, size: Int, random: Int): Int {
-    val percentage = random.toFloat().div(maxValue).times(100).toInt()
-    val range = size.toFloat().div(100).times(percentage).toInt()
-    return if (range.plus(FEATURE_LIMIT) > size) range.minus(FEATURE_LIMIT) else range
+infix fun Context.readJsonFromAssetToString(file: String): String? {
+  return try {
+    assets.open(file).bufferedReader().use { it.readText() }
+  } catch (e: Exception) {
+    null
   }
 }
+
+infix fun Context.toast(message: String) =
+  Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 infix fun NavHostController.onLanguageChange(str: String) {
   val versionEntity = context.resources.getStringArray(R.array.version_entries)
@@ -44,7 +26,7 @@ infix fun NavHostController.onLanguageChange(str: String) {
   navigate(fragmentId)
   val versionName = if (str == versionValue[0]) versionEntity.first() else versionEntity.last()
   val msg = context.getString(R.string.change_book_translation, versionName)
-  Utils.toast(context, msg)
+  context toast msg
 }
 
 fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {

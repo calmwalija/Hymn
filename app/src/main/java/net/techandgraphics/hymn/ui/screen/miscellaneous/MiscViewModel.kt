@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.prefs.Prefs
+import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class MiscViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val otherRepo: OtherRepository,
-  private val prefs: Prefs
+  private val appPrefs: AppPrefs
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MiscState())
@@ -30,7 +30,7 @@ class MiscViewModel @Inject constructor(
         _state.value = _state.value.copy(
           favorites = favorites,
           complementary = otherRepo.query(),
-          fontSize = prefs.fontSize
+          fontSize = (appPrefs.getPrefs(appPrefs.fontKey) ?: 2).toString().toInt()
         )
       }.launchIn(this)
     }

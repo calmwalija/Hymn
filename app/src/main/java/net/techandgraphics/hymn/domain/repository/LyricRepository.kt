@@ -7,7 +7,7 @@ import net.techandgraphics.hymn.domain.model.Lyric
 interface LyricRepository {
   fun query(query: String): Flow<PagingData<Lyric>>
   fun queryByCategory(id: Int): Flow<List<Lyric>>
-  fun theHymn(): Flow<List<Lyric>>
+  fun diveInto(): Flow<List<Lyric>>
   fun queryById(lyricId: Int): Flow<List<Lyric>>
   fun favorites(): Flow<List<Lyric>>
   suspend fun upsert(lyric: List<Lyric>)

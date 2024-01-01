@@ -42,7 +42,7 @@ import com.google.accompanist.flowlayout.SizeMode
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 import net.techandgraphics.hymn.ui.screen.category.CategoryScreenItem
-import net.techandgraphics.hymn.ui.screen.main.components.HymnItemScreen
+import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
 import net.techandgraphics.hymn.ui.screen.main.components.HymnOfTheDayScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
@@ -191,8 +191,8 @@ fun MainScreen(
         modifier = Modifier
           .padding(horizontal = 4.dp)
       ) {
-        state.theHymn.forEach {
-          HymnItemScreen(it, readEvent)
+        state.diveInto.forEach {
+          DiveIntoItemScreen(it, readEvent)
         }
       }
     }
@@ -206,7 +206,7 @@ fun MainScreen(
           .padding(horizontal = 8.dp, vertical = 16.dp)
       ) {
         Text(
-          text = "Spotlighted",
+          text = "Spotlight",
           style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
           modifier = Modifier
             .weight(1f)
@@ -236,7 +236,7 @@ fun MainScreen(
         modifier = Modifier
           .padding(horizontal = 4.dp)
       ) {
-        state.spotlighted.forEach {
+        state.spotlight.forEach {
           CategoryScreenItem(it, categoryEvent)
         }
       }
