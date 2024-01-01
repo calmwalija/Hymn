@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import net.techandgraphics.hymn.data.parser.ComplementaryParser
-import net.techandgraphics.hymn.data.parser.JsonParser
+import net.techandgraphics.hymn.data.parser.LyricParser
+import net.techandgraphics.hymn.data.parser.OtherParser
 import net.techandgraphics.hymn.data.prefs.AppPrefs
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-  private val jsonParser: JsonParser,
-  private val complementaryParser: ComplementaryParser,
+  private val lyricParser: LyricParser,
+  private val otherParser: OtherParser,
   private val appPrefs: AppPrefs
 ) : ViewModel() {
 
@@ -28,8 +28,8 @@ class MainActivityViewModel @Inject constructor(
         _state.value = _state.value.copy(completed = true)
         return@onEach
       }
-      jsonParser.invoke {
-        complementaryParser.invoke {
+      lyricParser.invoke {
+        otherParser.invoke {
           appPrefs.setJsonBuild(AppPrefs.JSON_BUILD)
         }
       }

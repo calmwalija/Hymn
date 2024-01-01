@@ -3,11 +3,11 @@ package net.techandgraphics.hymn.data.repository
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
-import net.techandgraphics.hymn.data.prefs.Prefs
+import net.techandgraphics.hymn.data.prefs.SharedPrefs
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import javax.inject.Inject
 
-class SearchRepositoryImpl @Inject constructor(database: Database, prefs: Prefs) :
+class SearchRepositoryImpl @Inject constructor(database: Database, prefs: SharedPrefs) :
   SearchRepository {
 
   private val dao = database.searchDao

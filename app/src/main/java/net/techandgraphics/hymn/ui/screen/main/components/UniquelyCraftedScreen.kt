@@ -40,6 +40,7 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
+import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import kotlin.random.Random
@@ -132,7 +133,13 @@ fun HymnOfTheDayScreen(
           }
         }
         IconButton(
-          onClick = { event(MainEvent.Favorite(data)) },
+          onClick = {
+            context toast context.getString(
+              if (!data.favorite) R.string.add_favorite else R.string.remove_favorite,
+              data.number
+            )
+            event(MainEvent.Favorite(data))
+          },
           modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(MaterialTheme.colorScheme.surface)

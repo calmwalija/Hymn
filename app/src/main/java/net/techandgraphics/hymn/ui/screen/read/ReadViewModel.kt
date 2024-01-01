@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.data.prefs.Prefs
+import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.data.prefs.SharedPrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class ReadViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val timestampRepo: TimestampRepository,
-  private val prefs: Prefs
+  private val sharedPrefs: SharedPrefs,
+  private val appPrefs: AppPrefs
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(ReadState())
@@ -32,10 +34,12 @@ class ReadViewModel @Inject constructor(
 
   private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<LyricKey> {
     var currentPosition = 1
-    return filter { if (inverse.not()) it.lang == prefs.lang else (it.lang != prefs.lang) }
+    return filter { if (inverse.not()) it.lang == sharedPrefs.lang else (it.lang != sharedPrefs.lang) }
       .map { lyric ->
         LyricKey(
-          key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(R.string.chorus),
+          key = if (lyric.chorus == 0) (currentPosition++).toString() else sharedPrefs.context.getString(
+            R.string.chorus
+          ),
           lyric = lyric
         )
       }
@@ -45,7 +49,8 @@ class ReadViewModel @Inject constructor(
     with(lyricRepo.queryByNumber(id)) {
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
-        lyricKey = mapLyricKey(false)
+        lyricKey = mapLyricKey(false),
+        fontSize = (appPrefs.getPrefs(appPrefs.fontKey) ?: 2).toString().toInt()
       )
       setLyricsData()
     }
@@ -74,7 +79,6 @@ class ReadViewModel @Inject constructor(
       with(lyric.copy(favorite = !lyric.favorite)) {
         lyricRepo.favorite(favorite, number)
       }
-      invoke(lyric.number)
     }
 
   fun onEvent(event: ReadEvent) {
@@ -93,10 +97,7 @@ class ReadViewModel @Inject constructor(
     fontJob = viewModelScope.launch {
       fontJob?.cancel()
       delay(1000)
-      prefs.setFontSize(font)
-      _state.value = _state.value.copy(
-        fontSize = prefs.fontSize
-      )
+      appPrefs.setPrefs(appPrefs.fontKey, font.toString())
     }
   }
 }

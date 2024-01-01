@@ -11,7 +11,7 @@ import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.Migration
 import net.techandgraphics.hymn.data.local.Migration.MIGRATION_3_4
 import net.techandgraphics.hymn.data.local.Migration.MIGRATION_4_5
-import net.techandgraphics.hymn.data.prefs.Prefs
+import net.techandgraphics.hymn.data.prefs.SharedPrefs
 import javax.inject.Singleton
 
 @Module
@@ -27,5 +27,5 @@ object AppModule {
     .build()
 
   @Provides
-  fun providesSharedPreferences(@ApplicationContext context: Context): Prefs = Prefs(context)
+  fun providesSharedPreferences(@ApplicationContext context: Context): SharedPrefs = SharedPrefs(context)
 }

@@ -37,7 +37,7 @@ import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @Composable
-fun HymnItemScreen(
+fun DiveIntoItemScreen(
   data: Lyric,
   event: (ReadEvent) -> Unit
 ) {

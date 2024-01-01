@@ -7,17 +7,17 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.techandgraphics.hymn.Constant
-import net.techandgraphics.hymn.Utils
 import net.techandgraphics.hymn.capitaliseWord
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.readJsonFromAssetToString
 import net.techandgraphics.hymn.removeSymbols
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class JsonParser @Inject constructor(
+class LyricParser @Inject constructor(
   private val database: Database,
   private val context: Context,
 ) {
@@ -29,7 +29,7 @@ class JsonParser @Inject constructor(
     withContext(Dispatchers.IO) {
       val ofType: Type = object : TypeToken<List<LyricEntity>>() {}.type
       val json = Gson().fromJson<List<LyricEntity>>(
-        Utils.readJsonFromAssetToString(context, filename)!!,
+        context readJsonFromAssetToString filename,
         ofType
       )
       jsonParser(json, event)

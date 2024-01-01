@@ -30,7 +30,7 @@ interface LyricDao {
   suspend fun queryByNumber(number: Int): List<LyricEntity>
 
   @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 2")
-  fun theHymn(lang: String): Flow<List<LyricEntity>>
+  fun diveInto(lang: String): Flow<List<LyricEntity>>
 
   @Query("SELECT * FROM lyric WHERE lyricId=:lyricId")
   fun queryById(lyricId: Int): Flow<List<LyricEntity>>

@@ -24,7 +24,7 @@ fun CategoryScreen(
       modifier = Modifier.padding(horizontal = 6.dp)
     ) {
       Text(
-        text = "Browse Hymn By CategoryEmbedded",
+        text = "Browse Hymn By Category",
         style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
         modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
       )
