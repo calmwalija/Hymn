@@ -23,6 +23,7 @@ class LyricParser @Inject constructor(
 ) {
 
   private val dao = database.lyricDao
+  private val searchDao = database.searchDao
   private val filename = "lyrics.json"
 
   private suspend fun readJsonFromAssetToString(event: suspend () -> Unit) {
@@ -39,20 +40,8 @@ class LyricParser @Inject constructor(
   private suspend fun jsonParser(
     lyrics: List<LyricEntity>,
     event: suspend () -> Unit = {},
-    runSearchTag: Boolean = true
   ) {
     val data = lyrics.map {
-      val string: List<String> = it.content.split(" ")
-      val data = buildString {
-        try {
-          for (i in 0..2) {
-            append(string[i])
-          }
-        } catch (e: Exception) {
-          append(string[0])
-        }
-      }
-
       val title = try {
         it.content.substring(0, it.content.indexOf("\n")).removeSymbols().capitaliseWord()
       } catch (e: Exception) {
@@ -65,15 +54,13 @@ class LyricParser @Inject constructor(
       with(dao.backup()) {
         dao.upsert(data)
         dao.upsert(this)
+        searchDao.upsert(Constant.searchEntityTags)
       }
-      if (runSearchTag)
-        database.searchDao.upsert(Constant.searchEntityTags)
     }
     event.invoke()
   }
 
-  suspend operator fun invoke(event: suspend () -> Unit): Boolean {
+  suspend operator fun invoke(event: suspend () -> Unit) {
     readJsonFromAssetToString(event)
-    return false
   }
 }

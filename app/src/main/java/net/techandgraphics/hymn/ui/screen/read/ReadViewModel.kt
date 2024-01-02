@@ -3,17 +3,21 @@ package net.techandgraphics.hymn.ui.screen.read
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.data.prefs.SharedPrefs
-import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
 import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.domain.toTimestampEntity
 import javax.inject.Inject
@@ -22,13 +26,15 @@ import javax.inject.Inject
 class ReadViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val timestampRepo: TimestampRepository,
+  private val timeSpentRepo: TimeSpentRepository,
   private val sharedPrefs: SharedPrefs,
   private val appPrefs: AppPrefs
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(ReadState())
   val state = _state.asStateFlow()
-
+  private val currentTimeMillis = System.currentTimeMillis()
+  private val maxTimeSpent: Long = 60_000
   private var fontJob: Job? = null
   private var translationJob: Job? = null
 
@@ -70,7 +76,7 @@ class ReadViewModel @Inject constructor(
   private fun read(data: Lyric) = with(data) {
     viewModelScope.launch {
       lyricRepo.read(number, System.currentTimeMillis())
-      timestampRepo.upsert(data.toTimestampEntity().asModel())
+      timestampRepo.upsert(listOf(data.toTimestampEntity()))
     }
   }
 
@@ -99,5 +105,17 @@ class ReadViewModel @Inject constructor(
       delay(1000)
       appPrefs.setPrefs(appPrefs.fontKey, font.toString())
     }
+  }
+
+  override fun onCleared() {
+    val timeSpentMills = System.currentTimeMillis() - currentTimeMillis
+    if (timeSpentMills < 1) return
+    val currentLyric = state.value.lyrics.first().lyric
+    val timeSpent = TimeSpentEntity(
+      number = currentLyric.number,
+      timeSpent = if (timeSpentMills > maxTimeSpent) maxTimeSpent else timeSpentMills,
+      lang = currentLyric.lang
+    )
+    runBlocking { withContext(Dispatchers.IO) { timeSpentRepo.upsert(listOf(timeSpent)) } }
   }
 }

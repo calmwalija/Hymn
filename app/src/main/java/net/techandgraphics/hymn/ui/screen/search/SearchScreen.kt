@@ -1,6 +1,8 @@
 package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,9 +27,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
-val searchFilters = listOf("Number", "CategoryEmbedded", "Favorite")
-val searchOrders = listOf("Ascending", "Descending")
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchScreen(
   state: SearchState,
@@ -66,18 +66,26 @@ fun SearchScreen(
           modifier = Modifier.padding(horizontal = 8.dp)
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         LazyRow {
           items(state.search, key = { it.query }) {
-            ElevatedButton(
-              onClick = { event(SearchEvent.SearchQueryTag(it.query)) },
-              modifier = Modifier.padding(horizontal = 2.dp),
+            ElevatedCard(
+              modifier = Modifier
+                .padding(horizontal = 2.dp)
+                .combinedClickable(
+                  onClick = { event(SearchEvent.SearchQueryTag(it.query)) },
+                  onLongClick = { }
+                ),
               shape = RoundedCornerShape(8),
             ) {
               Text(
                 text = "#${it.tag}",
                 fontSize = MaterialTheme.typography.bodySmall.fontSize,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                color = MaterialTheme.colorScheme.primary,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(12.dp)
               )
             }
           }

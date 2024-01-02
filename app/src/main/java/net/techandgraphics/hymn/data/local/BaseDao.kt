@@ -1,12 +1,11 @@
 package net.techandgraphics.hymn.data.local
 
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
+import androidx.room.Upsert
 
 interface BaseDao<T> {
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  @Upsert
   suspend fun upsert(items: List<T>)
 
   @Delete
