@@ -4,12 +4,12 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import net.techandgraphics.hymn.data.local.Lang
-import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.model.Search
 
 data class SearchState(
   val lyricsPaged: Flow<PagingData<Lyric>> = emptyFlow(),
-  val search: List<SearchEntity> = emptyList(),
+  val search: List<Search> = emptyList(),
   var searchQuery: String = "",
   var isSearching: Boolean = false,
   var lang: Lang = Lang.EN,

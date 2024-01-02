@@ -1,7 +1,6 @@
 package net.techandgraphics.hymn.domain.repository
 
-import net.techandgraphics.hymn.domain.model.Timestamp
+import net.techandgraphics.hymn.data.local.entities.TimestampEntity
+import net.techandgraphics.hymn.domain.BaseRepository
 
-interface TimestampRepository {
-  suspend fun upsert(data: Timestamp)
-}
+interface TimestampRepository : BaseRepository<TimestampEntity>

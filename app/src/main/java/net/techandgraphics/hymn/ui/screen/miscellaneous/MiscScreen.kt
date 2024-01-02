@@ -67,7 +67,7 @@ fun MiscScreen(
 
   val context = LocalContext.current
   val whatsAppUrl = "https://api.whatsapp.com/send?phone=+265993563408"
-  val playStoreUrl = "https://api.whatsapp.com/send?phone=+265993563408"
+  val playStoreUrl = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
 
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }

@@ -23,7 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +53,7 @@ fun HymnOfTheDayScreen(
 ) {
   val context = LocalContext.current
   val ofTheDay by remember {
-    mutableStateOf(Constant.ofTheDay[Random.nextInt(Constant.ofTheDay.size)])
+    mutableIntStateOf(Constant.ofTheDay[Random.nextInt(Constant.ofTheDay.size)])
   }
 
   Box(
