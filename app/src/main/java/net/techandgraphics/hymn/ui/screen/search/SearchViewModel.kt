@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.domain.asModel
+import net.techandgraphics.hymn.domain.model.Search
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import net.techandgraphics.hymn.removeSymbols
@@ -34,7 +37,9 @@ class SearchViewModel @Inject constructor(
 
   init {
     with(viewModelScope) {
-      searchRepo.query().onEach { _state.value = _state.value.copy(search = it) }.launchIn(this)
+      searchRepo.query()
+        .onEach { _state.value = _state.value.copy(search = it.map { it.asModel() }) }
+        .launchIn(this)
       queryLyrics()
     }
   }
@@ -81,6 +86,13 @@ class SearchViewModel @Inject constructor(
 
       SearchEvent.InsertSearchTag -> onInsertSearchTag()
       SearchEvent.ClearSearchQuery -> clearSearchQuery()
+      is SearchEvent.OnLongPress -> onLongPress(event.search)
+    }
+  }
+
+  private fun onLongPress(search: Search) {
+    viewModelScope.launch {
+      searchRepo.delete(search.asEntity())
     }
   }
 
