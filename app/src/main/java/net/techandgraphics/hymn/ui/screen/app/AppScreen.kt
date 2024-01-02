@@ -12,9 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,25 +49,24 @@ fun AppScreen(
   navController: NavHostController = rememberNavController(),
 ) {
 
-  var selectedItem by rememberSaveable { mutableIntStateOf(0) }
   val backStackEntry by navController.currentBackStackEntryAsState()
+  val currentRoute = backStackEntry?.destination?.route
 
   Scaffold(
     bottomBar = {
       NavigationBar {
         bottomNavigationList.map { it.copy(title = it.title.capitalizeFirst()) }
-          .forEachIndexed { index, item ->
+          .forEach { item ->
             NavigationBarItem(
-              selected = selectedItem == index,
+              selected = currentRoute == item.title,
               onClick = {
-                selectedItem = index
                 navController.navigate(item.title) {
                   popUpTo(navController.graph.findStartDestination().id)
                   launchSingleTop = true
                 }
               },
               label = {
-                AnimatedVisibility(visible = selectedItem == index) {
+                AnimatedVisibility(visible = currentRoute == item.title) {
                   Text(
                     text = item.title,
                     fontWeight = FontWeight.Bold,
@@ -80,7 +76,7 @@ fun AppScreen(
               icon = {
                 Icon(
                   painter = painterResource(
-                    id = if (selectedItem == index) item.selectedIcon else item.unSelectedIcon
+                    id = if (currentRoute == item.title) item.selectedIcon else item.unSelectedIcon
                   ),
                   contentDescription = item.title
                 )
