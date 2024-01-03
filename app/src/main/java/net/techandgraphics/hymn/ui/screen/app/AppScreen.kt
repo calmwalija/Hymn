@@ -26,7 +26,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import net.techandgraphics.hymn.capitalizeFirst
 import net.techandgraphics.hymn.onLanguageChange
-import net.techandgraphics.hymn.ui.Route
+import net.techandgraphics.hymn.ui.Route.Categorisation
+import net.techandgraphics.hymn.ui.Route.Category
+import net.techandgraphics.hymn.ui.Route.Home
+import net.techandgraphics.hymn.ui.Route.Miscellaneous
+import net.techandgraphics.hymn.ui.Route.Read
+import net.techandgraphics.hymn.ui.Route.Search
 import net.techandgraphics.hymn.ui.screen.Event
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
@@ -50,7 +55,10 @@ fun AppScreen(
 ) {
 
   val backStackEntry by navController.currentBackStackEntryAsState()
-  val currentRoute = backStackEntry?.destination?.route
+  val currentRoute = backStackEntry?.destination?.route?.run {
+    if (contains(Category.title) || contains(Categorisation.title) || contains(Read.title))
+      Home.title else this.capitalizeFirst()
+  }
 
   Scaffold(
     bottomBar = {
@@ -90,11 +98,11 @@ fun AppScreen(
 
     NavHost(
       navController = navController,
-      startDestination = Route.Home.title,
+      startDestination = Home.title,
       modifier = Modifier.padding(it)
     ) {
 
-      composable(route = Route.Home.title) {
+      composable(route = Home.title) {
         val mainViewModel: MainViewModel = hiltViewModel()
         val state = mainViewModel.state.collectAsState().value
         MainScreen(
@@ -112,8 +120,8 @@ fun AppScreen(
           },
           navigator = { navigation ->
             when (navigation) {
-              MainNavigator.NavigateToCategory -> navController.navigate(Route.Category.title)
-              MainNavigator.NavigateToSearch -> navController.navigate(Route.Search.title)
+              MainNavigator.NavigateToCategory -> navController.navigate(Category.title)
+              MainNavigator.NavigateToSearch -> navController.navigate(Search.title)
             }
           }
         ) { lang ->
@@ -128,7 +136,7 @@ fun AppScreen(
         }
       }
 
-      composable(route = Route.Category.title) {
+      composable(route = Category.title) {
         val categoryViewModel: CategoryViewModel = hiltViewModel()
         val state = categoryViewModel.state.collectAsState().value
         CategoryScreen(state) { event ->
@@ -138,7 +146,7 @@ fun AppScreen(
         }
       }
 
-      composable(route = Route.Search.title) {
+      composable(route = Search.title) {
         val searchViewModel: SearchViewModel = hiltViewModel()
         with(searchViewModel) {
           val state = state.collectAsState().value
@@ -155,7 +163,7 @@ fun AppScreen(
         }
       }
 
-      composable(route = Route.Miscellaneous.title) {
+      composable(route = Miscellaneous.title) {
         val miscViewModel: MiscViewModel = hiltViewModel()
         val state = miscViewModel.state.collectAsState().value
         MiscScreen(
@@ -170,7 +178,7 @@ fun AppScreen(
       }
 
       composable(
-        route = Route.Read.route,
+        route = Read.route,
         arguments = listOf(navArgument("id") { type = NavType.IntType })
       ) {
         val lyricId = backStackEntry?.arguments?.getInt("id") ?: 4
@@ -185,7 +193,7 @@ fun AppScreen(
       }
 
       composable(
-        route = Route.Categorisation.route,
+        route = Categorisation.route,
         arguments = listOf(navArgument("id") { type = NavType.IntType })
       ) {
         val categoryId = backStackEntry?.arguments?.getInt("id") ?: 0
