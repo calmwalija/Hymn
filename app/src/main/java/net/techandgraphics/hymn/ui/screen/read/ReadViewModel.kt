@@ -52,13 +52,14 @@ class ReadViewModel @Inject constructor(
       }
   }
 
-  operator fun invoke(id: Int) = viewModelScope.launch {
+  operator fun invoke(id: Int, setLyricsData: Boolean = true) = viewModelScope.launch {
     with(lyricRepo.queryByNumber(id)) {
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
         lyricKey = mapLyricKey(false),
         fontSize = appPrefs.fontSize()
       )
+      if (setLyricsData.not()) return@launch
       setLyricsData()
     }
   }
@@ -85,6 +86,7 @@ class ReadViewModel @Inject constructor(
     viewModelScope.launch {
       with(lyric.copy(favorite = !lyric.favorite)) {
         lyricRepo.favorite(favorite, number)
+        invoke(lyric.number, false)
       }
     }
 
