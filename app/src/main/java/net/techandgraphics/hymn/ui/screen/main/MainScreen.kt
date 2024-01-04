@@ -43,7 +43,7 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 import net.techandgraphics.hymn.ui.screen.category.CategoryScreenItem
 import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
-import net.techandgraphics.hymn.ui.screen.main.components.HymnOfTheDayScreen
+import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @Composable
@@ -148,7 +148,7 @@ fun MainScreen(
       }
 
       if (state.uniquelyCrafted.isNotEmpty())
-        HymnOfTheDayScreen(state.uniquelyCrafted.first(), mainEvent, readEvent)
+        UniquelyCraftedScreen(state.uniquelyCrafted.first(), mainEvent, readEvent)
     }
 
     item {

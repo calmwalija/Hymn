@@ -55,6 +55,8 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.toast
+import net.techandgraphics.hymn.ui.screen.read.READ_FONT_SIZE_THRESH_HOLD
+import net.techandgraphics.hymn.ui.screen.read.READ_LINE_HEIGHT_THRESH_HOLD
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -424,8 +426,8 @@ fun MiscScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
-                    lineHeight = state.fontSize.plus(20).sp,
-                    fontSize = (state.fontSize.plus(15)).sp
+                    lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
+                    fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
                   )
                   Spacer(modifier = Modifier.height(32.dp))
                 }
@@ -481,8 +483,8 @@ fun MiscScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
-                    lineHeight = state.fontSize.plus(20).sp,
-                    fontSize = (state.fontSize.plus(15)).sp
+                    lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
+                    fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
                   )
                   Spacer(modifier = Modifier.height(32.dp))
                 }
