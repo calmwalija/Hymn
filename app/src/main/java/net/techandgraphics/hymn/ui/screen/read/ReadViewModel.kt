@@ -20,6 +20,7 @@ import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
 import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.domain.toTimestampEntity
+import net.techandgraphics.hymn.fontSize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,7 +57,7 @@ class ReadViewModel @Inject constructor(
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
         lyricKey = mapLyricKey(false),
-        fontSize = (appPrefs.getPrefs(appPrefs.fontKey) ?: 2).toString().toInt()
+        fontSize = appPrefs.fontSize()
       )
       setLyricsData()
     }
