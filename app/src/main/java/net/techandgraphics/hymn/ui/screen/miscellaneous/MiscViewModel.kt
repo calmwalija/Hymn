@@ -12,6 +12,7 @@ import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
+import net.techandgraphics.hymn.fontSize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +31,7 @@ class MiscViewModel @Inject constructor(
         _state.value = _state.value.copy(
           favorites = favorites,
           complementary = otherRepo.query(),
-          fontSize = (appPrefs.getPrefs(appPrefs.fontKey) ?: 2).toString().toInt()
+          fontSize = appPrefs.fontSize()
         )
       }.launchIn(this)
     }

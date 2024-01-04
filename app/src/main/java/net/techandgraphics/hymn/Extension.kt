@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.flow.first
+import net.techandgraphics.hymn.data.prefs.AppPrefs
 import java.util.Calendar
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -35,3 +37,5 @@ fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {
 
 fun timeInMillisMonth(month: Int = 1) =
   Calendar.getInstance().apply { add(Calendar.MONTH, month) }.timeInMillis
+
+suspend fun AppPrefs.fontSize(): Int = getPrefs(fontKey).first()?.toString()?.toInt() ?: 1

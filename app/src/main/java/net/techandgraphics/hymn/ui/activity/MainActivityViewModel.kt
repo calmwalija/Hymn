@@ -23,14 +23,15 @@ class MainActivityViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   init {
-    appPrefs.getJsonBuild.onEach { jsonBuild ->
-      if (jsonBuild == AppPrefs.JSON_BUILD) {
-        _state.value = _state.value.copy(completed = true)
-        return@onEach
-      }
+    appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { jsonBuildKey ->
+      if (jsonBuildKey != null)
+        if (jsonBuildKey == AppPrefs.JSON_BUILD_KEY) {
+          _state.value = _state.value.copy(completed = true)
+          return@onEach
+        }
       lyricParser.invoke {
         otherParser.invoke {
-          appPrefs.setJsonBuild(AppPrefs.JSON_BUILD)
+          appPrefs.setPrefs(appPrefs.jsonBuildKey, AppPrefs.JSON_BUILD_KEY)
         }
       }
     }.launchIn(viewModelScope)
