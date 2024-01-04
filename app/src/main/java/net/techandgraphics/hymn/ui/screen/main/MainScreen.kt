@@ -66,178 +66,180 @@ fun MainScreen(
     animationSpec = tween(durationMillis = 500)
   )
 
-  LazyColumn {
+  AnimatedVisibility(visible = state.uniquelyCrafted.isNotEmpty()) {
+    LazyColumn {
 
-    item {
-      Spacer(modifier = Modifier.height(16.dp))
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .padding(8.dp)
-      ) {
-        Text(
-          text = "Uniquely Crafted",
-          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-          modifier = Modifier.weight(1f)
-        )
-
-        Card(
-          shape = RoundedCornerShape(50),
-          colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-          ),
-          elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-          ),
+      item {
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier
+            .padding(8.dp)
         ) {
+          Text(
+            text = "Uniquely Crafted",
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+            modifier = Modifier.weight(1f)
+          )
+
+          Card(
+            shape = RoundedCornerShape(50),
+            colors = CardDefaults.cardColors(
+              containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(
+              defaultElevation = 1.dp
+            ),
+          ) {
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier
+                .clickable(enabled = onLangInvoke.not()) { expanded = true }
+                .padding(10.dp),
+            ) {
+              Box {
+                this@Card.AnimatedVisibility(visible = onLangInvoke.not()) {
+                  Icon(
+                    painter = painterResource(id = R.drawable.ic_book),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp)
+                  )
+                }
+
+                this@Card.AnimatedVisibility(visible = onLangInvoke) {
+                  CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.size(14.dp)
+                  )
+                }
+              }
+
+              Text(
+                text = versionEntries[versionValue.indexOf(state.lang)],
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 4.dp),
+                color = MaterialTheme.colorScheme.primary
+              )
+
+              Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier
+                  .rotate(rotateDegree)
+                  .size(16.dp)
+              )
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+              versionEntries
+                .filter { versionValue[versionEntries.indexOf(it)] != state.lang }
+                .forEach {
+                  DropdownMenuItem(
+                    text = { Text(text = it) },
+                    enabled = versionValue[versionEntries.indexOf(it)] != state.lang,
+                    onClick = {
+                      expanded = false
+                      onLangInvoke = true
+                      onLanguageChange(versionValue[versionEntries.indexOf(it)])
+                    }
+                  )
+                }
+            }
+          }
+        }
+
+        if (state.uniquelyCrafted.isNotEmpty())
+          UniquelyCraftedScreen(state.uniquelyCrafted.first(), mainEvent, readEvent)
+      }
+
+      item {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier
+            .clickable { navigator(MainNavigator.NavigateToSearch) }
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+        ) {
+          Text(
+            text = "Dive Into",
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+            modifier = Modifier
+              .weight(1f)
+          )
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-              .clickable(enabled = onLangInvoke.not()) { expanded = true }
-              .padding(10.dp),
           ) {
-            Box {
-              this@Card.AnimatedVisibility(visible = onLangInvoke.not()) {
-                Icon(
-                  painter = painterResource(id = R.drawable.ic_book),
-                  contentDescription = null,
-                  modifier = Modifier.size(14.dp)
-                )
-              }
-
-              this@Card.AnimatedVisibility(visible = onLangInvoke) {
-                CircularProgressIndicator(
-                  strokeWidth = 2.dp,
-                  modifier = Modifier.size(14.dp)
-                )
-              }
-            }
-
             Text(
-              text = versionEntries[versionValue.indexOf(state.lang)],
-              style = MaterialTheme.typography.labelSmall,
+              text = "Find More",
+              style = MaterialTheme.typography.labelMedium,
               fontWeight = FontWeight.Bold,
-              modifier = Modifier.padding(horizontal = 4.dp),
               color = MaterialTheme.colorScheme.primary
             )
-
+            Spacer(modifier = Modifier.width(4.dp))
             Icon(
-              imageVector = Icons.Default.KeyboardArrowDown,
+              imageVector = Icons.Filled.KeyboardArrowRight,
               contentDescription = null,
-              modifier = Modifier
-                .rotate(rotateDegree)
-                .size(16.dp)
+              modifier = Modifier.size(20.dp),
+              tint = MaterialTheme.colorScheme.primary
             )
           }
-          DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            versionEntries
-              .filter { versionValue[versionEntries.indexOf(it)] != state.lang }
-              .forEach {
-                DropdownMenuItem(
-                  text = { Text(text = it) },
-                  enabled = versionValue[versionEntries.indexOf(it)] != state.lang,
-                  onClick = {
-                    expanded = false
-                    onLangInvoke = true
-                    onLanguageChange(versionValue[versionEntries.indexOf(it)])
-                  }
-                )
-              }
+        }
+
+        com.google.accompanist.flowlayout.FlowRow(
+          mainAxisSize = SizeMode.Expand,
+          mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
+          modifier = Modifier
+            .padding(horizontal = 4.dp)
+        ) {
+          state.diveInto.forEach {
+            DiveIntoItemScreen(it, readEvent)
           }
         }
       }
 
-      if (state.uniquelyCrafted.isNotEmpty())
-        UniquelyCraftedScreen(state.uniquelyCrafted.first(), mainEvent, readEvent)
-    }
-
-    item {
-      Spacer(modifier = Modifier.height(8.dp))
-
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .clickable { navigator(MainNavigator.NavigateToSearch) }
-          .padding(horizontal = 8.dp, vertical = 16.dp)
-      ) {
-        Text(
-          text = "Dive Into",
-          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-          modifier = Modifier
-            .weight(1f)
-        )
+      item {
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
           verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Text(
-            text = "Find More",
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-          )
-          Spacer(modifier = Modifier.width(4.dp))
-          Icon(
-            imageVector = Icons.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.primary
-          )
-        }
-      }
-
-      com.google.accompanist.flowlayout.FlowRow(
-        mainAxisSize = SizeMode.Expand,
-        mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-        modifier = Modifier
-          .padding(horizontal = 4.dp)
-      ) {
-        state.diveInto.forEach {
-          DiveIntoItemScreen(it, readEvent)
-        }
-      }
-    }
-
-    item {
-      Spacer(modifier = Modifier.height(16.dp))
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .clickable { navigator(MainNavigator.NavigateToCategory) }
-          .padding(horizontal = 8.dp, vertical = 16.dp)
-      ) {
-        Text(
-          text = "Spotlight",
-          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
           modifier = Modifier
-            .weight(1f)
-        )
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
+            .clickable { navigator(MainNavigator.NavigateToCategory) }
+            .padding(horizontal = 8.dp, vertical = 16.dp)
         ) {
           Text(
-            text = "See All",
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            text = "Spotlight",
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+            modifier = Modifier
+              .weight(1f)
           )
-          Spacer(modifier = Modifier.width(4.dp))
-          Icon(
-            imageVector = Icons.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.primary
-          )
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Text(
+              text = "See All",
+              style = MaterialTheme.typography.labelMedium,
+              fontWeight = FontWeight.Bold,
+              color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+              imageVector = Icons.Filled.KeyboardArrowRight,
+              contentDescription = null,
+              modifier = Modifier.size(20.dp),
+              tint = MaterialTheme.colorScheme.primary
+            )
+          }
         }
-      }
 
-      com.google.accompanist.flowlayout.FlowRow(
-        mainAxisSize = SizeMode.Expand,
-        mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-        modifier = Modifier
-          .padding(horizontal = 4.dp)
-      ) {
-        state.spotlight.forEach {
-          CategoryScreenItem(it, categoryEvent)
+        com.google.accompanist.flowlayout.FlowRow(
+          mainAxisSize = SizeMode.Expand,
+          mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
+          modifier = Modifier
+            .padding(horizontal = 4.dp)
+        ) {
+          state.spotlight.forEach {
+            CategoryScreenItem(it, categoryEvent)
+          }
         }
       }
     }
