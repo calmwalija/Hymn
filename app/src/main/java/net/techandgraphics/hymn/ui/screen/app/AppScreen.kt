@@ -60,7 +60,7 @@ fun AppScreen(
 
   val backStackEntry by navController.currentBackStackEntryAsState()
   val currentRoute = backStackEntry?.destination?.route?.run {
-    if (contains(Category.title) || contains(Categorisation.title) || contains(Read.title))
+    if (contains(Category.title) || contains(Categorisation.route) || contains(Read.title))
       Home.title else this.capitalizeFirst()
   }
 
