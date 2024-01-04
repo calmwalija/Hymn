@@ -46,14 +46,14 @@ import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import kotlin.random.Random
 
 @Composable
-fun HymnOfTheDayScreen(
+fun UniquelyCraftedScreen(
   data: Lyric,
   event: (MainEvent) -> Unit,
   readEvent: (ReadEvent) -> Unit,
 ) {
   val context = LocalContext.current
-  val ofTheDay by remember {
-    mutableIntStateOf(Constant.ofTheDay[Random.nextInt(Constant.ofTheDay.size)])
+  val uniquelyCrafted by remember {
+    mutableIntStateOf(Constant.uniquelyCrafted[Random.nextInt(Constant.uniquelyCrafted.size)])
   }
 
   Box(
@@ -66,7 +66,7 @@ fun HymnOfTheDayScreen(
   ) {
 
     AsyncImage(
-      model = ofTheDay,
+      model = uniquelyCrafted,
       contentDescription = null,
       contentScale = ContentScale.Crop,
       modifier = Modifier

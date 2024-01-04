@@ -130,6 +130,7 @@ object Constant {
     CategoryRes(56 + 61, R.drawable.im_our_love_for_god),
     CategoryRes(56 + 62, R.drawable.im_contemporary_hymns),
     CategoryRes(56 + 63, R.drawable.im_community_in_christ),
+    CategoryRes(56 + 64, R.drawable.im_christmas_carols),
   )
 
   val searchEntityTags = arrayListOf(
@@ -146,10 +147,9 @@ object Constant {
     SearchEntity(query = "mtima wa mbuyako", tag = "mtimawambuyako", lang = CH.lowercase()),
   )
 
-  val ofTheDay = arrayListOf(
-    R.drawable.of_the_day1420830,
-    R.drawable.of_the_day3123468,
-    R.drawable.of_the_day3587237,
-    R.drawable.of_the_day5842978,
+  val uniquelyCrafted = arrayListOf(
+    R.drawable.im_hero_7483n9,
+    R.drawable.im_hero_39m7cx62,
+    R.drawable.im_hero_20mc6t2dj,
   )
 }

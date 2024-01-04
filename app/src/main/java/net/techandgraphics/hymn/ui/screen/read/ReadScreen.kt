@@ -52,6 +52,9 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.ui.Route
 
+const val READ_FONT_SIZE_THRESH_HOLD = 15
+const val READ_LINE_HEIGHT_THRESH_HOLD = 20
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadScreen(
@@ -196,7 +199,7 @@ fun ReadScreen(
                     tint = MaterialTheme.colorScheme.primary
                   )
                 },
-                valueRange = 1f..12f,
+                valueRange = 1f..16f,
                 modifier = Modifier
                   .weight(1f)
                   .padding(end = 16.dp),
@@ -238,8 +241,8 @@ fun ReadScreen(
               .fillMaxWidth()
               .padding(horizontal = 16.dp, vertical = 8.dp),
             textAlign = TextAlign.Center,
-            lineHeight = state.fontSize.plus(20).sp,
-            fontSize = (state.fontSize.plus(15)).sp
+            lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
+            fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
           )
         }
       }
