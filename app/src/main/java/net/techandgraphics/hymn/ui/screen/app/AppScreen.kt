@@ -253,7 +253,7 @@ fun AppScreen(
         },
         arguments = listOf(navArgument("id") { type = NavType.IntType })
       ) {
-        val lyricId = backStackEntry?.arguments?.getInt("id") ?: 4
+        val lyricId = backStackEntry?.arguments?.getInt("id") ?: 1
         val readViewModel: ReadViewModel = hiltViewModel()
         with(readViewModel) {
           LaunchedEffect(key1 = true) {
@@ -280,7 +280,7 @@ fun AppScreen(
         },
         arguments = listOf(navArgument("id") { type = NavType.IntType })
       ) {
-        val categoryId = backStackEntry?.arguments?.getInt("id") ?: 0
+        val categoryId = backStackEntry?.arguments?.getInt("id") ?: 1
         val categorisationViewModel: CategorisationViewModel = hiltViewModel()
         with(categorisationViewModel) {
           LaunchedEffect(key1 = true) {
