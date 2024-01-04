@@ -28,6 +28,7 @@ class AppPrefs @Inject constructor(
 
   val jsonBuildKey = context.getString(R.string.json_build_key)
   val fontKey = context.getString(R.string.font_key)
+  val readyKey = context.getString(R.string.ready_key)
 
   suspend fun setPrefs(key: String, value: String) {
     dataStore.edit { it[stringPreferencesKey(key)] = value }

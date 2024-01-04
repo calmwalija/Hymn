@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
+import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.data.prefs.SharedPrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val categoryRepo: CategoryRepository,
-  private val prefs: SharedPrefs
+  private val prefs: SharedPrefs,
+  appPrefs: AppPrefs
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainState())
@@ -28,7 +30,8 @@ class MainViewModel @Inject constructor(
 
   init {
     _state.value = _state.value.copy(lang = prefs.lang)
-    viewModelScope.launch {
+    appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { readyKey ->
+      if (readyKey == null || readyKey == false.toString()) return@onEach
       with(lyricRepo) {
         _state.value = _state.value.copy(spotlight = categoryRepo.spotlight())
         queryId()?.let {
@@ -41,7 +44,7 @@ class MainViewModel @Inject constructor(
           }.launchIn(viewModelScope)
         }
       }
-    }
+    }.launchIn(viewModelScope)
   }
 
   private fun languageChange(lang: String, onFinish: () -> Unit) = viewModelScope.launch {

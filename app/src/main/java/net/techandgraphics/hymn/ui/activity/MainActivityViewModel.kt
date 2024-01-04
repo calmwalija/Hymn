@@ -16,24 +16,28 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
   private val lyricParser: LyricParser,
   private val otherParser: OtherParser,
-  private val appPrefs: AppPrefs
+  appPrefs: AppPrefs
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainActivityState())
   val state = _state.asStateFlow()
 
   init {
-    appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { jsonBuildKey ->
-      if (jsonBuildKey != null)
-        if (jsonBuildKey == AppPrefs.JSON_BUILD_KEY) {
-          _state.value = _state.value.copy(completed = true)
-          return@onEach
+    with(appPrefs) {
+      getPrefs(jsonBuildKey).onEach { buildKey ->
+        if (buildKey != null)
+          if (buildKey == AppPrefs.JSON_BUILD_KEY) {
+            _state.value = _state.value.copy(completed = true)
+            return@onEach
+          }
+        setPrefs(readyKey, false.toString())
+        lyricParser.invoke {
+          otherParser.invoke {
+            setPrefs(jsonBuildKey, AppPrefs.JSON_BUILD_KEY)
+            setPrefs(readyKey, true.toString())
+          }
         }
-      lyricParser.invoke {
-        otherParser.invoke {
-          appPrefs.setPrefs(appPrefs.jsonBuildKey, AppPrefs.JSON_BUILD_KEY)
-        }
-      }
-    }.launchIn(viewModelScope)
+      }.launchIn(viewModelScope)
+    }
   }
 }

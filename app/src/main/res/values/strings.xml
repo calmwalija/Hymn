@@ -16,5 +16,6 @@
     <string name="json_build_key">json_build_key</string>
     <string name="translation_key">translation_key</string>
     <string name="shared_prefs">shared_prefs</string>
+    <string name="ready_key">ready_key</string>
 
 </resources>
