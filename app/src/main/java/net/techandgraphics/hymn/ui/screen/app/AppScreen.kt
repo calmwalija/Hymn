@@ -1,6 +1,8 @@
 package net.techandgraphics.hymn.ui.screen.app
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -48,6 +50,8 @@ import net.techandgraphics.hymn.ui.screen.read.ReadViewModel
 import net.techandgraphics.hymn.ui.screen.search.SearchEvent
 import net.techandgraphics.hymn.ui.screen.search.SearchScreen
 import net.techandgraphics.hymn.ui.screen.search.SearchViewModel
+
+const val ANIMATION_DURATION = 300
 
 @Composable
 fun AppScreen(
@@ -102,7 +106,21 @@ fun AppScreen(
       modifier = Modifier.padding(it)
     ) {
 
-      composable(route = Home.title) {
+      composable(
+        route = Home.title,
+        enterTransition = {
+          slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
+        exitTransition = {
+          slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        }
+      ) {
         val mainViewModel: MainViewModel = hiltViewModel()
         val state = mainViewModel.state.collectAsState().value
         MainScreen(
@@ -136,7 +154,21 @@ fun AppScreen(
         }
       }
 
-      composable(route = Category.title) {
+      composable(
+        route = Category.title,
+        enterTransition = {
+          slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
+        exitTransition = {
+          slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        }
+      ) {
         val categoryViewModel: CategoryViewModel = hiltViewModel()
         val state = categoryViewModel.state.collectAsState().value
         CategoryScreen(state) { event ->
@@ -146,7 +178,21 @@ fun AppScreen(
         }
       }
 
-      composable(route = Search.title) {
+      composable(
+        route = Search.title,
+        enterTransition = {
+          slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
+        exitTransition = {
+          slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        }
+      ) {
         val searchViewModel: SearchViewModel = hiltViewModel()
         with(searchViewModel) {
           val state = state.collectAsState().value
@@ -163,7 +209,21 @@ fun AppScreen(
         }
       }
 
-      composable(route = Miscellaneous.title) {
+      composable(
+        route = Miscellaneous.title,
+        enterTransition = {
+          slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
+        exitTransition = {
+          slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        }
+      ) {
         val miscViewModel: MiscViewModel = hiltViewModel()
         val state = miscViewModel.state.collectAsState().value
         MiscScreen(
@@ -179,6 +239,18 @@ fun AppScreen(
 
       composable(
         route = Read.route,
+        enterTransition = {
+          slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
+        exitTransition = {
+          slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
         arguments = listOf(navArgument("id") { type = NavType.IntType })
       ) {
         val lyricId = backStackEntry?.arguments?.getInt("id") ?: 4
@@ -194,6 +266,18 @@ fun AppScreen(
 
       composable(
         route = Categorisation.route,
+        enterTransition = {
+          slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
+        exitTransition = {
+          slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = tween(ANIMATION_DURATION)
+          )
+        },
         arguments = listOf(navArgument("id") { type = NavType.IntType })
       ) {
         val categoryId = backStackEntry?.arguments?.getInt("id") ?: 0
