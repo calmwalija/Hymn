@@ -37,14 +37,17 @@ import net.techandgraphics.hymn.ui.Route.Search
 import net.techandgraphics.hymn.ui.screen.Event
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
+import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 import net.techandgraphics.hymn.ui.screen.category.CategoryScreen
 import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.main.MainNavigator
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscScreen
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
+import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import net.techandgraphics.hymn.ui.screen.read.ReadScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadViewModel
 import net.techandgraphics.hymn.ui.screen.search.SearchEvent
@@ -127,19 +130,27 @@ fun AppScreen(
           mainEvent = mainViewModel::onEvent,
           state = state,
           categoryEvent = { event ->
+            mainViewModel.onAnalyticEvent(AnalyticEvent.Spotlight((event as CategoryEvent.Click).categoryId))
             navController.navigate(Event.category(event)) {
               launchSingleTop = true
             }
           },
           readEvent = { event ->
+            mainViewModel.onAnalyticEvent(AnalyticEvent.DiveInto((event as ReadEvent.Click).number))
             navController.navigate(Event.read(event)) {
               launchSingleTop = true
             }
           },
           navigator = { navigation ->
             when (navigation) {
-              MainNavigator.NavigateToCategory -> navController.navigate(Category.title)
-              MainNavigator.NavigateToSearch -> navController.navigate(Search.title)
+              MainNavigator.NavigateToCategory -> {
+                mainViewModel.onAnalyticEvent(AnalyticEvent.GotoCategory)
+                navController.navigate(Category.title)
+              }
+              MainNavigator.NavigateToSearch -> {
+                mainViewModel.onAnalyticEvent(AnalyticEvent.GotoCategory)
+                navController.navigate(Search.title)
+              }
             }
           }
         ) { lang ->
