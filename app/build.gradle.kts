@@ -4,7 +4,7 @@ plugins {
   id("com.diffplug.spotless")
   id("dagger.hilt.android.plugin")
   id("com.google.gms.google-services")
-//  id("com.google.firebase.crashlytics")
+  id("com.google.firebase.crashlytics")
   id("com.google.firebase.firebase-perf")
   id("com.google.devtools.ksp") version "1.8.10-1.0.9"
   id("org.jetbrains.kotlin.kapt")
@@ -95,7 +95,7 @@ dependencies {
 
   // Firebase
   implementation("com.google.firebase:firebase-core:21.1.1")
-//  implementation("com.google.firebase:firebase-crashlytics:18.6.0")
+  implementation("com.google.firebase:firebase-crashlytics:18.6.0")
   implementation("com.google.firebase:firebase-analytics:21.5.0")
   implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
   implementation("com.google.firebase:firebase-perf-ktx:20.5.1")
