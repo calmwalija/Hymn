@@ -1,8 +1,10 @@
 package net.techandgraphics.hymn.ui.screen.search
 
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -17,6 +19,9 @@ import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Search
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
+import net.techandgraphics.hymn.firebase.Tag
+import net.techandgraphics.hymn.firebase.tagEvent
+import net.techandgraphics.hymn.firebase.tagScreen
 import net.techandgraphics.hymn.removeSymbols
 import javax.inject.Inject
 
@@ -24,6 +29,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
   private val searchRepo: SearchRepository,
   private val lyricRepo: LyricRepository,
+  private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
   private var searchJob: Job? = null
@@ -36,6 +42,7 @@ class SearchViewModel @Inject constructor(
     .cachedIn(viewModelScope)
 
   init {
+    analytics.tagScreen(Tag.SEARCH_SCREEN)
     with(viewModelScope) {
       searchRepo.query()
         .onEach { _state.value = _state.value.copy(search = it.map { it.asModel() }) }
@@ -82,10 +89,27 @@ class SearchViewModel @Inject constructor(
         }
       }
 
-      is SearchEvent.SearchQueryTag -> searchQueryTag(event.searchQuery)
+      is SearchEvent.SearchQueryTag -> {
+        analytics.tagEvent(
+          Tag.APPEND_SEARCH_TAG,
+          bundleOf(Pair(Tag.APPEND_SEARCH_TAG, event.searchQuery))
+        )
+        searchQueryTag(event.searchQuery)
+      }
 
-      SearchEvent.InsertSearchTag -> onInsertSearchTag()
-      SearchEvent.ClearSearchQuery -> clearSearchQuery()
+      SearchEvent.InsertSearchTag -> {
+        analytics.tagEvent(
+          Tag.SEARCH_KEYWORD,
+          bundleOf(Pair(Tag.SEARCH_KEYWORD, state.value.searchQuery))
+        )
+        onInsertSearchTag()
+      }
+
+      SearchEvent.ClearSearchQuery -> {
+        analytics.tagEvent(Tag.CLEAR_SEARCH_TAG, bundleOf())
+        clearSearchQuery()
+      }
+
       is SearchEvent.OnLongPress -> onLongPress(event.search)
     }
   }
