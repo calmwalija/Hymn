@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.flow.first
 import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.domain.model.Lyric
 import java.util.Calendar
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -29,6 +30,14 @@ infix fun NavHostController.onLanguageChange(str: String) {
   val versionName = if (str == versionValue[0]) versionEntity.first() else versionEntity.last()
   val msg = context.getString(R.string.change_book_translation, versionName)
   context toast msg
+}
+
+infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
+  val msg = getString(
+    if (!lyric.favorite) R.string.add_favorite else R.string.remove_favorite,
+    lyric.number
+  )
+  this toast msg
 }
 
 fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {
