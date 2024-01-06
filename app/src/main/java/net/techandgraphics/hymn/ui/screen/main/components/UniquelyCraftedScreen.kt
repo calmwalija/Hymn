@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
-import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import kotlin.random.Random
@@ -134,10 +134,7 @@ fun UniquelyCraftedScreen(
         }
         IconButton(
           onClick = {
-            context toast context.getString(
-              if (!data.favorite) R.string.add_favorite else R.string.remove_favorite,
-              data.number
-            )
+            context addRemoveFavoriteToast data
             event(MainEvent.Favorite(data))
           },
           modifier = Modifier
