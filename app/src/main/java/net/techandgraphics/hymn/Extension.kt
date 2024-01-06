@@ -1,14 +1,11 @@
 package net.techandgraphics.hymn
 
 import android.content.Context
-import android.os.Bundle
 import android.widget.Toast
 import androidx.navigation.NavHostController
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.flow.first
 import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.domain.model.Lyric
-import java.util.Calendar
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
   return try {
@@ -39,12 +36,5 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
   )
   this toast msg
 }
-
-fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {
-  logEvent(name, bundle)
-}
-
-fun timeInMillisMonth(month: Int = 1) =
-  Calendar.getInstance().apply { add(Calendar.MONTH, month) }.timeInMillis
 
 suspend fun AppPrefs.fontSize(): Int = getPrefs(fontKey).first()?.toString()?.toInt() ?: 1

@@ -1,7 +1,9 @@
 package net.techandgraphics.hymn.ui.screen.read
 
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,6 +22,9 @@ import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
 import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.domain.toTimestampEntity
+import net.techandgraphics.hymn.firebase.Tag
+import net.techandgraphics.hymn.firebase.tagEvent
+import net.techandgraphics.hymn.firebase.tagScreen
 import net.techandgraphics.hymn.fontSize
 import javax.inject.Inject
 
@@ -29,7 +34,8 @@ class ReadViewModel @Inject constructor(
   private val timestampRepo: TimestampRepository,
   private val timeSpentRepo: TimeSpentRepository,
   private val sharedPrefs: SharedPrefs,
-  private val appPrefs: AppPrefs
+  private val appPrefs: AppPrefs,
+  private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(ReadState())
@@ -53,6 +59,7 @@ class ReadViewModel @Inject constructor(
   }
 
   operator fun invoke(id: Int, setLyricsData: Boolean = true) = viewModelScope.launch {
+    analytics.tagScreen(Tag.READ_SCREEN)
     with(lyricRepo.queryByNumber(id)) {
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
@@ -93,9 +100,24 @@ class ReadViewModel @Inject constructor(
   fun onEvent(event: ReadEvent) {
     when (event) {
       is ReadEvent.Click -> Unit
-      is ReadEvent.Favorite -> favorite(event.data)
-      is ReadEvent.FontSize -> fontSize(event.size)
+      is ReadEvent.Favorite -> {
+        analytics.tagEvent(
+          if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
+          bundleOf(Pair(Tag.MAIN_SCREEN, event.data.title))
+        )
+        favorite(event.data)
+      }
+
+      is ReadEvent.FontSize -> {
+        analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.MAIN_SCREEN, event.size.toString())))
+        fontSize(event.size)
+      }
+
       ReadEvent.TranslationInverse -> {
+        analytics.tagEvent(
+          Tag.TRANSLATION_INVERSE,
+          bundleOf(Pair(Tag.MAIN_SCREEN, !state.value.translationInverse))
+        )
         setLyricsData()
       }
     }

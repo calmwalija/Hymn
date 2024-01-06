@@ -1,7 +1,9 @@
 package net.techandgraphics.hymn.ui.screen.main
 
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +17,9 @@ import net.techandgraphics.hymn.data.prefs.SharedPrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.firebase.Tag
+import net.techandgraphics.hymn.firebase.tagEvent
+import net.techandgraphics.hymn.firebase.tagScreen
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,13 +27,15 @@ class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val categoryRepo: CategoryRepository,
   private val prefs: SharedPrefs,
-  appPrefs: AppPrefs
+  appPrefs: AppPrefs,
+  private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
 
   init {
+    analytics.tagScreen(Tag.MAIN_SCREEN)
     _state.value = _state.value.copy(lang = prefs.lang)
     appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { readyKey ->
       if (readyKey == null || readyKey == false.toString()) return@onEach
@@ -66,8 +73,38 @@ class MainViewModel @Inject constructor(
 
   fun onEvent(event: MainEvent) {
     when (event) {
-      is MainEvent.Favorite -> favorite(event.data)
-      is MainEvent.LanguageChange -> languageChange(event.lang, event.onFinish)
+      is MainEvent.Favorite -> {
+        analytics.tagEvent(
+          if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
+          bundleOf(Pair(Tag.MAIN_SCREEN, event.data.title))
+        )
+        favorite(event.data)
+      }
+
+      is MainEvent.LanguageChange -> {
+        analytics.tagEvent(Tag.BOOK_SWITCH, bundleOf(Pair(Tag.MAIN_SCREEN, event.lang)))
+        languageChange(event.lang, event.onFinish)
+      }
+    }
+  }
+
+  fun onAnalyticEvent(event: AnalyticEvent) {
+    when (event) {
+      AnalyticEvent.GotoCategory -> {
+        analytics.tagEvent(Tag.CATEGORY_SCREEN, bundleOf(Pair(Tag.MAIN_SCREEN, null)))
+      }
+
+      AnalyticEvent.GotoSearch -> {
+        analytics.tagEvent(Tag.SEARCH_SCREEN, bundleOf(Pair(Tag.MAIN_SCREEN, null)))
+      }
+
+      is AnalyticEvent.DiveInto -> {
+        analytics.tagEvent(Tag.DIVE_INTO, bundleOf(Pair(Tag.MAIN_SCREEN, event.number)))
+      }
+
+      is AnalyticEvent.Spotlight -> {
+        analytics.tagEvent(Tag.SPOTLIGHT, bundleOf(Pair(Tag.MAIN_SCREEN, event.categoryId)))
+      }
     }
   }
 }
