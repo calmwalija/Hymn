@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +51,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.ui.Route
 
 const val READ_FONT_SIZE_THRESH_HOLD = 15
@@ -63,6 +65,7 @@ fun ReadScreen(
   event: (ReadEvent) -> Unit
 ) {
 
+  val context = LocalContext.current
   var fontSizeShow by remember { mutableStateOf(false) }
   val rotateDegree by animateFloatAsState(
     targetValue = if (state.translationInverse) 180f else 0f,
@@ -122,7 +125,10 @@ fun ReadScreen(
         actions = {
           if (state.lyricKey.isNotEmpty()) {
             IconButton(
-              onClick = { event(ReadEvent.Favorite(state.lyricKey.first().lyric)) },
+              onClick = {
+                context addRemoveFavoriteToast state.lyricKey.first().lyric
+                event(ReadEvent.Favorite(state.lyricKey.first().lyric))
+              },
             ) {
               Icon(
                 imageVector = if (state.lyricKey.first().lyric.favorite)

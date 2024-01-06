@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
@@ -83,7 +84,12 @@ fun CategorisationScreenItem(
       }
     }
 
-    IconButton(onClick = { event(CategorisationEvent.Favorite(data)) }) {
+    IconButton(
+      onClick = {
+        context addRemoveFavoriteToast data
+        event(CategorisationEvent.Favorite(data))
+      }
+    ) {
       Icon(
         imageVector = if (data.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
         contentDescription = null,
