@@ -1,8 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.main
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,13 +12,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,10 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -58,13 +55,8 @@ fun MainScreen(
   val context = LocalContext.current
   val versionValue = context.resources.getStringArray(R.array.version_values)
   val versionEntries = context.resources.getStringArray(R.array.version_entries)
-  var expanded by remember { mutableStateOf(false) }
   var onLangInvoke by remember { mutableStateOf(false) }
-  val rotateDegree by animateFloatAsState(
-    targetValue = if (expanded) 180f else 0f,
-    label = "Rotate Icon",
-    animationSpec = tween(durationMillis = 500)
-  )
+  val colorScheme = MaterialTheme.colorScheme
 
   AnimatedVisibility(visible = state.uniquelyCrafted.isNotEmpty()) {
     LazyColumn {
@@ -72,9 +64,7 @@ fun MainScreen(
       item {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-          verticalAlignment = Alignment.CenterVertically,
-          modifier = Modifier
-            .padding(8.dp)
+          verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)
         ) {
           Text(
             text = "Uniquely Crafted",
@@ -85,64 +75,77 @@ fun MainScreen(
           Card(
             shape = RoundedCornerShape(50),
             colors = CardDefaults.cardColors(
-              containerColor = MaterialTheme.colorScheme.surface
+              containerColor = colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(
               defaultElevation = 1.dp
             ),
           ) {
             Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier
-                .clickable(enabled = onLangInvoke.not()) { expanded = true }
-                .padding(10.dp),
+              modifier = Modifier.padding(vertical = 2.dp)
             ) {
-              Box {
-                this@Card.AnimatedVisibility(visible = onLangInvoke.not()) {
-                  Icon(
-                    painter = painterResource(id = R.drawable.ic_book),
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp)
-                  )
-                }
-
-                this@Card.AnimatedVisibility(visible = onLangInvoke) {
-                  CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    modifier = Modifier.size(14.dp)
-                  )
-                }
-              }
-
-              Text(
-                text = versionEntries[versionValue.indexOf(state.lang)],
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 4.dp),
-                color = MaterialTheme.colorScheme.primary
-              )
-
-              Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                modifier = Modifier
-                  .rotate(rotateDegree)
-                  .size(16.dp)
-              )
-            }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
               versionEntries
-                .filter { versionValue[versionEntries.indexOf(it)] != state.lang }
                 .forEach {
-                  DropdownMenuItem(
-                    text = { Text(text = it) },
-                    enabled = versionValue[versionEntries.indexOf(it)] != state.lang,
-                    onClick = {
-                      expanded = false
-                      onLangInvoke = true
-                      onLanguageChange(versionValue[versionEntries.indexOf(it)])
+                  val ifLang = versionValue[versionEntries.indexOf(it)] == state.lang
+                  ElevatedCard(
+                    modifier = Modifier
+                      .padding(horizontal = 2.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = CardDefaults.cardColors(
+                      containerColor = if (ifLang.not()) colorScheme.surface else colorScheme.primary.copy(
+                        alpha = .8f
+                      ),
+                      contentColor = if (ifLang) Color.White else colorScheme.primary.copy(
+                        alpha = .8f
+                      ),
+                    ),
+                    elevation = CardDefaults.cardElevation(),
+                  ) {
+                    Row(
+                      modifier = Modifier
+                        .clickable(enabled = onLangInvoke.not()) {
+                          if (versionValue[versionEntries.indexOf(it)] != state.lang) {
+                            onLangInvoke = true
+                            onLanguageChange(versionValue[versionEntries.indexOf(it)])
+                          }
+                        }
+                        .padding(10.dp),
+                      verticalAlignment = Alignment.CenterVertically
+                    ) {
+                      Box {
+                        this@Card.AnimatedVisibility(
+                          visible = versionValue[
+                            versionEntries.indexOf(
+                              it
+                            )
+                          ] == state.lang
+                        ) {
+                          this@Card.AnimatedVisibility(visible = onLangInvoke.not()) {
+                            Icon(
+                              painter = painterResource(id = R.drawable.ic_book),
+                              contentDescription = null,
+                              modifier = Modifier.size(12.dp)
+                            )
+                          }
+
+                          this@Card.AnimatedVisibility(visible = onLangInvoke) {
+                            CircularProgressIndicator(
+                              strokeWidth = 2.dp,
+                              color = colorScheme.secondary,
+                              modifier = Modifier.size(12.dp)
+                            )
+                          }
+                        }
+                      }
+                      Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelSmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 4.dp)
+                      )
                     }
-                  )
+                  }
                 }
             }
           }
@@ -164,8 +167,7 @@ fun MainScreen(
           Text(
             text = "Dive Into",
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-            modifier = Modifier
-              .weight(1f)
+            modifier = Modifier.weight(1f)
           )
           Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -174,14 +176,14 @@ fun MainScreen(
               text = "Find More",
               style = MaterialTheme.typography.labelMedium,
               fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.primary
+              color = colorScheme.primary
             )
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
               imageVector = Icons.Filled.KeyboardArrowRight,
               contentDescription = null,
               modifier = Modifier.size(20.dp),
-              tint = MaterialTheme.colorScheme.primary
+              tint = colorScheme.primary
             )
           }
         }
@@ -189,8 +191,7 @@ fun MainScreen(
         com.google.accompanist.flowlayout.FlowRow(
           mainAxisSize = SizeMode.Expand,
           mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-          modifier = Modifier
-            .padding(horizontal = 4.dp)
+          modifier = Modifier.padding(horizontal = 4.dp)
         ) {
           state.diveInto.forEach {
             DiveIntoItemScreen(it, readEvent)
@@ -209,8 +210,7 @@ fun MainScreen(
           Text(
             text = "Spotlight",
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-            modifier = Modifier
-              .weight(1f)
+            modifier = Modifier.weight(1f)
           )
           Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -219,14 +219,14 @@ fun MainScreen(
               text = "See All",
               style = MaterialTheme.typography.labelMedium,
               fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.primary
+              color = colorScheme.primary
             )
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
               imageVector = Icons.Filled.KeyboardArrowRight,
               contentDescription = null,
               modifier = Modifier.size(20.dp),
-              tint = MaterialTheme.colorScheme.primary
+              tint = colorScheme.primary
             )
           }
         }
@@ -234,8 +234,7 @@ fun MainScreen(
         com.google.accompanist.flowlayout.FlowRow(
           mainAxisSize = SizeMode.Expand,
           mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-          modifier = Modifier
-            .padding(horizontal = 4.dp)
+          modifier = Modifier.padding(horizontal = 4.dp)
         ) {
           state.spotlight.forEach {
             CategoryScreenItem(it, categoryEvent)
