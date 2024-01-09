@@ -99,6 +99,7 @@ object Migration {
       db.execSQL("DROP TABLE _lyric")
 
       db.execSQL("CREATE TABLE timestamp (lang TEXT NOT NULL,timestamp INTEGER NOT NULL, number INTEGER NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(id))")
+      db.execSQL("CREATE TABLE time_spent (lang TEXT NOT NULL,timeSpent INTEGER NOT NULL, number INTEGER NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(id))")
     }
   }
 }
