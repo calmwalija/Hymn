@@ -9,16 +9,18 @@ import kotlinx.coroutines.flow.map
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.prefs.SharedPrefs
+import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import javax.inject.Inject
 
-class LyricRepositoryImpl @Inject constructor(database: Database, sharedPrefs: SharedPrefs) :
-  LyricRepository {
+class LyricRepositoryImpl @Inject constructor(
+  database: Database,
+  private val prefs: SharedPrefs
+) : LyricRepository {
 
   private val dao = database.lyricDao
-  private val lang = sharedPrefs.lang
   private val pageSize = 20
 
   override fun query(query: String): Flow<PagingData<Lyric>> {
@@ -27,18 +29,18 @@ class LyricRepositoryImpl @Inject constructor(database: Database, sharedPrefs: S
         pageSize = pageSize,
         maxSize = pageSize.times(3)
       ),
-      pagingSourceFactory = { dao.query(query, lang) }
+      pagingSourceFactory = { dao.query(query, prefs.getLang()) }
     )
       .flow
       .map { it.map { it.asModel() } }
   }
 
   override fun queryByCategory(id: Int): Flow<List<Lyric>> {
-    return dao.queryByCategory(id, lang).map { it.map { it.asModel() } }
+    return dao.queryByCategory(id, prefs.getLang()).map { it.map { it.asModel() } }
   }
 
   override fun diveInto(): Flow<List<Lyric>> {
-    return dao.diveInto(lang).map { it.map { it.asModel() } }
+    return dao.diveInto(prefs.getLang()).map { it.map { it.asModel() } }
   }
 
   override fun queryById(lyricId: Int): Flow<List<Lyric>> {
@@ -46,7 +48,7 @@ class LyricRepositoryImpl @Inject constructor(database: Database, sharedPrefs: S
   }
 
   override fun favorites(): Flow<List<Lyric>> {
-    return dao.favorites(lang).map { it.map { it.asModel() } }
+    return dao.favorites(prefs.getLang()).map { it.map { it.asModel() } }
   }
 
   override suspend fun upsert(lyric: List<Lyric>) {
@@ -58,15 +60,15 @@ class LyricRepositoryImpl @Inject constructor(database: Database, sharedPrefs: S
   }
 
   override suspend fun queryId(): Int? {
-    return dao.queryId(lang)
+    return dao.queryId(prefs.getLang())
   }
 
   override suspend fun favorite(favorite: Boolean, number: Int) {
-    dao.favorite(favorite, number, lang)
+    dao.favorite(favorite, number, prefs.getLang())
   }
 
   override suspend fun read(number: Int, timestamp: Long) {
-    dao.read(number, timestamp, lang)
+    dao.read(number, timestamp, prefs.getLang())
   }
 
   override suspend fun backup(): List<Lyric> {

@@ -10,4 +10,5 @@ data class MainState(
   val diveInto: List<Lyric> = emptyList(),
   var queryId: Int = 1,
   val lang: String = Lang.EN.lowercase(),
+  val onLangInvoke: Boolean = false
 )
