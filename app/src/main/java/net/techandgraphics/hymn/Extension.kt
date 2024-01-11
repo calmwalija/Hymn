@@ -2,7 +2,6 @@ package net.techandgraphics.hymn
 
 import android.content.Context
 import android.widget.Toast
-import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.first
 import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.domain.model.Lyric
@@ -18,15 +17,12 @@ infix fun Context.readJsonFromAssetToString(file: String): String? {
 infix fun Context.toast(message: String) =
   Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
-infix fun NavHostController.onLanguageChange(str: String) {
-  val versionEntity = context.resources.getStringArray(R.array.version_entries)
-  val versionValue = context.resources.getStringArray(R.array.version_values)
-  val fragmentId = currentDestination?.id
-  popBackStack(fragmentId!!, true)
-  navigate(fragmentId)
+infix fun Context.onTranslationChange(str: String) {
+  val versionEntity = resources.getStringArray(R.array.version_entries)
+  val versionValue = resources.getStringArray(R.array.version_values)
   val versionName = if (str == versionValue[0]) versionEntity.first() else versionEntity.last()
-  val msg = context.getString(R.string.change_book_translation, versionName)
-  context toast msg
+  val msg = getString(R.string.change_book_translation, versionName)
+  this toast msg
 }
 
 infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {

@@ -4,14 +4,16 @@ import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.Database
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.prefs.SharedPrefs
+import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import javax.inject.Inject
 
-class SearchRepositoryImpl @Inject constructor(database: Database, prefs: SharedPrefs) :
-  SearchRepository {
+class SearchRepositoryImpl @Inject constructor(
+  database: Database,
+  private val prefs: SharedPrefs
+) : SearchRepository {
 
   private val dao = database.searchDao
-  private val lang = prefs.lang
 
   override suspend fun upsert(data: List<SearchEntity>) {
     dao.upsert(data)
@@ -26,6 +28,6 @@ class SearchRepositoryImpl @Inject constructor(database: Database, prefs: Shared
   }
 
   override fun query(): Flow<List<SearchEntity>> {
-    return dao.query(lang)
+    return dao.query(prefs.getLang())
   }
 }

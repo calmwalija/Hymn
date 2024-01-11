@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -48,9 +50,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.toTimeAgo
@@ -74,9 +73,6 @@ fun MiscScreen(
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
   var favoriteShow by remember { mutableStateOf(false) }
-
-  val lottieComposition by
-  rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.elq73h_del))
 
   LazyColumn(
     modifier = Modifier.padding(horizontal = 8.dp)
@@ -276,16 +272,11 @@ fun MiscScreen(
                       Row(
                         modifier = Modifier
                           .fillMaxSize()
-                          .padding(vertical = 4.dp),
+                          .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                       ) {
-                        LottieAnimation(
-                          composition = lottieComposition,
-                          isPlaying = dismissState.dismissDirection == DismissDirection.StartToEnd,
-                          speed = 2f,
-                          modifier = Modifier
-                            .fillMaxWidth(.2f)
-                        )
+                        Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Delete")
+                        Text(text = "Delete", style = MaterialTheme.typography.labelMedium)
                       }
                     },
                     dismissContent = {
