@@ -21,10 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.SizeMode
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 import net.techandgraphics.hymn.ui.screen.category.CategoryScreenItem
 import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
@@ -55,8 +53,12 @@ fun MainScreen(
   val context = LocalContext.current
   val versionValue = context.resources.getStringArray(R.array.version_values)
   val versionEntries = context.resources.getStringArray(R.array.version_entries)
-  var onLangInvoke by remember { mutableStateOf(false) }
   val colorScheme = MaterialTheme.colorScheme
+
+  LaunchedEffect(state.onLangInvoke) {
+    if (state.onLangInvoke)
+      context.onTranslationChange(state.lang)
+  }
 
   AnimatedVisibility(visible = state.uniquelyCrafted.isNotEmpty()) {
     LazyColumn {
@@ -103,9 +105,8 @@ fun MainScreen(
                   ) {
                     Row(
                       modifier = Modifier
-                        .clickable(enabled = onLangInvoke.not()) {
+                        .clickable(enabled = state.onLangInvoke.not()) {
                           if (versionValue[versionEntries.indexOf(it)] != state.lang) {
-                            onLangInvoke = true
                             onLanguageChange(versionValue[versionEntries.indexOf(it)])
                           }
                         }
@@ -120,7 +121,7 @@ fun MainScreen(
                             )
                           ] == state.lang
                         ) {
-                          this@Card.AnimatedVisibility(visible = onLangInvoke.not()) {
+                          this@Card.AnimatedVisibility(visible = state.onLangInvoke.not()) {
                             Icon(
                               painter = painterResource(id = R.drawable.ic_book),
                               contentDescription = null,
@@ -128,7 +129,7 @@ fun MainScreen(
                             )
                           }
 
-                          this@Card.AnimatedVisibility(visible = onLangInvoke) {
+                          this@Card.AnimatedVisibility(visible = state.onLangInvoke) {
                             CircularProgressIndicator(
                               strokeWidth = 2.dp,
                               color = colorScheme.secondary,

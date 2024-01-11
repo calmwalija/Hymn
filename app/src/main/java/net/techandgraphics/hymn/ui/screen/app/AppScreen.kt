@@ -27,7 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import net.techandgraphics.hymn.capitalizeFirst
-import net.techandgraphics.hymn.onLanguageChange
 import net.techandgraphics.hymn.ui.Route.Categorisation
 import net.techandgraphics.hymn.ui.Route.Category
 import net.techandgraphics.hymn.ui.Route.Home
@@ -147,6 +146,7 @@ fun AppScreen(
                 mainViewModel.onAnalyticEvent(AnalyticEvent.GotoCategory)
                 navController.navigate(Category.title)
               }
+
               MainNavigator.NavigateToSearch -> {
                 mainViewModel.onAnalyticEvent(AnalyticEvent.GotoCategory)
                 navController.navigate(Search.title)
@@ -154,14 +154,7 @@ fun AppScreen(
             }
           }
         ) { lang ->
-          mainViewModel.onEvent(
-            MainEvent.LanguageChange(
-              lang,
-              onFinish = {
-                navController onLanguageChange lang
-              }
-            )
-          )
+          mainViewModel.onEvent(MainEvent.LanguageChange(lang))
         }
       }
 

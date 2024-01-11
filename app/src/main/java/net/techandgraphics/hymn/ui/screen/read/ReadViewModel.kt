@@ -17,6 +17,7 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.data.prefs.SharedPrefs
+import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
@@ -33,7 +34,7 @@ class ReadViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val timestampRepo: TimestampRepository,
   private val timeSpentRepo: TimeSpentRepository,
-  private val sharedPrefs: SharedPrefs,
+  private val prefs: SharedPrefs,
   private val appPrefs: AppPrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
@@ -47,10 +48,10 @@ class ReadViewModel @Inject constructor(
 
   private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<LyricKey> {
     var currentPosition = 1
-    return filter { if (inverse.not()) it.lang == sharedPrefs.lang else (it.lang != sharedPrefs.lang) }
+    return filter { if (inverse.not()) it.lang == prefs.getLang() else (it.lang != prefs.getLang()) }
       .map { lyric ->
         LyricKey(
-          key = if (lyric.chorus == 0) (currentPosition++).toString() else sharedPrefs.context.getString(
+          key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(
             R.string.chorus
           ),
           lyric = lyric

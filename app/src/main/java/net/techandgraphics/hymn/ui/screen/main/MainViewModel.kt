@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.data.prefs.SharedPrefs
+import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -27,16 +28,15 @@ class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val categoryRepo: CategoryRepository,
   private val prefs: SharedPrefs,
-  appPrefs: AppPrefs,
+  private val appPrefs: AppPrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
 
-  init {
-    analytics.tagScreen(Tag.MAIN_SCREEN)
-    _state.value = _state.value.copy(lang = prefs.lang)
+  private fun onLoad() {
+    _state.value = _state.value.copy(lang = prefs.getLang())
     appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { readyKey ->
       if (readyKey == null || readyKey == false.toString()) return@onEach
       with(lyricRepo) {
@@ -54,11 +54,17 @@ class MainViewModel @Inject constructor(
     }.launchIn(viewModelScope)
   }
 
-  private fun languageChange(lang: String, onFinish: () -> Unit) = viewModelScope.launch {
+  init {
+    analytics.tagScreen(Tag.MAIN_SCREEN)
+    onLoad()
+  }
+
+  private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.setLang(lang)
-    _state.value = _state.value.copy(lang = lang)
+    onLoad()
+    _state.value = _state.value.copy(lang = lang, onLangInvoke = true)
     delay(1000)
-    onFinish.invoke()
+    _state.value = _state.value.copy(onLangInvoke = false)
   }
 
   fun favorite(lyric: Lyric) =
@@ -66,7 +72,7 @@ class MainViewModel @Inject constructor(
       with(lyric.copy(favorite = !lyric.favorite)) {
         lyricRepo.favorite(favorite, number)
       }
-      lyricRepo.queryById(state.value.queryId).onEach {
+      lyricRepo.queryById(lyric.lyricId).onEach {
         _state.value = _state.value.copy(uniquelyCrafted = it)
       }.launchIn(this)
     }
@@ -83,7 +89,7 @@ class MainViewModel @Inject constructor(
 
       is MainEvent.LanguageChange -> {
         analytics.tagEvent(Tag.BOOK_SWITCH, bundleOf(Pair(Tag.MAIN_SCREEN, event.lang)))
-        languageChange(event.lang, event.onFinish)
+        languageChange(event.lang)
       }
     }
   }
