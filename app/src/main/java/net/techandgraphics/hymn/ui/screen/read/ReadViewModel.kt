@@ -59,8 +59,8 @@ class ReadViewModel @Inject constructor(
   }
 
   operator fun invoke(id: Int, setLyricsData: Boolean = true) = viewModelScope.launch {
-    analytics.tagScreen(Tag.READ_SCREEN)
     with(lyricRepo.queryByNumber(id)) {
+      firebaseAnalytics(first())
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
         lyricKey = mapLyricKey(false),
@@ -89,7 +89,7 @@ class ReadViewModel @Inject constructor(
     }
   }
 
-  fun favorite(lyric: Lyric) =
+  private fun favorite(lyric: Lyric) =
     viewModelScope.launch {
       with(lyric.copy(favorite = !lyric.favorite)) {
         lyricRepo.favorite(favorite, number)
@@ -103,24 +103,30 @@ class ReadViewModel @Inject constructor(
       is ReadEvent.Favorite -> {
         analytics.tagEvent(
           if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-          bundleOf(Pair(Tag.MAIN_SCREEN, event.data.title))
+          bundleOf(Pair(Tag.READ_SCREEN, event.data.title))
         )
         favorite(event.data)
       }
 
       is ReadEvent.FontSize -> {
-        analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.MAIN_SCREEN, event.size.toString())))
+        analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.READ_SCREEN, event.size.toString())))
         fontSize(event.size)
       }
 
       ReadEvent.TranslationInverse -> {
         analytics.tagEvent(
           Tag.TRANSLATION_INVERSE,
-          bundleOf(Pair(Tag.MAIN_SCREEN, !state.value.translationInverse))
+          bundleOf(Pair(Tag.READ_SCREEN, !state.value.translationInverse))
         )
         setLyricsData()
       }
     }
+  }
+
+  private fun firebaseAnalytics(lyric: Lyric) = with(analytics) {
+    tagScreen(Tag.READ_SCREEN)
+    tagEvent(Tag.HYMN_TITLE, bundleOf(Pair(Tag.HYMN_TITLE, lyric.title)))
+    tagEvent(Tag.HYMN_NUMBER, bundleOf(Pair(Tag.HYMN_NUMBER, lyric.number)))
   }
 
   private fun fontSize(font: Int) {
