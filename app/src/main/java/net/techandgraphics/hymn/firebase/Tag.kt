@@ -24,4 +24,7 @@ object Tag {
   const val OPEN_LORDS_PRAYER = "open_lords_prayer"
   const val OPEN_FEEDBACK = "open_feedback"
   const val OPEN_RATING = "open_rating"
+
+  const val HYMN_TITLE = "hymn_title"
+  const val HYMN_NUMBER = "hymn_number"
 }
