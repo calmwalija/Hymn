@@ -27,7 +27,7 @@ class MainActivityViewModel @Inject constructor(
       getPrefs(jsonBuildKey).onEach { buildKey ->
         if (buildKey != null)
           if (buildKey == AppPrefs.JSON_BUILD_KEY) {
-            _state.value = _state.value.copy(completed = true)
+            _state.value = _state.value.copy(completed = false)
             return@onEach
           }
         setPrefs(readyKey, false.toString())
