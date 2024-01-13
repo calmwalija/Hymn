@@ -42,7 +42,7 @@ class ReadViewModel @Inject constructor(
   private val _state = MutableStateFlow(ReadState())
   val state = _state.asStateFlow()
   private val currentTimeMillis = System.currentTimeMillis()
-  private val maxTimeSpent: Long = 60_000
+  private val maxTimeSpent: Long = 60_000.times(2)
   private var fontJob: Job? = null
   private var translationJob: Job? = null
 

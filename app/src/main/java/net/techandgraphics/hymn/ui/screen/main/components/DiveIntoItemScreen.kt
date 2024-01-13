@@ -57,7 +57,8 @@ fun DiveIntoItemScreen(
     AsyncImage(
       model = Constant.images[data.categoryId].drawableRes,
       contentDescription = null,
-      contentScale = ContentScale.Crop
+      contentScale = ContentScale.Crop,
+      modifier = Modifier.fillMaxWidth()
     )
 
     Card(
