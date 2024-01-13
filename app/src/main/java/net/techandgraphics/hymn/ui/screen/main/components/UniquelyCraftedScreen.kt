@@ -1,7 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.main.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
@@ -105,7 +102,7 @@ fun UniquelyCraftedScreen(
           )
           Text(
             text = data.content,
-            maxLines = 3,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
@@ -132,23 +129,15 @@ fun UniquelyCraftedScreen(
             }
           }
         }
-        IconButton(
-          onClick = {
-            context addRemoveFavoriteToast data
-            event(MainEvent.Favorite(data))
-          },
+        Icon(
+          imageVector = if (data.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.primary,
           modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .background(MaterialTheme.colorScheme.surface)
+            .padding(end = 8.dp)
+            .size(32.dp)
             .align(Alignment.Bottom)
-        ) {
-          Icon(
-            imageVector = if (data.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(32.dp)
-          )
-        }
+        )
       }
     }
   }
