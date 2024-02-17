@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.data.prefs.SharedPrefs
+import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Search
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -29,7 +31,8 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
   private val searchRepo: SearchRepository,
   private val lyricRepo: LyricRepository,
-  private val analytics: FirebaseAnalytics
+  private val analytics: FirebaseAnalytics,
+  private val prefs: SharedPrefs,
 ) : ViewModel() {
 
   private var searchJob: Job? = null
@@ -123,7 +126,10 @@ class SearchViewModel @Inject constructor(
   private fun onInsertSearchTag() = viewModelScope.launch {
     val searchQuery = state.value.searchQuery.trim().lowercase()
     val searchList = searchQuery.removeSymbols().split(" ")
-    SearchEntity(query = searchQuery, tag = buildString { searchList.forEach { append(it) } })
-      .also { searchRepo.upsert(listOf(it)) }
+    SearchEntity(
+      query = searchQuery,
+      tag = buildString { searchList.forEach { append(it) } },
+      lang = prefs.getLang(),
+    ).also { searchRepo.upsert(listOf(it)) }
   }
 }
