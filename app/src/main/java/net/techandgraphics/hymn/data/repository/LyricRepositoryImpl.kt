@@ -1,8 +1,5 @@
 package net.techandgraphics.hymn.data.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,17 +19,8 @@ class LyricRepositoryImpl @Inject constructor(
 
   private val dao = database.lyricDao
   private val pageSize = 20
-
-  override fun query(query: String): Flow<PagingData<Lyric>> {
-    return Pager(
-      config = PagingConfig(
-        pageSize = pageSize,
-        maxSize = pageSize.times(3)
-      ),
-      pagingSourceFactory = { dao.query(query, prefs.getLang()) }
-    )
-      .flow
-      .map { it.map { it.asModel() } }
+  override fun query(query: String): Flow<List<Lyric>> {
+    return dao.query(query, prefs.getLang()).map { it.map { it.asModel() } }
   }
 
   override fun queryByCategory(id: Int): Flow<List<Lyric>> {

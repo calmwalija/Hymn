@@ -1,11 +1,10 @@
 package net.techandgraphics.hymn.domain.repository
 
-import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.domain.model.Lyric
 
 interface LyricRepository {
-  fun query(query: String): Flow<PagingData<Lyric>>
+  fun query(query: String): Flow<List<Lyric>>
   fun queryByCategory(id: Int): Flow<List<Lyric>>
   fun diveInto(): Flow<List<Lyric>>
   fun queryById(lyricId: Int): Flow<List<Lyric>>

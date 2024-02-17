@@ -22,9 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -34,8 +31,6 @@ fun SearchScreen(
   readEvent: (ReadEvent) -> Unit,
   event: (SearchEvent) -> Unit,
 ) {
-
-  val lyricsLazyPagingItems = state.lyricsPaged.collectAsLazyPagingItems()
 
   Column(
     modifier = Modifier.fillMaxSize()
@@ -94,12 +89,8 @@ fun SearchScreen(
     }
 
     LazyColumn {
-      items(
-        count = lyricsLazyPagingItems.itemCount,
-        key = lyricsLazyPagingItems.itemKey { it.lyricId },
-        contentType = lyricsLazyPagingItems.itemContentType()
-      ) {
-        lyricsLazyPagingItems[it]?.let { SearchScreenItem(it, readEvent) }
+      items(state.lyrics, key = { it.lyricId }) {
+        SearchScreenItem(it, readEvent)
       }
     }
   }
