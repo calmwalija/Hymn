@@ -3,7 +3,6 @@ package net.techandgraphics.hymn.ui.screen.search
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -41,8 +40,8 @@ class SearchViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   private fun queryLyrics() = lyricRepo.query(_state.value.searchQuery)
-    .also { _state.value = _state.value.copy(lyricsPaged = it) }
-    .cachedIn(viewModelScope)
+    .onEach { _state.value = _state.value.copy(lyrics = it) }
+    .launchIn(viewModelScope)
 
   init {
     analytics.tagScreen(Tag.SEARCH_SCREEN)
@@ -59,7 +58,8 @@ class SearchViewModel @Inject constructor(
       delay(delayDuration)
       state.value.searchQuery.length.let {
         try {
-          _state.value = _state.value.copy(searchQuery = state.value.searchQuery.dropLast(1))
+          _state.value =
+            _state.value.copy(searchQuery = state.value.searchQuery.dropLast(1))
           if (it > 1) clearSearchQuery()
         } catch (_: Exception) {
         }
@@ -72,7 +72,8 @@ class SearchViewModel @Inject constructor(
     searchQuery.onEach {
       delay(delayDuration)
       try {
-        _state.value = _state.value.copy(searchQuery = state.value.searchQuery + it.toString())
+        _state.value =
+          _state.value.copy(searchQuery = state.value.searchQuery + it.toString())
       } catch (_: Exception) {
       }
       onEvent(SearchEvent.OnSearchQuery(state.value.searchQuery))
@@ -82,7 +83,8 @@ class SearchViewModel @Inject constructor(
   fun onEvent(event: SearchEvent) {
     when (event) {
       is SearchEvent.OnSearchQuery -> {
-        _state.value = _state.value.copy(searchQuery = event.searchQuery, isSearching = true)
+        _state.value =
+          _state.value.copy(searchQuery = event.searchQuery, isSearching = true)
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
           delay(600)

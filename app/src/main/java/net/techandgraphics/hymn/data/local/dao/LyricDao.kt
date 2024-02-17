@@ -21,7 +21,17 @@ interface LyricDao {
                categoryName  LIKE'%' || :query || '%' )
               AND  lang=:lang GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC"""
   )
-  fun query(query: String = "", lang: String): PagingSource<Int, LyricEntity>
+  fun queryPaging(query: String = "", lang: String): PagingSource<Int, LyricEntity>
+
+  @Query(
+    """ SELECT * FROM lyric WHERE
+               (content LIKE'%' || :query || '%'  OR
+               title LIKE'%' || :query || '%'  OR
+               number LIKE'%' || :query || '%'  OR
+               categoryName  LIKE'%' || :query || '%' )
+              AND  lang=:lang GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC"""
+  )
+  fun query(query: String = "", lang: String): Flow<List<LyricEntity>>
 
   @Query("SELECT * FROM lyric WHERE categoryId=:id AND lang=:lang GROUP BY number ORDER BY lyricId ASC")
   fun queryByCategory(id: Int, lang: String): Flow<List<LyricEntity>>
