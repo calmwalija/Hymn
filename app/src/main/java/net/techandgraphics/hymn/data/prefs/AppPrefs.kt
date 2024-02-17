@@ -23,7 +23,7 @@ class AppPrefs @Inject constructor(
   private val dataStore = context.dataStore
 
   companion object {
-    const val JSON_BUILD_KEY = 3.toString()
+    const val JSON_BUILD_KEY = 4.toString()
   }
 
   val jsonBuildKey = context.getString(R.string.json_build_key)
