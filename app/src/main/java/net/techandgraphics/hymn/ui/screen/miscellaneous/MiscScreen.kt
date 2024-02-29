@@ -139,7 +139,7 @@ fun MiscScreen(
                 color = MaterialTheme.colorScheme.primary,
               )
               Text(
-                text = "Version ${it.name}",
+                text = "Version ${it.name}.3725",
                 style = MaterialTheme.typography.bodyMedium
               )
             }

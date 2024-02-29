@@ -54,6 +54,7 @@ class LyricParser @Inject constructor(
       with(dao.backup()) {
         dao.upsert(data)
         dao.upsert(this)
+        searchDao.clear()
         searchDao.upsert(Constant.searchEntityTags)
       }
     }
