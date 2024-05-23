@@ -3,6 +3,8 @@ package net.techandgraphics.hymn.ui.screen.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,8 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.SizeMode
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
@@ -41,6 +41,7 @@ import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MainScreen(
   state: MainState,
@@ -181,7 +182,7 @@ fun MainScreen(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
-              imageVector = Icons.Filled.KeyboardArrowRight,
+              imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
               contentDescription = null,
               modifier = Modifier.size(20.dp),
               tint = colorScheme.primary
@@ -189,11 +190,7 @@ fun MainScreen(
           }
         }
 
-        com.google.accompanist.flowlayout.FlowRow(
-          mainAxisSize = SizeMode.Expand,
-          mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-          modifier = Modifier.padding(horizontal = 4.dp)
-        ) {
+        FlowRow {
           state.diveInto.forEach {
             DiveIntoItemScreen(it, readEvent)
           }
@@ -224,7 +221,7 @@ fun MainScreen(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
-              imageVector = Icons.Filled.KeyboardArrowRight,
+              imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
               contentDescription = null,
               modifier = Modifier.size(20.dp),
               tint = colorScheme.primary
@@ -232,11 +229,7 @@ fun MainScreen(
           }
         }
 
-        com.google.accompanist.flowlayout.FlowRow(
-          mainAxisSize = SizeMode.Expand,
-          mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-          modifier = Modifier.padding(horizontal = 4.dp)
-        ) {
+        FlowRow {
           state.spotlight.forEach {
             CategoryScreenItem(it, categoryEvent)
           }
