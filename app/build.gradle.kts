@@ -138,6 +138,9 @@ dependencies {
   // Splash Screen
   implementation(libs.androidx.core.splashscreen)
 
+  //Coil
+  implementation(libs.coil.compose)
+
   //Testing
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
@@ -146,6 +149,4 @@ dependencies {
   androidTestImplementation(libs.androidx.ui.test.junit4)
   debugImplementation(libs.androidx.ui.tooling)
   debugImplementation(libs.androidx.ui.test.manifest)
-  debugImplementation(libs.coil.compose)
-
 }
