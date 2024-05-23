@@ -1,10 +1,13 @@
 plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.jetbrainsKotlinAndroid)
+  alias(libs.plugins.kotlin.serialization)
   id("com.diffplug.spotless")
   id("dagger.hilt.android.plugin")
   id("org.jetbrains.kotlin.kapt")
-  alias(libs.plugins.kotlin.serialization)
+  id("com.google.gms.google-services")
+  id("com.google.firebase.crashlytics")
+  id("com.google.firebase.firebase-perf")
 }
 
 
