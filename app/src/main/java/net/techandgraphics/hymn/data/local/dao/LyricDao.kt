@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.data.local.dao
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -12,16 +11,6 @@ interface LyricDao {
 
   @Upsert
   suspend fun upsert(data: List<LyricEntity>)
-
-  @Query(
-    """ SELECT * FROM lyric WHERE
-               (content LIKE'%' || :query || '%'  OR
-               title LIKE'%' || :query || '%'  OR
-               number LIKE'%' || :query || '%'  OR
-               categoryName  LIKE'%' || :query || '%' )
-              AND  lang=:lang GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC"""
-  )
-  fun queryPaging(query: String = "", lang: String): PagingSource<Int, LyricEntity>
 
   @Query(
     """ SELECT * FROM lyric WHERE

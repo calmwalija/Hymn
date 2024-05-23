@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -21,7 +22,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -31,10 +31,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import net.techandgraphics.hymn.R
 
 @Composable
@@ -42,10 +38,6 @@ fun ChatBoxScreen(
   state: SearchState,
   event: (SearchEvent) -> Unit
 ) {
-
-  val lottieComposition by
-  rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lf30_qhwxkcno))
-
   Card(
     modifier = Modifier
       .padding(horizontal = 8.dp),
@@ -91,9 +83,7 @@ fun ChatBoxScreen(
             }
 
             this@Row.AnimatedVisibility(visible = state.isSearching, exit = fadeOut()) {
-              LottieAnimation(
-                composition = lottieComposition,
-                iterations = LottieConstants.IterateForever,
+              CircularProgressIndicator(
                 modifier = Modifier
                   .size(23.dp)
               )

@@ -1,13 +1,21 @@
+import com.google.gms.googleservices.GoogleServicesTask
+
 plugins {
-  id("com.android.application")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.androidApplication)
+  alias(libs.plugins.jetbrainsKotlinAndroid)
+  alias(libs.plugins.kotlin.serialization)
   id("com.diffplug.spotless")
   id("dagger.hilt.android.plugin")
+  id("org.jetbrains.kotlin.kapt")
   id("com.google.gms.google-services")
   id("com.google.firebase.crashlytics")
   id("com.google.firebase.firebase-perf")
-  id("com.google.devtools.ksp") version "1.8.10-1.0.9"
-  id("org.jetbrains.kotlin.kapt")
+}
+
+project.afterEvaluate {
+  tasks.withType<GoogleServicesTask> {
+    gmpAppId.set(project.layout.buildDirectory.file("$name-gmpAppId.txt"))
+  }
 }
 
 android {
@@ -33,7 +41,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion = "1.4.3"
+    kotlinCompilerExtensionVersion = "1.5.1"
   }
 
   packaging {
@@ -88,72 +96,67 @@ android {
     }
     useBuildCache = true
   }
-  
+
 }
 
 dependencies {
 
   // Firebase
-  implementation("com.google.firebase:firebase-core:21.1.1")
-  implementation("com.google.firebase:firebase-crashlytics:18.6.0")
-  implementation("com.google.firebase:firebase-analytics:21.5.0")
-  implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
-  implementation("com.google.firebase:firebase-perf-ktx:20.5.1")
+  implementation(libs.firebase.core)
+  implementation(libs.firebase.crashlytics)
+  implementation(libs.firebase.analytics)
+  implementation(libs.firebase.messaging.ktx)
+  implementation(libs.firebase.perf.ktx)
 
-  // Kotlin
-  implementation("androidx.core:core-ktx:1.12.0")
-  implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-
-  // Compose
-  implementation("androidx.activity:activity-compose:1.8.2")
-  implementation(platform("androidx.compose:compose-bom:2023.10.01"))
-  implementation("androidx.compose.ui:ui")
-  implementation("androidx.compose.ui:ui-graphics")
-  implementation("androidx.compose.ui:ui-tooling-preview")
-  implementation("androidx.compose.material3:material3:1.1.2")
-  implementation("androidx.navigation:navigation-compose:2.7.6")
-
-  // Test
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-  androidTestImplementation(platform("androidx.compose:compose-bom:2023.10.01"))
-  androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-  debugImplementation("androidx.compose.ui:ui-tooling")
-  debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-  // Dagger Hilt
-  implementation("com.google.dagger:hilt-android:2.43.2")
-  kapt("com.google.dagger:hilt-android-compiler:2.43.2")
-  kapt("androidx.hilt:hilt-compiler:1.0.0")
-  implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+  //Kotlin Core
+  implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.lifecycle.runtime.ktx)
+  implementation(libs.androidx.activity.compose)
+  implementation(platform(libs.androidx.compose.bom))
+  implementation(libs.androidx.ui)
+  implementation(libs.androidx.ui.graphics)
+  implementation(libs.androidx.ui.tooling.preview)
+  implementation(libs.androidx.material3)
+  implementation(libs.androidx.navigation.runtime.ktx)
+  implementation(libs.androidx.navigation.compose)
 
   // Room
-  implementation("androidx.room:room-runtime:2.6.1")
-  kapt("androidx.room:room-compiler:2.6.1")
-  implementation("androidx.room:room-ktx:2.6.1")
+  implementation(libs.androidx.room.runtime)
+  kapt(libs.androidx.room.compiler)
+  implementation(libs.androidx.room.ktx)
 
   //Paging 3
-  implementation("androidx.paging:paging-runtime-ktx:3.2.1")
-  implementation("androidx.paging:paging-compose:3.2.1")
-  implementation("androidx.room:room-paging:2.6.1")
+  implementation(libs.androidx.paging.runtime.ktx)
+  implementation(libs.androidx.paging.compose)
+  implementation(libs.androidx.room.paging)
+
+  //Serialization
+  implementation(libs.kotlinx.serialization.json)
+
+  //Dagger Hilt
+  implementation(libs.hilt.android)
+  kapt(libs.hilt.android.compiler)
+  kapt(libs.androidx.hilt.compiler)
+  implementation(libs.androidx.hilt.navigation.compose)
+
+  //DataStore
+  implementation(libs.androidx.datastore.preferences)
 
   //Gson
-  implementation("com.google.code.gson:gson:2.10.1")
-
-  // DataStore
-  implementation("androidx.datastore:datastore-preferences:1.1.0-alpha07")
-
-  // Coil
-  implementation("io.coil-kt:coil-compose:2.5.0")
-
-  // Lottie
-  implementation("com.airbnb.android:lottie-compose:6.2.0")
+  implementation(libs.gson)
 
   // Splash Screen
-  implementation("androidx.core:core-splashscreen:1.0.1")
+  implementation(libs.androidx.core.splashscreen)
 
-  // Accompanist
-  implementation("com.google.accompanist:accompanist-flowlayout:0.23.1")
+  //Coil
+  implementation(libs.coil.compose)
 
+  //Testing
+  testImplementation(libs.junit)
+  androidTestImplementation(libs.androidx.junit)
+  androidTestImplementation(libs.androidx.espresso.core)
+  androidTestImplementation(platform(libs.androidx.compose.bom))
+  androidTestImplementation(libs.androidx.ui.test.junit4)
+  debugImplementation(libs.androidx.ui.tooling)
+  debugImplementation(libs.androidx.ui.test.manifest)
 }
