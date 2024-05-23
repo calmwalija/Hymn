@@ -1,3 +1,5 @@
+import com.google.gms.googleservices.GoogleServicesTask
+
 plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -10,6 +12,11 @@ plugins {
   id("com.google.firebase.firebase-perf")
 }
 
+project.afterEvaluate {
+  tasks.withType<GoogleServicesTask> {
+    gmpAppId.set(project.layout.buildDirectory.file("$name-gmpAppId.txt"))
+  }
+}
 
 android {
   compileSdk = 34
@@ -95,11 +102,11 @@ android {
 dependencies {
 
   // Firebase
-  implementation("com.google.firebase:firebase-core:21.1.1")
-  implementation("com.google.firebase:firebase-crashlytics:18.6.0")
-  implementation("com.google.firebase:firebase-analytics:21.5.0")
-  implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
-  implementation("com.google.firebase:firebase-perf-ktx:20.5.1")
+  implementation(libs.firebase.core)
+  implementation(libs.firebase.crashlytics)
+  implementation(libs.firebase.analytics)
+  implementation(libs.firebase.messaging.ktx)
+  implementation(libs.firebase.perf.ktx)
 
   //Kotlin Core
   implementation(libs.androidx.core.ktx)
