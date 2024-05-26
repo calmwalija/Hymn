@@ -19,6 +19,6 @@ interface SearchDao {
   @Query("DELETE FROM Search")
   suspend fun clear()
 
-  @Query("SELECT * FROM Search WHERE lang=:lang ORDER BY id ASC LIMIT 9")
+  @Query("SELECT * FROM Search WHERE lang=:lang ORDER BY id DESC LIMIT 9")
   fun query(lang: String): Flow<List<SearchEntity>>
 }

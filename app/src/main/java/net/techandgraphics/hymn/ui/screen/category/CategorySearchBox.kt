@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search
+package net.techandgraphics.hymn.ui.screen.category
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
 
 @Composable
-fun SearchBox(
-  state: SearchState,
-  event: (SearchEvent) -> Unit
+fun CategorySearchBox(
+  state: CategoryState,
+  event: (CategoryEvent) -> Unit,
 ) {
   Card(
     modifier = Modifier
@@ -52,7 +52,7 @@ fun SearchBox(
   ) {
     BasicTextField(
       value = TextFieldValue(state.searchQuery, selection = TextRange(state.searchQuery.length)),
-      onValueChange = { if (it.text.length <= 20) event(SearchEvent.OnSearchQuery(it.text)) },
+      onValueChange = { if (it.text.length <= 20) event(CategoryEvent.OnSearchQuery(it.text)) },
       maxLines = 1,
       modifier = Modifier
         .fillMaxWidth(),
@@ -96,7 +96,6 @@ fun SearchBox(
               )
             }
           }
-
           Box(
             modifier = Modifier
               .weight(1f)
@@ -106,7 +105,7 @@ fun SearchBox(
             innerTextField()
             if (state.searchQuery.isEmpty())
               Text(
-                text = "Which hymn are you looking for?",
+                text = "Which category are you looking for?",
                 color = LocalContentColor.current.copy(alpha = 0.5f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -115,7 +114,7 @@ fun SearchBox(
 
           AnimatedVisibility(visible = state.searchQuery.isNotEmpty()) {
             IconButton(
-              onClick = { event(SearchEvent.ClearSearchQuery) },
+              onClick = { event(CategoryEvent.ClearSearchQuery) },
               modifier = Modifier
                 .size(20.dp)
             ) {
@@ -129,7 +128,7 @@ fun SearchBox(
           }
         }
       },
-      cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
+      cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary)
     )
   }
 }

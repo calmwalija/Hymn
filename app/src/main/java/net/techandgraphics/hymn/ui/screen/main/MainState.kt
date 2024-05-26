@@ -8,7 +8,6 @@ data class MainState(
   val spotlight: List<Category> = emptyList(),
   val uniquelyCrafted: List<Lyric> = emptyList(),
   val diveInto: List<Lyric> = emptyList(),
-  var queryId: Int = 1,
   val lang: String = Lang.EN.lowercase(),
   val onLangInvoke: Boolean = false
 )

@@ -23,7 +23,6 @@ fun Long.toTimeAgo(context: Context): String {
       "${context.resources.getQuantityString(R.plurals.hours, hours, hours)} ago"
     }
 
-    diff < 48 * HOUR_MILLIS -> "yesterday"
     else -> longDateFormat(this)
   }
 }

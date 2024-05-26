@@ -1,10 +1,12 @@
 package net.techandgraphics.hymn.ui
 
-enum class Route(val route: String = "", val title: String = "") {
-  Home(title = "Home"),
-  Miscellaneous(title = "Misc"),
-  Category(title = "Category"),
-  Search(title = "Search"),
-  Read(route = "read/{id}", title = "read"),
-  Categorisation(route = "categorisation/{id}", title = "Categorisation"),
+import kotlinx.serialization.Serializable
+
+sealed interface Route {
+  @Serializable data object Home : Route
+  @Serializable data object Mixed : Route
+  @Serializable data object Category : Route
+  @Serializable data object Search : Route
+  @Serializable data class Read(val id: Int) : Route
+  @Serializable data class Categorisation(val id: Int) : Route
 }

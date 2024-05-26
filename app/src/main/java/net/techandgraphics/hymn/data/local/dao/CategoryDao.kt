@@ -12,11 +12,18 @@ import net.techandgraphics.hymn.data.local.join.CategoryEmbedded
 interface CategoryDao : BaseDao<LyricEntity> {
 
   @Transaction
-  @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:lang  GROUP BY categoryName ORDER BY categoryName ASC")
-  fun query(lang: String): Flow<List<CategoryEmbedded>>
+  @Query(
+    """
+    SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric
+        WHERE lang=:lang AND categoryName LIKE'%' || :query || '%'
+        GROUP BY categoryName
+        ORDER BY categoryName ASC
+  """
+  )
+  fun query(query: String = "", lang: String): Flow<List<CategoryEmbedded>>
 
   @Transaction
-  @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:lang  GROUP BY categoryName ORDER BY RANDOM() LIMIT 4")
+  @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:lang  GROUP BY categoryName ORDER BY RANDOM() LIMIT 2")
   suspend fun spotlight(lang: String): List<CategoryEmbedded>
 
   @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:lang AND categoryId=:id  GROUP BY categoryName ORDER BY categoryName ASC")

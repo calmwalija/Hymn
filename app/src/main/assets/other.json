@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "resourceId": 1,
+    "lang": "en",
+    "groupName": "The Lord's Prayer",
+    "content": "Our Father, who art in heaven,\r\nHallowed be Thy Name;\r\nThy kingdom come;\r\nThy will be done on earth, as it is in heaven.\r\nAnd forgive us our debts, as we forgive our debtors;\r\nAnd bring us not into temptation, but deliver us from evil;\r\nFor Thine is the kingdom, the power, and the glory, forever. \r\nAmen."
+  },
+  {
+    "resourceId": 2,
+    "lang": "en",
+    "groupName": "Apostles Creed",
+    "content": "I Believe in God the Father Almighty. Maker of heaven and earth;\r\nAnd in Jesus Christ, His only begotten Son, our Lord;\r\nWho was conceived by the Holy Spirit, born of the virgin Mary;\r\nSuffered under Pontius Pilate, was crucified, dead, and buried, He descended into hell;\r\nThe third day He rose again from the dead;\r\nHe ascended into heaven, and sitteth on the right hand of God the Father Almighty;\r\nFrom thence He shall come to judge the living and the dead.\r\nI believe in the Holy Spirit;\r\nI believe in the holy catholic Church, the communion of saints;\r\nThe forgiveness of sins;\r\nThe resurrection of the body;\r\nAnd the life everlasting.\r\nAmen."
+  },
+  {
+    "resourceId": 3,
+    "lang": "ch",
+    "groupName": "Pemphero la Ambuye",
+    "content": "Atate wathu wa Kumwamba,\r\nDzina lanu liyeretsedwe,\r\nUfumu wanu udze,\r\nKufuna kwanu kuchitidwe, monga Kumwamba chomwecho pansi pano,\r\nMutipatse ife lero chakudya chathu cha lero,\r\nNdipo, mutikhululukire ife mangawa athu, monga ifenso tiwakhululukira amangawa athu,\r\nMusatitengere ife kokatiyesa, koma mutipulumutse ife kwa woyipayo,\r\nChifukwa Wanu ndi ufumu, ndi mphamvu, ndi ulemerero, ku nthawi zonse.\r\nAmen."
+  },
+  {
+    "resourceId": 4,
+    "lang": "ch",
+    "groupName": "Chikhulupiriro",
+    "content": "Ndikhulupirira Mulungu Atate wa mphamvu zonse, wolenga za kumwamba ndi za pansi.\r\nNdikhulupirira Yesu Khristu, Mwana wake wobadwa yekha, Ambuye wathu,\r\nAmene anapatsidwa ndi Mzimu Woyera,\r\nNabadwa mwa Mariya namwaliyo,\r\nNasautsidwa kwa Pontio Pirato,\r\nNamwalira, naikidwa m'manda, natsikira kwa akufa.\r\nTsiku lachitatu anaukanso kwa akufa,\r\nNakwera Kumwamba,\r\nNakhala padzanja lamanja la Mulungu Atate wa mphamvu zonse,\r\nKuchokera komweko adzadza kudzaweruza anthu amoyo ndi akufa.\r\nNdikhulupirira Mzimu Woyera.\r\nNdikhulupirira Mpingo wopatulika \r\nWa Khristu wa kwa anthu onse,\r\nChiyanjano cha oyera mtima,\r\nKukhululukidwa kwa machimo,\r\nKuukanso kwa thupi, ndi moyo wosatha.\r\nAmen."
+  }
+]

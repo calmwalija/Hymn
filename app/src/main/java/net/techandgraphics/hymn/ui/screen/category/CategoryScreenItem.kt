@@ -1,18 +1,15 @@
 package net.techandgraphics.hymn.ui.screen.category
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,10 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.domain.model.Category
@@ -34,55 +28,45 @@ import net.techandgraphics.hymn.hymnCount
 fun CategoryScreenItem(
   category: Category,
   event: (CategoryEvent) -> Unit,
+  modifier: Modifier = Modifier
 ) {
   val context = LocalContext.current
-  Box(
-    modifier = Modifier
-      .padding(4.dp)
-      .fillMaxWidth(.48f)
-      .height(IntrinsicSize.Max)
-      .clip(shape = RoundedCornerShape(6))
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = modifier
+      .fillMaxWidth()
       .clickable { event.invoke(CategoryEvent.Click(category.lyric.categoryId)) }
+      .padding(8.dp)
   ) {
     AsyncImage(
       model = Constant.images[category.lyric.categoryId].drawableRes,
       contentDescription = null,
       contentScale = ContentScale.Crop,
       modifier = Modifier
-        .fillMaxWidth()
-        .height(120.dp)
+        .clip(RoundedCornerShape(50))
+        .size(64.dp)
     )
-    Card(
-      colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-      ),
-      shape = RoundedCornerShape(topStart = 12.dp),
+    Column(
       modifier = Modifier
-        .fillMaxWidth(0.85f)
-        .align(Alignment.BottomEnd)
+        .weight(1f)
+        .padding(horizontal = 8.dp)
     ) {
-      Column(
-        modifier = Modifier
-          .padding(12.dp)
-          .wrapContentHeight()
-      ) {
-        Text(
-          text = category.lyric.categoryName,
-          fontWeight = FontWeight.Bold,
-          maxLines = 2,
-          lineHeight = 17.sp,
-          overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Badge(
-          containerColor = MaterialTheme.colorScheme.primary,
-        ) {
-          Text(
-            text = category.count.hymnCount(context),
-            fontWeight = FontWeight.Bold,
-          )
-        }
-      }
+      Text(
+        text = category.lyric.categoryName,
+      )
+      Text(
+        text = category.count.hymnCount(context),
+        style = MaterialTheme.typography.labelMedium
+      )
     }
+
+    Icon(
+      imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+      contentDescription = null,
+      modifier = Modifier
+        .padding(end = 2.dp)
+        .size(18.dp),
+      tint = MaterialTheme.colorScheme.primary
+    )
   }
 }
