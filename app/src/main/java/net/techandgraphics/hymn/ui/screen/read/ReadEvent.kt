@@ -6,5 +6,5 @@ sealed class ReadEvent {
   class Click(val number: Int) : ReadEvent()
   class Favorite(val data: Lyric) : ReadEvent()
   class FontSize(val size: Int) : ReadEvent()
-  object TranslationInverse : ReadEvent()
+  data object TranslationInverse : ReadEvent()
 }

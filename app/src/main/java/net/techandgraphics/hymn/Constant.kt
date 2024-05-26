@@ -146,10 +146,4 @@ object Constant {
     SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = CH.lowercase()),
     SearchEntity(query = "mtima wa mbuyako", tag = "mtimawambuyako", lang = CH.lowercase()),
   )
-
-  val uniquelyCrafted = arrayListOf(
-    R.drawable.im_hero_7483n9,
-    R.drawable.im_hero_39m7cx62,
-    R.drawable.im_hero_20mc6t2dj,
-  )
 }

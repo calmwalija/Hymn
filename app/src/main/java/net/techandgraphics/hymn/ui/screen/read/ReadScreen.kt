@@ -2,9 +2,11 @@ package net.techandgraphics.hymn.ui.screen.read
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
@@ -80,15 +83,24 @@ fun ReadScreen(
           if (state.lyricKey.isNotEmpty()) {
             val lyric = state.lyricKey.first().lyric
             Row(
-              verticalAlignment = Alignment.CenterVertically
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                  navController.navigate(
+                    Route.Categorisation(state.lyrics.first().lyric.categoryId),
+                  ) {
+                    popUpTo(navController.graph.findStartDestination().id)
+                    launchSingleTop = true
+                  }
+                }
             ) {
-
               AsyncImage(
                 model = Constant.images[lyric.categoryId].drawableRes,
                 contentDescription = lyric.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                  .padding(end = 8.dp)
+                  .padding(horizontal = 4.dp)
                   .size(32.dp)
                   .clip(RoundedCornerShape(50))
               )
@@ -99,7 +111,7 @@ fun ReadScreen(
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis,
                   fontWeight = FontWeight.Bold,
-                  style = MaterialTheme.typography.titleMedium
+                  style = MaterialTheme.typography.titleSmall
                 )
 
                 Text(
@@ -113,11 +125,14 @@ fun ReadScreen(
         navigationIcon = {
           IconButton(
             onClick = {
-              navController.popBackStack(Route.Read.route, inclusive = true)
+              navController.popBackStack(
+                Route.Read(state.lyrics.first().lyric.number),
+                inclusive = true
+              )
             }
           ) {
             Icon(
-              imageVector = Icons.Filled.ArrowBack,
+              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Go Back"
             )
           }

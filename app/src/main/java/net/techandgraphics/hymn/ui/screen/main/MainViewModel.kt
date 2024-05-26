@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.AppPrefs
@@ -35,33 +36,28 @@ class MainViewModel @Inject constructor(
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
 
-  private fun onLoad() {
+  fun get() {
     _state.value = _state.value.copy(lang = prefs.getLang())
     appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { readyKey ->
       if (readyKey == null || readyKey == false.toString()) return@onEach
       with(lyricRepo) {
         _state.value = _state.value.copy(spotlight = categoryRepo.spotlight())
-        queryId()?.let {
-          diveInto().zip(queryById(it)) { diveInto, uniquelyCrafted ->
-            _state.value = _state.value.copy(
-              queryId = it,
-              diveInto = diveInto,
-              uniquelyCrafted = uniquelyCrafted,
-            )
-          }.launchIn(viewModelScope)
-        }
+        diveInto().zip(uniquelyCrafted()) { diveInto, uniquelyCrafted ->
+          _state.update {
+            it.copy(diveInto = diveInto, uniquelyCrafted = uniquelyCrafted)
+          }
+        }.launchIn(viewModelScope)
       }
     }.launchIn(viewModelScope)
   }
 
   init {
     analytics.tagScreen(Tag.MAIN_SCREEN)
-    onLoad()
   }
 
   private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.setLang(lang)
-    onLoad()
+    get()
     _state.value = _state.value.copy(lang = lang, onLangInvoke = true)
     delay(1000)
     _state.value = _state.value.copy(onLangInvoke = false)

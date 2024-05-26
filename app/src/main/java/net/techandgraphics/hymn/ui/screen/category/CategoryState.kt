@@ -4,5 +4,7 @@ import net.techandgraphics.hymn.domain.model.Category
 
 data class CategoryState(
   val categories: List<Category> = emptyList(),
-  val route: String = ""
+  val route: String = "",
+  var searchQuery: String = "",
+  var isSearching: Boolean = false,
 )

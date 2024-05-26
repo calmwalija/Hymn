@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
+import net.techandgraphics.hymn.domain.model.Lyric
 
 @Dao
 interface LyricDao {
@@ -28,14 +29,14 @@ interface LyricDao {
   @Query("SELECT * FROM lyric WHERE number=:number ORDER BY lyricId ASC")
   suspend fun queryByNumber(number: Int): List<LyricEntity>
 
-  @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 2")
+  @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 4")
   fun diveInto(lang: String): Flow<List<LyricEntity>>
 
   @Query("SELECT * FROM lyric WHERE lyricId=:lyricId")
   fun queryById(lyricId: Int): Flow<List<LyricEntity>>
 
-  @Query("SELECT lyricId FROM lyric WHERE lang=:lang ORDER BY RANDOM() LIMIT 1")
-  suspend fun queryId(lang: String): Int?
+  @Query("SELECT * FROM lyric WHERE lang=:lang ORDER BY content LIMIT 2")
+  fun uniquelyCrafted(lang: String): Flow<List<Lyric>>
 
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:lang")
   suspend fun favorite(favorite: Boolean, number: Int, lang: String)
