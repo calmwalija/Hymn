@@ -21,8 +21,8 @@ class CategoryRepositoryImpl @Inject constructor(
     return dao.spotlight(prefs.getLang()).map { it.asModel() }
   }
 
-  override fun query(): Flow<List<Category>> {
-    return dao.query(prefs.getLang()).map { it.map { it.asModel() } }
+  override fun query(query: String): Flow<List<Category>> {
+    return dao.query(query, prefs.getLang()).map { it.map { it.asModel() } }
   }
 
   override fun queryById(id: Int): Flow<List<Category>> {

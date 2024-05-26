@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,87 +36,94 @@ import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 
 @Composable
 fun SearchScreenItem(
-  data: Lyric,
-  readEvent: (ReadEvent) -> Unit
+  lyric: Lyric,
+  readEvent: (ReadEvent) -> Unit,
+  index: Int,
+  size: Int,
+  modifier: Modifier = Modifier
 ) {
 
   val context = LocalContext.current
 
-  Row(
-    modifier = Modifier
-      .clickable { readEvent(ReadEvent.Click(data.number)) }
-      .padding(vertical = 8.dp)
+  Column(
+    modifier = modifier
+      .clickable { readEvent(ReadEvent.Click(lyric.number)) }
       .fillMaxWidth(),
-    verticalAlignment = Alignment.CenterVertically
   ) {
 
-    AsyncImage(
-      model = Constant.images[data.categoryId].drawableRes,
-      contentDescription = null,
-      contentScale = ContentScale.Crop,
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
       modifier = Modifier
-        .padding(horizontal = 8.dp)
-        .size(64.dp)
-        .clip(RoundedCornerShape(16))
-    )
-
-    Column(
-      modifier = Modifier.weight(1f)
+        .padding(vertical = 8.dp)
     ) {
 
-      Text(
-        text = "#${data.number}",
-        fontWeight = FontWeight.Bold,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.primary
+      AsyncImage(
+        model = Constant.images[lyric.categoryId].drawableRes,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+          .padding(horizontal = 8.dp)
+          .size(64.dp)
+          .clip(RoundedCornerShape(50))
       )
 
-      Row {
+      Column(
+        modifier = Modifier.weight(1f)
+      ) {
+
         Text(
-          text = data.content.trimIndent(),
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-          style = MaterialTheme.typography.bodyMedium,
+          text = "#${lyric.number}",
+          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.bodyLarge,
+          color = MaterialTheme.colorScheme.primary
         )
-      }
 
-      Text(
-        text = data.categoryName.trimIndent(),
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.bodySmall,
-        textDecoration = TextDecoration.Underline,
-      )
-
-      Spacer(modifier = Modifier.height(2.dp))
-      AnimatedVisibility(visible = data.timestamp != 0L) {
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Icon(
-            painter = painterResource(id = R.drawable.ic_access_time),
-            contentDescription = null,
-            modifier = Modifier.padding(end = 4.dp)
-          )
+        Row {
           Text(
-            text = data.timestamp.toTimeAgo(context),
+            text = lyric.content.trimIndent(),
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-            letterSpacing = 0.sp
+            style = MaterialTheme.typography.bodyMedium,
           )
         }
+
+        Text(
+          text = lyric.categoryName.trimIndent(),
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodySmall,
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+        AnimatedVisibility(visible = lyric.timestamp != 0L) {
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Icon(
+              painter = painterResource(id = R.drawable.ic_access_time),
+              contentDescription = null,
+              modifier = Modifier.padding(end = 4.dp)
+            )
+            Text(
+              text = lyric.timestamp.toTimeAgo(context),
+              overflow = TextOverflow.Ellipsis,
+              fontSize = MaterialTheme.typography.bodySmall.fontSize,
+              letterSpacing = 0.sp
+            )
+          }
+        }
       }
+
+      Icon(
+        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+        contentDescription = null,
+        modifier = Modifier
+          .size(32.dp)
+          .padding(end = 12.dp),
+        tint = MaterialTheme.colorScheme.primary
+      )
     }
-
-    Icon(
-      imageVector = Icons.Filled.KeyboardArrowRight,
-      contentDescription = null,
-      modifier = Modifier
-        .size(32.dp)
-        .padding(end = 12.dp),
-      tint = MaterialTheme.colorScheme.primary
-    )
-
-    Spacer(modifier = Modifier.width(8.dp))
+    if (index < size.minus(1))
+      HorizontalDivider(modifier = Modifier.padding(start = 80.dp, end = 16.dp))
   }
 }

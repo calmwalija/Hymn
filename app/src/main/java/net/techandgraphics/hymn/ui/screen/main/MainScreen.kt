@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -32,14 +34,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
-import net.techandgraphics.hymn.ui.screen.category.CategoryScreenItem
-import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.search.SearchScreenItem
+import net.techandgraphics.hymn.ui.theme.Typography
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -71,8 +72,12 @@ fun MainScreen(
         ) {
           Text(
             text = "Uniquely Crafted",
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-            modifier = Modifier.weight(1f)
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = Typography.titleMedium,
+            modifier = Modifier
+              .padding(end = 4.dp)
+              .weight(1f)
           )
 
           Card(
@@ -85,7 +90,8 @@ fun MainScreen(
             ),
           ) {
             Row(
-              modifier = Modifier.padding(vertical = 2.dp)
+              modifier = Modifier.padding(vertical = 2.dp),
+              verticalAlignment = Alignment.CenterVertically
             ) {
               versionEntries
                 .forEach {
@@ -114,7 +120,7 @@ fun MainScreen(
                         .padding(10.dp),
                       verticalAlignment = Alignment.CenterVertically
                     ) {
-                      Box {
+                      Box(modifier = Modifier.height(12.dp)) {
                         this@Card.AnimatedVisibility(
                           visible = versionValue[
                             versionEntries.indexOf(
@@ -153,8 +159,12 @@ fun MainScreen(
           }
         }
 
-        if (state.uniquelyCrafted.isNotEmpty())
-          UniquelyCraftedScreen(state.uniquelyCrafted.first(), mainEvent, readEvent)
+        if (state.uniquelyCrafted.size > 1)
+          LazyRow {
+            items(state.uniquelyCrafted) {
+              UniquelyCraftedScreen(it, readEvent)
+            }
+          }
       }
 
       item {
@@ -168,7 +178,7 @@ fun MainScreen(
         ) {
           Text(
             text = "Dive Into",
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+            style = Typography.titleMedium,
             modifier = Modifier.weight(1f)
           )
           Row(
@@ -191,8 +201,8 @@ fun MainScreen(
         }
 
         FlowRow {
-          state.diveInto.forEach {
-            DiveIntoItemScreen(it, readEvent)
+          state.diveInto.forEachIndexed { index, item ->
+            SearchScreenItem(item, readEvent, index, state.diveInto.size)
           }
         }
       }
@@ -207,7 +217,7 @@ fun MainScreen(
         ) {
           Text(
             text = "Spotlight",
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+            style = Typography.titleMedium,
             modifier = Modifier.weight(1f)
           )
           Row(
@@ -231,7 +241,7 @@ fun MainScreen(
 
         FlowRow {
           state.spotlight.forEach {
-            CategoryScreenItem(it, categoryEvent)
+            SpotlightItem(it, categoryEvent)
           }
         }
       }

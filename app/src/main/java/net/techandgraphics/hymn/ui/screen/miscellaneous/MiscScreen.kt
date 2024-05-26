@@ -16,8 +16,8 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -43,6 +43,7 @@ import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.read.READ_FONT_SIZE_THRESH_HOLD
 import net.techandgraphics.hymn.ui.screen.read.READ_LINE_HEIGHT_THRESH_HOLD
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +59,6 @@ fun MiscScreen(
 
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
-  var favoriteShow by remember { mutableStateOf(false) }
 
   LazyColumn(
     modifier = Modifier.padding(horizontal = 8.dp)
@@ -68,7 +68,7 @@ fun MiscScreen(
       Spacer(modifier = Modifier.height(24.dp))
       Text(
         text = "About Hymn Book App",
-        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+        style = Typography.titleMedium,
         modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
       )
 
@@ -104,7 +104,7 @@ fun MiscScreen(
           }
         }
 
-        Divider(modifier = Modifier.padding(horizontal = 16.dp))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
         getAppVersion(context)?.let {
           Row(
@@ -138,7 +138,7 @@ fun MiscScreen(
       Spacer(modifier = Modifier.height(16.dp))
       Text(
         text = "Contact",
-        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+        style = Typography.titleMedium,
         modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
       )
       Card(
@@ -178,7 +178,7 @@ fun MiscScreen(
           }
         }
 
-        Divider()
+        HorizontalDivider()
 
         Row(
           modifier = Modifier
@@ -214,7 +214,7 @@ fun MiscScreen(
         Spacer(modifier = Modifier.height(32.dp))
         Text(
           text = "Complementary",
-          style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+          style = Typography.titleMedium,
           modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
         )
         Card(
@@ -227,31 +227,19 @@ fun MiscScreen(
           modifier = Modifier.padding(4.dp)
         ) {
 
-          if (favoriteShow && state.favorites.isNotEmpty()) {
-            ModalBottomSheet(onDismissRequest = { favoriteShow = false }) {
+          val show = remember { mutableStateOf(false) }
 
-              Text(
-                text = "Favorite Hymns",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-              )
-
-              Spacer(modifier = Modifier.height(16.dp))
-
-              Spacer(modifier = Modifier.height(32.dp))
-            }
-          }
+          FavoriteDialog(show, state, event, readEvent)
 
           Row(
             modifier = Modifier
+              .fillMaxWidth()
               .clickable {
                 if (state.favorites.isEmpty()) {
                   context toast context.getString(R.string.no_fav_hymn)
                   return@clickable
                 }
-                favoriteShow = true
+                show.value = true
               }
               .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -291,7 +279,7 @@ fun MiscScreen(
             }
           }
 
-          Divider()
+          HorizontalDivider()
 
           Row(
             modifier = Modifier
@@ -348,7 +336,7 @@ fun MiscScreen(
             }
           }
 
-          Divider()
+          HorizontalDivider()
 
           Row(
             modifier = Modifier

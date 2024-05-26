@@ -5,18 +5,18 @@ import net.techandgraphics.hymn.ui.Route
 
 val bottomNavigationList = listOf(
   BottomNavigationItem(
-    title = Route.Home.title,
+    route = Route.Home,
     selectedIcon = R.drawable.ic_filled_home,
     unSelectedIcon = R.drawable.ic_outline_home,
   ),
   BottomNavigationItem(
-    title = Route.Search.title,
-    selectedIcon = R.drawable.ic_search,
-    unSelectedIcon = R.drawable.ic_search,
+    route = Route.Search,
+    selectedIcon = R.drawable.ic_filled_search,
+    unSelectedIcon = R.drawable.ic_outline_search,
   ),
   BottomNavigationItem(
-    title = Route.Miscellaneous.title,
-    selectedIcon = R.drawable.ic_filled_miscellaneous,
-    unSelectedIcon = R.drawable.ic_outline_miscellaneous,
+    route = Route.Mixed,
+    selectedIcon = R.drawable.ic_filled_options,
+    unSelectedIcon = R.drawable.ic_outline_options,
   )
 )

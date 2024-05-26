@@ -87,9 +87,9 @@ class SearchViewModel @Inject constructor(
           _state.value.copy(searchQuery = event.searchQuery, isSearching = true)
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-          delay(600)
+          delay(200)
           queryLyrics()
-          delay(delayDuration.times(600))
+          delay(delayDuration.times(200))
           _state.value = _state.value.copy(isSearching = false)
         }
       }

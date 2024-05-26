@@ -55,6 +55,13 @@ android {
       isMinifyEnabled = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
+
+    debug {
+      firebaseCrashlytics {
+        mappingFileUploadEnabled = false
+      }
+    }
+
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17

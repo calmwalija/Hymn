@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.data.repository
 
-import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import net.techandgraphics.hymn.data.asEntity
@@ -47,8 +46,8 @@ class LyricRepositoryImpl @Inject constructor(
     return dao.queryByNumber(number).map { it.asModel() }
   }
 
-  override suspend fun queryId(): Int? {
-    return dao.queryId(prefs.getLang())
+  override fun uniquelyCrafted(): Flow<List<Lyric>> {
+    return dao.uniquelyCrafted(prefs.getLang())
   }
 
   override suspend fun favorite(favorite: Boolean, number: Int) {

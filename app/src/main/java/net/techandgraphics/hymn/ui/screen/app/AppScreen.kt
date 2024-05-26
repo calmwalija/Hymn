@@ -1,13 +1,10 @@
 package net.techandgraphics.hymn.ui.screen.app
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,23 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import net.techandgraphics.hymn.capitalizeFirst
-import net.techandgraphics.hymn.ui.Route.Categorisation
-import net.techandgraphics.hymn.ui.Route.Category
-import net.techandgraphics.hymn.ui.Route.Home
-import net.techandgraphics.hymn.ui.Route.Miscellaneous
-import net.techandgraphics.hymn.ui.Route.Read
-import net.techandgraphics.hymn.ui.Route.Search
-import net.techandgraphics.hymn.ui.screen.Event
+import androidx.navigation.toRoute
+import net.techandgraphics.hymn.ui.Route
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
@@ -61,242 +51,176 @@ fun AppScreen(
 ) {
 
   val backStackEntry by navController.currentBackStackEntryAsState()
-  val currentRoute = backStackEntry?.destination?.route?.run {
-    if (contains(Category.title) || contains(Categorisation.route) || contains(Read.title))
-      Home.title else this.capitalizeFirst()
-  }
+  val currentRoute = backStackEntry?.destination?.route?.substringAfterLast(".") ?: ""
 
   Scaffold(
     bottomBar = {
       NavigationBar {
-        bottomNavigationList.map { it.copy(title = it.title.capitalizeFirst()) }
-          .forEach { item ->
-            NavigationBarItem(
-              selected = currentRoute == item.title,
-              onClick = {
-                navController.navigate(item.title) {
-                  popUpTo(navController.graph.findStartDestination().id)
-                  launchSingleTop = true
-                }
-              },
-              label = {
-                AnimatedVisibility(visible = currentRoute == item.title) {
-                  Text(
-                    text = item.title,
-                    fontWeight = FontWeight.Bold,
-                  )
-                }
-              },
-              icon = {
-                Icon(
-                  painter = painterResource(
-                    id = if (currentRoute == item.title) item.selectedIcon else item.unSelectedIcon
-                  ),
-                  contentDescription = item.title
-                )
-              },
-              colors = NavigationBarItemDefaults.colors()
-            )
-          }
+        bottomNavigationList.forEach { item ->
+          NavigationBarItem(
+            selected = currentRoute == item.route.toString(),
+            onClick = {
+              navController.navigate(item.route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
+              }
+            },
+            label = {
+              Text(
+                text = item.route.toString(),
+                fontWeight = FontWeight.Bold,
+              )
+            },
+            icon = {
+              Icon(
+                painter = painterResource(
+                  id = if (currentRoute == item.route.toString()) item.selectedIcon else item.unSelectedIcon
+                ),
+                modifier = Modifier.size(18.dp),
+                contentDescription = item.route.toString()
+              )
+            },
+          )
+        }
       }
     }
   ) {
 
     NavHost(
       navController = navController,
-      startDestination = Home.title,
-      modifier = Modifier.padding(it)
+      startDestination = Route.Home,
+      modifier = Modifier.padding(it),
+
     ) {
 
-      composable(
-        route = Home.title,
-        enterTransition = {
-          slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        exitTransition = {
-          slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        }
-      ) {
-        val mainViewModel: MainViewModel = hiltViewModel()
-        val state = mainViewModel.state.collectAsState().value
-        MainScreen(
-          mainEvent = mainViewModel::onEvent,
-          state = state,
-          categoryEvent = { event ->
-            mainViewModel.onAnalyticEvent(AnalyticEvent.Spotlight((event as CategoryEvent.Click).categoryId))
-            navController.navigate(Event.category(event)) {
-              launchSingleTop = true
-            }
-          },
-          readEvent = { event ->
-            mainViewModel.onAnalyticEvent(AnalyticEvent.DiveInto((event as ReadEvent.Click).number))
-            navController.navigate(Event.read(event)) {
-              launchSingleTop = true
-            }
-          },
-          navigator = { navigation ->
-            when (navigation) {
-              MainNavigator.NavigateToCategory -> {
-                mainViewModel.onAnalyticEvent(AnalyticEvent.GotoCategory)
-                navController.navigate(Category.title)
-              }
-
-              MainNavigator.NavigateToSearch -> {
-                mainViewModel.onAnalyticEvent(AnalyticEvent.GotoCategory)
-                navController.navigate(Search.title)
-              }
-            }
+      composable<Route.Home> {
+        with(hiltViewModel<MainViewModel>()) {
+          LaunchedEffect(key1 = Unit) {
+            get()
           }
-        ) { lang ->
-          mainViewModel.onEvent(MainEvent.LanguageChange(lang))
-        }
-      }
+          val state = state.collectAsState().value
+          MainScreen(
+            mainEvent = ::onEvent,
+            state = state,
+            categoryEvent = { event ->
+              when (event) {
+                is CategoryEvent.Click -> {
+                  onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
+                  navController.navigate(Route.Categorisation(event.id)) {
+                    launchSingleTop = true
+                  }
+                }
 
-      composable(
-        route = Category.title,
-        enterTransition = {
-          slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        exitTransition = {
-          slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        }
-      ) {
-        val categoryViewModel: CategoryViewModel = hiltViewModel()
-        val state = categoryViewModel.state.collectAsState().value
-        CategoryScreen(state) { event ->
-          navController.navigate(Event.category(event)) {
-            launchSingleTop = true
+                else -> Unit
+              }
+            },
+            readEvent = { event ->
+              onAnalyticEvent(AnalyticEvent.DiveInto((event as ReadEvent.Click).number))
+              navController.navigate(Route.Read(event.number)) {
+                launchSingleTop = true
+              }
+            },
+            navigator = { navigation ->
+              when (navigation) {
+                MainNavigator.NavigateToCategory -> {
+                  onAnalyticEvent(AnalyticEvent.GotoCategory)
+                  navController.navigate(Route.Category)
+                }
+
+                MainNavigator.NavigateToSearch -> {
+                  onAnalyticEvent(AnalyticEvent.GotoSearch)
+                  navController.navigate(Route.Search)
+                }
+              }
+            }
+          ) { lang ->
+            onEvent(MainEvent.LanguageChange(lang))
           }
         }
       }
 
-      composable(
-        route = Search.title,
-        enterTransition = {
-          slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        exitTransition = {
-          slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
+      composable<Route.Category> {
+        with(hiltViewModel<CategoryViewModel>()) {
+          val state = state.collectAsState().value
+          CategoryScreen(state) { event ->
+            when (event) {
+              is CategoryEvent.Click ->
+                navController.navigate(Route.Categorisation(event.id)) {
+                  launchSingleTop = true
+                }
+
+              else -> onEvent(event)
+            }
+          }
         }
-      ) {
-        val searchViewModel: SearchViewModel = hiltViewModel()
-        with(searchViewModel) {
+      }
+
+      composable<Route.Search> {
+        with(hiltViewModel<SearchViewModel>()) {
           val state = state.collectAsState().value
           SearchScreen(
             state = state,
             event = this::onEvent,
             readEvent = { event ->
               if (state.searchQuery.trim().isNotBlank()) onEvent(SearchEvent.InsertSearchTag)
-              navController.navigate(Event.read(event)) {
-                launchSingleTop = true
+
+              when (event) {
+                is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
+                  launchSingleTop = true
+                }
+
+                else -> Unit
               }
             }
           )
         }
       }
 
-      composable(
-        route = Miscellaneous.title,
-        enterTransition = {
-          slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        exitTransition = {
-          slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right,
-            animationSpec = tween(ANIMATION_DURATION)
+      composable<Route.Mixed> {
+        with(hiltViewModel<MiscViewModel>()) {
+          val state = state.collectAsState().value
+          MiscScreen(
+            state,
+            event = ::onEvent,
+            readEvent = { event ->
+              when (event) {
+                is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
+                  launchSingleTop = true
+                }
+
+                else -> Unit
+              }
+            }
           )
         }
-      ) {
-        val miscViewModel: MiscViewModel = hiltViewModel()
-        val state = miscViewModel.state.collectAsState().value
-        MiscScreen(
-          state,
-          event = miscViewModel::onEvent,
-          readEvent = { event ->
-            navController.navigate(Event.read(event)) {
-              launchSingleTop = true
-            }
-          }
-        )
       }
 
-      composable(
-        route = Read.route,
-        enterTransition = {
-          slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        exitTransition = {
-          slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        arguments = listOf(navArgument("id") { type = NavType.IntType })
-      ) {
-        val lyricId = backStackEntry?.arguments?.getInt("id") ?: 1
-        val readViewModel: ReadViewModel = hiltViewModel()
-        with(readViewModel) {
+      composable<Route.Read> {
+        with(hiltViewModel<ReadViewModel>()) {
           LaunchedEffect(key1 = true) {
-            readViewModel.invoke(lyricId)
+            invoke(it.toRoute<Route.Read>().id)
           }
           val state = state.collectAsState().value
-          ReadScreen(state, navController, readViewModel::onEvent)
+          ReadScreen(state, navController, ::onEvent)
         }
       }
 
-      composable(
-        route = Categorisation.route,
-        enterTransition = {
-          slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        exitTransition = {
-          slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right,
-            animationSpec = tween(ANIMATION_DURATION)
-          )
-        },
-        arguments = listOf(navArgument("id") { type = NavType.IntType })
-      ) {
-        val categoryId = backStackEntry?.arguments?.getInt("id") ?: 1
-        val categorisationViewModel: CategorisationViewModel = hiltViewModel()
-        with(categorisationViewModel) {
+      composable<Route.Categorisation> {
+        with(hiltViewModel<CategorisationViewModel>()) {
           LaunchedEffect(key1 = true) {
-            categorisationViewModel.invoke(categoryId)
+            invoke(it.toRoute<Route.Categorisation>().id)
           }
           val state = state.collectAsState().value
           CategorisationScreen(
             state = state,
-            event = categorisationViewModel::onEvent,
+            event = ::onEvent,
             readEvent = { event ->
-              navController.navigate(Event.read(event)) {
-                launchSingleTop = true
+              when (event) {
+                is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
+                  launchSingleTop = true
+                }
+
+                else -> Unit
               }
             }
           )
