@@ -1,23 +1,25 @@
 package net.techandgraphics.hymn.ui.screen.read
 
 import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 import net.techandgraphics.hymn.data.prefs.AppPrefs
-import net.techandgraphics.hymn.data.prefs.SharedPrefs
-import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
@@ -34,9 +36,9 @@ class ReadViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val timestampRepo: TimestampRepository,
   private val timeSpentRepo: TimeSpentRepository,
-  private val prefs: SharedPrefs,
-  private val appPrefs: AppPrefs,
-  private val analytics: FirebaseAnalytics
+  private val prefs: AppPrefs,
+  private val analytics: FirebaseAnalytics,
+  private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(ReadState())
@@ -45,27 +47,33 @@ class ReadViewModel @Inject constructor(
   private val maxTimeSpent: Long = 60_000.times(2)
   private var fontJob: Job? = null
   private var translationJob: Job? = null
+  private val identifier = "identifier"
+  private val channel = Channel<HorizontalGesture>()
+  val channelFlow = channel.receiveAsFlow()
 
   private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<LyricKey> {
     var currentPosition = 1
-    return filter { if (inverse.not()) it.lang == prefs.getLang() else (it.lang != prefs.getLang()) }
-      .map { lyric ->
-        LyricKey(
-          key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(
-            R.string.chorus
-          ),
-          lyric = lyric
-        )
-      }
+    return runBlocking {
+      filter { if (inverse.not()) it.lang == prefs.getLang() else (it.lang != prefs.getLang()) }
+        .map { lyric ->
+          LyricKey(
+            key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(
+              R.string.chorus
+            ),
+            lyric = lyric
+          )
+        }
+    }
   }
 
   operator fun invoke(id: Int, setLyricsData: Boolean = true) = viewModelScope.launch {
-    with(lyricRepo.queryByNumber(id)) {
+    savedStateHandle[identifier] = id
+    with(lyricRepo.queryByNumber(savedStateHandle.get<Int>(identifier) ?: 1)) {
       firebaseAnalytics(first())
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
         lyricKey = mapLyricKey(false),
-        fontSize = appPrefs.fontSize()
+        fontSize = prefs.fontSize()
       )
       if (setLyricsData.not()) return@launch
       setLyricsData()
@@ -74,9 +82,8 @@ class ReadViewModel @Inject constructor(
 
   private fun setLyricsData() = with(state.value) {
     viewModelScope.launch {
-      _state.value = _state.value.copy(translationInverse = !state.value.translationInverse)
       val data = if (translationInverse) lyricKeyInverse else lyricKey
-      _state.value = _state.value.copy(lyrics = data)
+      _state.update { it.copy(lyrics = data) }
       translationJob?.cancel()
       delay(1000)
       read(data.first().lyric)
@@ -119,10 +126,27 @@ class ReadViewModel @Inject constructor(
           Tag.TRANSLATION_INVERSE,
           bundleOf(Pair(Tag.READ_SCREEN, !state.value.translationInverse))
         )
+        _state.update { it.copy(translationInverse = !state.value.translationInverse) }
         setLyricsData()
       }
+
+      is ReadEvent.HorizontalDragGesture -> onHorizontalDragGesture(event)
     }
   }
+
+  private fun onHorizontalDragGesture(event: ReadEvent.HorizontalDragGesture) =
+    viewModelScope.launch {
+      val lyricNumber = state.value.lyrics.first().lyric.number
+      channel.send(
+        HorizontalGesture(
+          lyricNumber,
+          when (event.direction) {
+            Direction.LEFT -> lyricNumber.minus(1)
+            Direction.RIGHT -> lyricNumber.plus(1)
+          }
+        )
+      )
+    }
 
   private fun firebaseAnalytics(lyric: Lyric) = with(analytics) {
     tagScreen(Tag.READ_SCREEN)
@@ -130,12 +154,12 @@ class ReadViewModel @Inject constructor(
     tagEvent(Tag.HYMN_NUMBER, bundleOf(Pair(Tag.HYMN_NUMBER, lyric.number)))
   }
 
-  private fun fontSize(font: Int) {
+  private fun fontSize(font: Int) = viewModelScope.launch {
     _state.value = _state.value.copy(fontSize = font)
     fontJob = viewModelScope.launch {
       fontJob?.cancel()
       delay(1000)
-      appPrefs.setPrefs(appPrefs.fontKey, font.toString())
+      prefs.setPrefs(prefs.fontKey, font.toString())
     }
   }
 

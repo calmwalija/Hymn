@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.AppPrefs
-import net.techandgraphics.hymn.data.prefs.SharedPrefs
-import net.techandgraphics.hymn.data.prefs.getLang
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -28,17 +26,15 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val categoryRepo: CategoryRepository,
-  private val prefs: SharedPrefs,
-  private val appPrefs: AppPrefs,
+  private val prefs: AppPrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
-
-  fun get() {
+  fun get() = viewModelScope.launch {
     _state.value = _state.value.copy(lang = prefs.getLang())
-    appPrefs.getPrefs(appPrefs.jsonBuildKey).onEach { readyKey ->
+    prefs.getPrefsAsFlow(prefs.jsonBuildKey).onEach { readyKey ->
       if (readyKey == null || readyKey == false.toString()) return@onEach
       with(lyricRepo) {
         _state.value = _state.value.copy(spotlight = categoryRepo.spotlight())
@@ -56,11 +52,11 @@ class MainViewModel @Inject constructor(
   }
 
   private fun languageChange(lang: String) = viewModelScope.launch {
-    prefs.setLang(lang)
+    prefs.setPrefs(prefs.translationKey, lang)
     get()
-    _state.value = _state.value.copy(lang = lang, onLangInvoke = true)
+    _state.update { it.copy(lang = lang, onLangInvoke = true) }
     delay(1000)
-    _state.value = _state.value.copy(onLangInvoke = false)
+    _state.update { it.copy(onLangInvoke = false) }
   }
 
   fun favorite(lyric: Lyric) =
