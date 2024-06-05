@@ -2,8 +2,7 @@ package net.techandgraphics.hymn.data.repository
 
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.prefs.SharedPrefs
-import net.techandgraphics.hymn.data.prefs.getLang
+import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Other
 import net.techandgraphics.hymn.domain.repository.OtherRepository
@@ -11,7 +10,7 @@ import javax.inject.Inject
 
 class OtherRepositoryImpl @Inject constructor(
   database: Database,
-  private val prefs: SharedPrefs
+  private val prefs: AppPrefs
 ) : OtherRepository {
 
   private val dao = database.otherDao

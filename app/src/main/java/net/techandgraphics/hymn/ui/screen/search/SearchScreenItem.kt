@@ -81,7 +81,7 @@ fun SearchScreenItem(
         Row {
           Text(
             text = lyric.content.trimIndent(),
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
           )
@@ -91,7 +91,7 @@ fun SearchScreenItem(
           text = lyric.categoryName.trimIndent(),
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
-          style = MaterialTheme.typography.bodySmall,
+          style = MaterialTheme.typography.labelSmall,
         )
 
         Spacer(modifier = Modifier.height(2.dp))

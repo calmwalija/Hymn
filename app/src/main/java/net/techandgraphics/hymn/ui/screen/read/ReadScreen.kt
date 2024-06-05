@@ -1,8 +1,11 @@
 package net.techandgraphics.hymn.ui.screen.read
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -235,36 +239,54 @@ fun ReadScreen(
       }
     }
 
-    LazyColumn(
-      contentPadding = paddingValues
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .pointerInput(Unit) {
+          detectHorizontalDragGestures { change, dragAmount ->
+            change.consume()
+            when {
+              dragAmount > 20 -> event(ReadEvent.HorizontalDragGesture(Direction.RIGHT))
+              dragAmount < -20 -> event(ReadEvent.HorizontalDragGesture(Direction.LEFT))
+            }
+
+            Log.e("TAG", "dragAmount: " + dragAmount)
+          }
+        }
     ) {
-      items(
-        items = state.lyrics,
-        key = { it.lyric.lyricId }
-      ) { lyric ->
-        Column(
-          modifier = Modifier
-            .padding(top = 16.dp),
-          horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
 
-          Text(
-            text = lyric.key,
-            fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.displaySmall.fontSize,
-            color = MaterialTheme.colorScheme.primary
-          )
-
-          Text(
-            text = lyric.lyric.content,
-            fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
+      LazyColumn(
+        contentPadding = paddingValues
+      ) {
+        items(
+          items = state.lyrics,
+          key = { it.lyric.lyricId }
+        ) { lyric ->
+          Column(
             modifier = Modifier
-              .fillMaxWidth()
-              .padding(horizontal = 16.dp, vertical = 8.dp),
-            textAlign = TextAlign.Center,
-            lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
-            fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
-          )
+              .animateItem()
+              .padding(top = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+          ) {
+
+            Text(
+              text = lyric.key,
+              fontWeight = FontWeight.Bold,
+              fontSize = MaterialTheme.typography.displaySmall.fontSize,
+              color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
+              text = lyric.lyric.content,
+              fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+              textAlign = TextAlign.Center,
+              lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
+              fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
+            )
+          }
         }
       }
     }

@@ -33,4 +33,4 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
   this toast msg
 }
 
-suspend fun AppPrefs.fontSize(): Int = getPrefs(fontKey).first()?.toString()?.toInt() ?: 1
+suspend fun AppPrefs.fontSize(): Int = getPrefsAsFlow(fontKey).first()?.toString()?.toInt() ?: 1

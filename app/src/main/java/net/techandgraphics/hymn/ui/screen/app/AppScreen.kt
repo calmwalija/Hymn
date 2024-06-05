@@ -16,6 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -201,6 +203,21 @@ fun AppScreen(
             invoke(it.toRoute<Route.Read>().id)
           }
           val state = state.collectAsState().value
+
+          val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+
+          LaunchedEffect(key1 = channelFlow) {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+              channelFlow.collect {
+
+                navController.popBackStack(Route.Read(it.old), inclusive = true)
+
+                navController.navigate(Route.Read(it.new)) {
+                  launchSingleTop = true
+                }
+              }
+            }
+          }
           ReadScreen(state, navController, ::onEvent)
         }
       }
