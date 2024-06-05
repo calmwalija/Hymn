@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
-import net.techandgraphics.hymn.data.prefs.SharedPrefs
-import net.techandgraphics.hymn.data.prefs.getLang
+import net.techandgraphics.hymn.data.prefs.AppPrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Search
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -31,7 +30,7 @@ class SearchViewModel @Inject constructor(
   private val searchRepo: SearchRepository,
   private val lyricRepo: LyricRepository,
   private val analytics: FirebaseAnalytics,
-  private val prefs: SharedPrefs,
+  private val prefs: AppPrefs,
 ) : ViewModel() {
 
   private var searchJob: Job? = null
