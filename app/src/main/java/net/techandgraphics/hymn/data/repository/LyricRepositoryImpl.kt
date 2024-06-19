@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -13,26 +14,27 @@ import javax.inject.Inject
 
 class LyricRepositoryImpl @Inject constructor(
   database: Database,
-  private val prefs: AppPrefs
+  private val prefs: DataStorePrefs
 ) : LyricRepository {
 
   private val dao = database.lyricDao
+  private suspend fun getLang() = prefs.get(prefs.translationKey, Lang.EN.lowercase())
 
   override fun query(query: String): Flow<List<Lyric>> {
     return runBlocking {
-      dao.query(query, prefs.getLang()).map { it.map { data -> data.asModel() } }
+      dao.query(query, getLang()).map { it.map { data -> data.asModel() } }
     }
   }
 
   override fun queryByCategory(id: Int): Flow<List<Lyric>> {
     return runBlocking {
-      dao.queryByCategory(id, prefs.getLang()).map { it.map { data -> data.asModel() } }
+      dao.queryByCategory(id, getLang()).map { it.map { data -> data.asModel() } }
     }
   }
 
   override fun diveInto(): Flow<List<Lyric>> {
     return runBlocking {
-      dao.diveInto(prefs.getLang()).map { it.map { data -> data.asModel() } }
+      dao.diveInto(getLang()).map { it.map { data -> data.asModel() } }
     }
   }
 
@@ -42,7 +44,7 @@ class LyricRepositoryImpl @Inject constructor(
 
   override fun favorites(): Flow<List<Lyric>> {
     return runBlocking {
-      dao.favorites(prefs.getLang()).map { it.map { data -> data.asModel() } }
+      dao.favorites(getLang()).map { it.map { data -> data.asModel() } }
     }
   }
 
@@ -56,16 +58,16 @@ class LyricRepositoryImpl @Inject constructor(
 
   override fun uniquelyCrafted(): Flow<List<Lyric>> {
     return runBlocking {
-      dao.uniquelyCrafted(prefs.getLang())
+      dao.uniquelyCrafted(getLang())
     }
   }
 
   override suspend fun favorite(favorite: Boolean, number: Int) {
-    dao.favorite(favorite, number, prefs.getLang())
+    dao.favorite(favorite, number, getLang())
   }
 
   override suspend fun read(number: Int, timestamp: Long) {
-    dao.read(number, timestamp, prefs.getLang())
+    dao.read(number, timestamp, getLang())
   }
 
   override suspend fun backup(): List<Lyric> {
