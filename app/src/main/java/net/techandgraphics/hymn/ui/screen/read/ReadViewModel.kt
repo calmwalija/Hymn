@@ -18,8 +18,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
-import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
@@ -28,7 +29,6 @@ import net.techandgraphics.hymn.domain.toTimestampEntity
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
-import net.techandgraphics.hymn.fontSize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +36,7 @@ class ReadViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val timestampRepo: TimestampRepository,
   private val timeSpentRepo: TimeSpentRepository,
-  private val prefs: AppPrefs,
+  private val prefs: DataStorePrefs,
   private val analytics: FirebaseAnalytics,
   private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -51,10 +51,12 @@ class ReadViewModel @Inject constructor(
   private val channel = Channel<HorizontalGesture>()
   val channelFlow = channel.receiveAsFlow()
 
+  private suspend fun getLang() = prefs.get(prefs.translationKey, Lang.EN.lowercase())
+
   private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<LyricKey> {
     var currentPosition = 1
     return runBlocking {
-      filter { if (inverse.not()) it.lang == prefs.getLang() else (it.lang != prefs.getLang()) }
+      filter { if (inverse.not()) it.lang == getLang() else (it.lang != getLang()) }
         .map { lyric ->
           LyricKey(
             key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(
@@ -73,7 +75,7 @@ class ReadViewModel @Inject constructor(
       _state.value = _state.value.copy(
         lyricKeyInverse = mapLyricKey(true),
         lyricKey = mapLyricKey(false),
-        fontSize = prefs.fontSize()
+        fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
       )
       if (setLyricsData.not()) return@launch
       setLyricsData()
@@ -159,7 +161,7 @@ class ReadViewModel @Inject constructor(
     fontJob = viewModelScope.launch {
       fontJob?.cancel()
       delay(1000)
-      prefs.setPrefs(prefs.fontKey, font.toString())
+      prefs.put(prefs.fontKey, font.toString())
     }
   }
 

@@ -10,21 +10,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
-import net.techandgraphics.hymn.fontSize
 import javax.inject.Inject
 
 @HiltViewModel
 class MiscViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val otherRepo: OtherRepository,
-  private val appPrefs: AppPrefs,
+  private val prefs: DataStorePrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
@@ -38,7 +37,7 @@ class MiscViewModel @Inject constructor(
         _state.value = _state.value.copy(
           favorites = favorites,
           complementary = otherRepo.query(),
-          fontSize = appPrefs.fontSize()
+          fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
         )
       }.launchIn(this)
     }
