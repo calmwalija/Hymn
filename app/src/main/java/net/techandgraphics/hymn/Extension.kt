@@ -2,8 +2,7 @@ package net.techandgraphics.hymn
 
 import android.content.Context
 import android.widget.Toast
-import kotlinx.coroutines.flow.first
-import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -33,4 +32,4 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
   this toast msg
 }
 
-suspend fun AppPrefs.fontSize(): Int = getPrefsAsFlow(fontKey).first()?.toString()?.toInt() ?: 1
+suspend fun DataStorePrefs.fontSize(): Int = get(fontKey, 1.toString()).toInt()

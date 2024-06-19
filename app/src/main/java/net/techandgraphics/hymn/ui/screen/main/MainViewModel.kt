@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.prefs.AppPrefs
+import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -26,33 +27,30 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val categoryRepo: CategoryRepository,
-  private val prefs: AppPrefs,
+  private val prefs: DataStorePrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
   fun get() = viewModelScope.launch {
-    _state.value = _state.value.copy(lang = prefs.getLang())
-    prefs.getPrefsAsFlow(prefs.jsonBuildKey).onEach { readyKey ->
-      if (readyKey == null || readyKey == false.toString()) return@onEach
-      with(lyricRepo) {
-        _state.value = _state.value.copy(spotlight = categoryRepo.spotlight())
-        diveInto().zip(uniquelyCrafted()) { diveInto, uniquelyCrafted ->
-          _state.update {
-            it.copy(diveInto = diveInto, uniquelyCrafted = uniquelyCrafted)
-          }
-        }.launchIn(viewModelScope)
-      }
-    }.launchIn(viewModelScope)
-  }
-
-  init {
     analytics.tagScreen(Tag.MAIN_SCREEN)
+    _state.value = _state.value.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()))
+    with(lyricRepo) {
+      diveInto().zip(uniquelyCrafted()) { diveInto, uniquelyCrafted ->
+        _state.update {
+          it.copy(
+            diveInto = diveInto,
+            uniquelyCrafted = uniquelyCrafted,
+            spotlight = categoryRepo.spotlight()
+          )
+        }
+      }.launchIn(viewModelScope)
+    }
   }
 
   private fun languageChange(lang: String) = viewModelScope.launch {
-    prefs.setPrefs(prefs.translationKey, lang)
+    prefs.put(prefs.translationKey, lang)
     get()
     _state.update { it.copy(lang = lang, onLangInvoke = true) }
     delay(1000)
