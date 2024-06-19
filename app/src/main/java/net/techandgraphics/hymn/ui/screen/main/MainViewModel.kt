@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
@@ -26,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
-  private val categoryRepo: CategoryRepository,
   private val prefs: DataStorePrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
@@ -37,12 +35,11 @@ class MainViewModel @Inject constructor(
     analytics.tagScreen(Tag.MAIN_SCREEN)
     _state.value = _state.value.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()))
     with(lyricRepo) {
-      diveInto().zip(uniquelyCrafted()) { diveInto, uniquelyCrafted ->
+      diveInto().zip(uniquelyCrafted(getLastHymn())) { diveInto, uniquelyCrafted ->
         _state.update {
           it.copy(
             diveInto = diveInto,
             uniquelyCrafted = uniquelyCrafted,
-            spotlight = categoryRepo.spotlight()
           )
         }
       }.launchIn(viewModelScope)

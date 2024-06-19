@@ -10,6 +10,8 @@ import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.uniquelyCraftedKey
+import net.techandgraphics.hymn.uniquelyCraftedKeyToList
 import javax.inject.Inject
 
 class LyricRepositoryImpl @Inject constructor(
@@ -56,9 +58,12 @@ class LyricRepositoryImpl @Inject constructor(
     return dao.queryByNumber(number).map { it.asModel() }
   }
 
-  override fun uniquelyCrafted(): Flow<List<Lyric>> {
+  override fun uniquelyCrafted(count: Int): Flow<List<Lyric>> {
     return runBlocking {
-      dao.uniquelyCrafted(getLang())
+      val keys = (prefs uniquelyCraftedKey count).uniquelyCraftedKeyToList()
+      val leftKey = keys.firstOrNull() ?: count.plus(1)
+      val rightKey = keys.lastOrNull() ?: count.minus(1)
+      dao.uniquelyCrafted(getLang(), leftKey, rightKey)
     }
   }
 
@@ -73,4 +78,6 @@ class LyricRepositoryImpl @Inject constructor(
   override suspend fun backup(): List<Lyric> {
     return dao.backup().map { it.asModel() }
   }
+
+  override suspend fun getLastHymn(): Int = dao.getLastHymn()
 }
