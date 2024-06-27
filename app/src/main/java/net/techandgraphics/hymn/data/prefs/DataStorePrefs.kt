@@ -32,6 +32,8 @@ class DataStorePrefs @Inject constructor(
   val jsonBuildKey = context.getString(R.string.json_build_key)
   val fontKey = context.getString(R.string.font_key)
   val translationKey = context.getString(R.string.translation_key)
+  val uniquelyCraftedKey = context.getString(R.string.uniquely_crafted_key)
+  val uniquelyCraftedMills = context.getString(R.string.uniquely_crafted_mills_key)
 
   suspend inline fun <reified T> put(key: String, value: T) {
     context.dataStore.edit {
@@ -44,6 +46,21 @@ class DataStorePrefs @Inject constructor(
       }
     }
   }
+
+  suspend inline fun <reified T> get(key: String, value: T): T? {
+    context.dataStore.data.first().let {
+      return when (value) {
+        is Int -> it[intPreferencesKey(key)] as T?
+        is String -> it[stringPreferencesKey(key)] as T?
+        is Boolean -> it[booleanPreferencesKey(key)] as T?
+        is Long -> it[longPreferencesKey(key)] as T?
+        is Float -> it[floatPreferencesKey(key)] as T?
+        else -> it[stringPreferencesKey(key)] as T?
+      }
+    }
+  }
+
+  suspend fun remove(key: Preferences.Key<*>) = context.dataStore.edit { it.remove(key) }
 
   suspend fun get(key: String, default: String = ""): String {
     return context.dataStore.data.first()[stringPreferencesKey(key)] ?: default

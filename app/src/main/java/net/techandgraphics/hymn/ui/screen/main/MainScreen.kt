@@ -211,7 +211,7 @@ fun MainScreen(
       }
     }
 
-    if (state.spotlight.isNotEmpty()) {
+    if (state.uniquelyCrafted.isNotEmpty()) {
       Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -243,7 +243,7 @@ fun MainScreen(
       }
 
       FlowRow {
-        state.spotlight.forEach {
+        state.uniquelyCrafted.forEach {
           SpotlightItem(it, categoryEvent)
         }
       }

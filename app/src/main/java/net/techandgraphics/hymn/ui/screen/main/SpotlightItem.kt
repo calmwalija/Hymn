@@ -23,21 +23,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
-import net.techandgraphics.hymn.domain.model.Category
-import net.techandgraphics.hymn.hymnCount
+import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 
 @Composable
 fun SpotlightItem(
-  category: Category,
+  lyric: Lyric,
   event: (CategoryEvent) -> Unit,
 ) {
-  val context = LocalContext.current
 
   Card(
     colors = CardDefaults.elevatedCardColors(
@@ -55,11 +52,11 @@ fun SpotlightItem(
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .clickable { event.invoke(CategoryEvent.Click(category.lyric.categoryId)) },
+        .clickable { event.invoke(CategoryEvent.Click(lyric.categoryId)) },
       verticalAlignment = Alignment.CenterVertically
     ) {
       AsyncImage(
-        model = Constant.images[category.lyric.categoryId].drawableRes,
+        model = Constant.images[lyric.categoryId].drawableRes,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
@@ -72,13 +69,9 @@ fun SpotlightItem(
           .padding(vertical = 32.dp, horizontal = 12.dp)
       ) {
         Text(
-          text = category.lyric.categoryName,
-          maxLines = 1,
+          text = lyric.categoryName,
+          maxLines = 2,
           overflow = TextOverflow.Ellipsis
-        )
-        Text(
-          text = category.count.hymnCount(context),
-          style = MaterialTheme.typography.labelMedium
         )
       }
 

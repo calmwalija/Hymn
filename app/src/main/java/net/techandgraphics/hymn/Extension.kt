@@ -2,8 +2,10 @@ package net.techandgraphics.hymn
 
 import android.content.Context
 import android.widget.Toast
+import androidx.datastore.preferences.core.longPreferencesKey
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
+import kotlin.random.Random
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
   return try {
@@ -32,4 +34,30 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
   this toast msg
 }
 
-suspend fun DataStorePrefs.fontSize(): Int = get(fontKey, 1.toString()).toInt()
+suspend infix fun DataStorePrefs.uniquelyCraftedKey(maxValue: Int): String {
+  return if (get<Long>(uniquelyCraftedMills, 0L) == null) {
+    val keys = mutableListOf<Int>()
+    repeat(2) { Random.nextInt(1, maxValue).also { keys.add(it) } }
+    put(uniquelyCraftedKey, keys.toString())
+    put(uniquelyCraftedMills, System.currentTimeMillis())
+    get(uniquelyCraftedKey)
+  } else {
+    when (val toAgo = get<Long>(uniquelyCraftedMills, 0L)!!.toAgo(System.currentTimeMillis())) {
+      is Ago.Days -> if (toAgo.value > 1) {
+        remove(longPreferencesKey(uniquelyCraftedMills))
+        uniquelyCraftedKey(maxValue)
+      }
+
+      else -> get(uniquelyCraftedKey)
+    }
+    get(uniquelyCraftedKey)
+  }
+}
+
+fun String.uniquelyCraftedKeyToList(): List<Int> =
+  removeSymbols()
+    .drop(1)
+    .dropLast(1)
+    .split(" ")
+    .map { it.toInt() }
+    .sorted()
