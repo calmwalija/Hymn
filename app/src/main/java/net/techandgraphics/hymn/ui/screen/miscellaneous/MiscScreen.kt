@@ -229,7 +229,7 @@ fun MiscScreen(
 
           val show = remember { mutableStateOf(false) }
 
-          FavoriteDialog(show, state, event, readEvent)
+//          FavoriteDialog(show, state, event, readEvent)
 
           Row(
             modifier = Modifier

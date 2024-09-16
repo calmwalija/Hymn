@@ -74,10 +74,12 @@ class MainViewModel @Inject constructor(
         favorite(event.data)
       }
 
-      is MainEvent.LanguageChange -> {
+      is MainEvent.Language -> {
         analytics.tagEvent(Tag.BOOK_SWITCH, bundleOf(Pair(Tag.MAIN_SCREEN, event.lang)))
         languageChange(event.lang)
       }
+
+      else -> Unit
     }
   }
 

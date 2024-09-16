@@ -33,7 +33,6 @@ import net.techandgraphics.hymn.ui.screen.category.CategoryScreen
 import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
 import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
-import net.techandgraphics.hymn.ui.screen.main.MainNavigator
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscScreen
@@ -97,46 +96,40 @@ fun AppScreen(
 
       composable<Route.Home> {
         with(hiltViewModel<MainViewModel>()) {
-          LaunchedEffect(key1 = Unit) {
-            get()
-          }
+          LaunchedEffect(key1 = Unit) { get() }
           val state = state.collectAsState().value
-          MainScreen(
-            mainEvent = ::onEvent,
-            state = state,
-            categoryEvent = { event ->
-              when (event) {
-                is CategoryEvent.Click -> {
+          MainScreen(state = state) { event ->
+            when (event) {
+              is MainEvent.Event -> when (event.ofType) {
+                MainEvent.OfType.Category -> {
                   onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
                   navController.navigate(Route.Categorisation(event.id)) {
                     launchSingleTop = true
                   }
                 }
 
-                else -> Unit
-              }
-            },
-            readEvent = { event ->
-              onAnalyticEvent(AnalyticEvent.DiveInto((event as ReadEvent.Click).number))
-              navController.navigate(Route.Read(event.number)) {
-                launchSingleTop = true
-              }
-            },
-            navigator = { navigation ->
-              when (navigation) {
-                MainNavigator.NavigateToCategory -> {
-                  onAnalyticEvent(AnalyticEvent.GotoCategory)
-                  navController.navigate(Route.Category)
+                MainEvent.OfType.Read -> {
+                  onAnalyticEvent(AnalyticEvent.DiveInto(event.id))
+                  navController.navigate(Route.Read(event.id)) {
+                    launchSingleTop = true
+                  }
                 }
+              }
 
-                MainNavigator.NavigateToSearch -> {
+              is MainEvent.Goto -> when (event.navigate) {
+                MainEvent.Navigate.Search -> {
                   onAnalyticEvent(AnalyticEvent.GotoSearch)
                   navController.navigate(Route.Search)
                 }
+
+                MainEvent.Navigate.Category -> {
+                  onAnalyticEvent(AnalyticEvent.GotoCategory)
+                  navController.navigate(Route.Category)
+                }
               }
+
+              else -> onEvent(event)
             }
-          ) { lang ->
-            onEvent(MainEvent.LanguageChange(lang))
           }
         }
       }
