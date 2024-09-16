@@ -26,18 +26,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
+import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.main.MainEvent
 
 @Composable
 fun UniquelyCraftedScreen(
-  data: Lyric,
-  readEvent: (ReadEvent) -> Unit,
+  lyric: Lyric,
+  onEvent: (MainEvent) -> Unit,
 ) {
   val context = LocalContext.current
   Box(
@@ -46,15 +48,15 @@ fun UniquelyCraftedScreen(
       .width(200.dp)
       .height(130.dp)
       .clip(RoundedCornerShape(8))
-      .clickable { readEvent(ReadEvent.Click(data.number)) },
+      .clickable { onEvent(MainEvent.Event(MainEvent.OfType.Read, lyric.number)) },
   ) {
 
     AsyncImage(
-      model = Constant.images[data.categoryId].drawableRes,
+      model = Constant.images[lyric.categoryId].drawableRes,
       contentDescription = null,
       contentScale = ContentScale.Crop,
-      modifier = Modifier
-        .fillMaxSize()
+      modifier = Modifier.fillMaxSize(),
+      placeholder = painterResource(R.drawable.im_help),
     )
 
     Card(
@@ -71,13 +73,13 @@ fun UniquelyCraftedScreen(
         modifier = Modifier.padding(16.dp)
       ) {
         Text(
-          text = "#${data.number}",
+          text = "#${lyric.number}",
           fontWeight = FontWeight.Bold,
           style = MaterialTheme.typography.bodyLarge,
           color = MaterialTheme.colorScheme.primary,
         )
         Text(
-          text = data.categoryName,
+          text = lyric.categoryName,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodySmall,
@@ -85,12 +87,12 @@ fun UniquelyCraftedScreen(
           modifier = Modifier.padding(vertical = 2.dp),
         )
         Text(
-          text = data.content,
+          text = lyric.content,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodyMedium,
         )
-        AnimatedVisibility(visible = data.timestamp != 0L) {
+        AnimatedVisibility(visible = lyric.timestamp != 0L) {
           Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -102,7 +104,7 @@ fun UniquelyCraftedScreen(
               modifier = Modifier.padding(end = 4.dp),
             )
             Text(
-              text = data.timestamp.toTimeAgo(context),
+              text = lyric.timestamp.toTimeAgo(context),
               overflow = TextOverflow.Ellipsis,
               style = MaterialTheme.typography.bodySmall,
             )
@@ -110,5 +112,12 @@ fun UniquelyCraftedScreen(
         }
       }
     }
+  }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun UniquelyCraftedScreenPreview() {
+  UniquelyCraftedScreen(lyric = Faker.lyric) {
   }
 }

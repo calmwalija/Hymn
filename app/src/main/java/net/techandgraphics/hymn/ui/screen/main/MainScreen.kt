@@ -39,9 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.onTranslationChange
-import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import net.techandgraphics.hymn.ui.screen.search.SearchScreenItem
 import net.techandgraphics.hymn.ui.theme.Typography
 
@@ -49,20 +47,16 @@ import net.techandgraphics.hymn.ui.theme.Typography
 @Composable
 fun MainScreen(
   state: MainState,
-  categoryEvent: (CategoryEvent) -> Unit,
-  readEvent: (ReadEvent) -> Unit,
-  mainEvent: (MainEvent) -> Unit,
-  navigator: (MainNavigator) -> Unit,
-  onLanguageChange: (String) -> Unit
+  onEvent: (MainEvent) -> Unit,
 ) {
+
   val context = LocalContext.current
   val versionValue = context.resources.getStringArray(R.array.version_values)
   val versionEntries = context.resources.getStringArray(R.array.version_entries)
   val colorScheme = MaterialTheme.colorScheme
 
   LaunchedEffect(state.onLangInvoke) {
-    if (state.onLangInvoke)
-      context.onTranslationChange(state.lang)
+    if (state.onLangInvoke) context.onTranslationChange(state.lang)
   }
 
   Column(
@@ -119,7 +113,7 @@ fun MainScreen(
                   modifier = Modifier
                     .clickable(enabled = state.onLangInvoke.not()) {
                       if (versionValue[versionEntries.indexOf(it)] != state.lang) {
-                        onLanguageChange(versionValue[versionEntries.indexOf(it)])
+                        onEvent(MainEvent.Language(versionValue[versionEntries.indexOf(it)]))
                       }
                     }
                     .padding(10.dp),
@@ -167,7 +161,7 @@ fun MainScreen(
     if (state.uniquelyCrafted.isNotEmpty())
       LazyRow {
         items(state.uniquelyCrafted) {
-          UniquelyCraftedScreen(it, readEvent)
+          UniquelyCraftedScreen(it, onEvent)
         }
       }
 
@@ -177,7 +171,7 @@ fun MainScreen(
       Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-          .clickable { navigator(MainNavigator.NavigateToSearch) }
+          .clickable { onEvent(MainEvent.Goto(MainEvent.Navigate.Search)) }
           .padding(horizontal = 8.dp, vertical = 16.dp)
       ) {
         Text(
@@ -205,8 +199,10 @@ fun MainScreen(
       }
 
       FlowRow {
-        state.diveInto.forEachIndexed { index, item ->
-          SearchScreenItem(item, readEvent, index, state.diveInto.size)
+        state.diveInto.forEach {
+          SearchScreenItem(it) {
+            onEvent(MainEvent.Event(MainEvent.OfType.Read, it))
+          }
         }
       }
     }
@@ -215,7 +211,7 @@ fun MainScreen(
       Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-          .clickable { navigator(MainNavigator.NavigateToCategory) }
+          .clickable { onEvent(MainEvent.Goto(MainEvent.Navigate.Category)) }
           .padding(horizontal = 8.dp, vertical = 16.dp)
       ) {
         Text(
@@ -223,9 +219,7 @@ fun MainScreen(
           style = Typography.titleMedium,
           modifier = Modifier.weight(1f)
         )
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
           Text(
             text = "See All",
             style = MaterialTheme.typography.labelMedium,
@@ -244,7 +238,7 @@ fun MainScreen(
 
       FlowRow {
         state.uniquelyCrafted.forEach {
-          SpotlightItem(it, categoryEvent)
+          SpotlightItem(it, onEvent)
         }
       }
     }

@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.search.SearchScreenItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +33,7 @@ fun FavoriteDialog(
   show: MutableState<Boolean>,
   state: MiscState,
   event: (MiscEvent) -> Unit,
-  readEvent: (ReadEvent) -> Unit
+  onEvent: (MainEvent) -> Unit
 ) {
 
   if (show.value && state.favorites.isNotEmpty()) {
@@ -80,11 +80,10 @@ fun FavoriteDialog(
               content = {
                 SearchScreenItem(
                   lyric = lyric,
-                  readEvent = readEvent,
-                  index = index,
-                  size = state.favorites.size,
+                  //                  index = index,
+//                  size = state.favorites.size,
                   modifier = Modifier.animateItem()
-                )
+                ) {}
               }
             )
           }

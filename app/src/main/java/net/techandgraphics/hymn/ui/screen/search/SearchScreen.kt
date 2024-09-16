@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -75,14 +74,11 @@ fun SearchScreen(
     }
 
     LazyColumn {
-      itemsIndexed(state.lyrics, key = { _, item -> item.lyricId }) { index, item ->
+      items(state.lyrics, key = { it.lyricId }) {
         SearchScreenItem(
-          lyric = item,
-          readEvent = readEvent,
-          index = index,
-          size = state.lyrics.size,
+          lyric = it,
           modifier = Modifier.animateItem()
-        )
+        ) { readEvent(ReadEvent.Click(it)) }
       }
     }
   }

@@ -28,12 +28,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
 
 @Composable
 fun SpotlightItem(
   lyric: Lyric,
-  event: (CategoryEvent) -> Unit,
+  onEvent: (MainEvent) -> Unit,
 ) {
 
   Card(
@@ -52,7 +51,7 @@ fun SpotlightItem(
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .clickable { event.invoke(CategoryEvent.Click(lyric.categoryId)) },
+        .clickable { onEvent(MainEvent.Event(MainEvent.OfType.Category, lyric.categoryId)) },
       verticalAlignment = Alignment.CenterVertically
     ) {
       AsyncImage(
