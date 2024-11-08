@@ -28,9 +28,6 @@ import androidx.navigation.toRoute
 import net.techandgraphics.hymn.ui.Route
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
-import net.techandgraphics.hymn.ui.screen.category.CategoryEvent
-import net.techandgraphics.hymn.ui.screen.category.CategoryScreen
-import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
 import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
@@ -40,9 +37,9 @@ import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
 import net.techandgraphics.hymn.ui.screen.read.ReadScreen
 import net.techandgraphics.hymn.ui.screen.read.ReadViewModel
-import net.techandgraphics.hymn.ui.screen.search.SearchEvent
-import net.techandgraphics.hymn.ui.screen.search.SearchScreen
-import net.techandgraphics.hymn.ui.screen.search.SearchViewModel
+import net.techandgraphics.hymn.ui.screen.searching.SearchingScreen
+import net.techandgraphics.hymn.ui.screen.searching.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.searching.lyric.SearchViewModel
 
 const val ANIMATION_DURATION = 300
 
@@ -59,7 +56,7 @@ fun AppScreen(
       NavigationBar {
         bottomNavigationList.forEach { item ->
           NavigationBarItem(
-            selected = currentRoute == item.route.toString(),
+            selected = currentRoute.contains(item.title),
             onClick = {
               navController.navigate(item.route) {
                 popUpTo(navController.graph.findStartDestination().id)
@@ -68,17 +65,17 @@ fun AppScreen(
             },
             label = {
               Text(
-                text = item.route.toString(),
+                text = item.title,
                 fontWeight = FontWeight.Bold,
               )
             },
             icon = {
               Icon(
                 painter = painterResource(
-                  id = if (currentRoute == item.route.toString()) item.selectedIcon else item.unSelectedIcon
+                  id = if (currentRoute.contains(item.title)) item.selectedIcon else item.unSelectedIcon
                 ),
                 modifier = Modifier.size(18.dp),
-                contentDescription = item.route.toString()
+                contentDescription = item.title
               )
             },
           )
@@ -119,12 +116,12 @@ fun AppScreen(
               is MainEvent.Goto -> when (event.navigate) {
                 MainEvent.Navigate.Search -> {
                   onAnalyticEvent(AnalyticEvent.GotoSearch)
-                  navController.navigate(Route.Search)
+                  navController.navigate(Route.Searching())
                 }
 
                 MainEvent.Navigate.Category -> {
                   onAnalyticEvent(AnalyticEvent.GotoCategory)
-                  navController.navigate(Route.Category)
+                  navController.navigate(Route.Searching(1))
                 }
               }
 
@@ -134,41 +131,11 @@ fun AppScreen(
         }
       }
 
-      composable<Route.Category> {
-        with(hiltViewModel<CategoryViewModel>()) {
-          val state = state.collectAsState().value
-          CategoryScreen(state) { event ->
-            when (event) {
-              is CategoryEvent.Click ->
-                navController.navigate(Route.Categorisation(event.id)) {
-                  launchSingleTop = true
-                }
-
-              else -> onEvent(event)
-            }
-          }
-        }
-      }
-
-      composable<Route.Search> {
-        with(hiltViewModel<SearchViewModel>()) {
-          val state = state.collectAsState().value
-          SearchScreen(
-            state = state,
-            event = this::onEvent,
-            readEvent = { event ->
-              if (state.searchQuery.trim().isNotBlank()) onEvent(SearchEvent.InsertSearchTag)
-
-              when (event) {
-                is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
-                  launchSingleTop = true
-                }
-
-                else -> Unit
-              }
-            }
-          )
-        }
+      composable<Route.Searching> {
+        val searchViewModel = hiltViewModel<SearchViewModel>()
+        val categoryViewModel = hiltViewModel<CategoryViewModel>()
+        val activeTab = it.toRoute<Route.Searching>().tab
+        SearchingScreen(activeTab, searchViewModel, categoryViewModel)
       }
 
       composable<Route.Mixed> {

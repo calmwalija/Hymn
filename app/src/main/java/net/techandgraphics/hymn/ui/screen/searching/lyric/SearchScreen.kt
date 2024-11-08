@@ -1,11 +1,10 @@
-package net.techandgraphics.hymn.ui.screen.search
+package net.techandgraphics.hymn.ui.screen.searching.lyric
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.ui.screen.read.ReadEvent
-import net.techandgraphics.hymn.ui.theme.Typography
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -30,21 +28,8 @@ fun SearchScreen(
   readEvent: (ReadEvent) -> Unit,
   event: (SearchEvent) -> Unit,
 ) {
-
-  Column(
-    modifier = Modifier.fillMaxSize()
-  ) {
-    Spacer(modifier = Modifier.height(16.dp))
-
-    Text(
-      text = "Quick Hymn Search",
-      style = Typography.titleMedium,
-      modifier = Modifier
-        .padding(16.dp)
-    )
-
+  Column {
     SearchBox(state, event)
-
     AnimatedVisibility(visible = state.searchQuery.isEmpty()) {
       Column {
         Spacer(modifier = Modifier.height(8.dp))
@@ -65,7 +50,7 @@ fun SearchScreen(
                 maxLines = 1,
                 color = MaterialTheme.colorScheme.primary,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
               )
             }
           }

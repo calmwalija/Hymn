@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +34,7 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
+import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
 fun UniquelyCraftedScreen(
@@ -44,9 +44,9 @@ fun UniquelyCraftedScreen(
   val context = LocalContext.current
   Box(
     modifier = Modifier
-      .padding(8.dp)
-      .width(200.dp)
-      .height(130.dp)
+      .padding(horizontal = 8.dp)
+      .width(280.dp)
+      .height(200.dp)
       .clip(RoundedCornerShape(8))
       .clickable { onEvent(MainEvent.Event(MainEvent.OfType.Read, lyric.number)) },
   ) {
@@ -61,7 +61,7 @@ fun UniquelyCraftedScreen(
 
     Card(
       colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
       ),
       shape = RoundedCornerShape(topStart = 12.dp),
       modifier = Modifier
@@ -69,9 +69,7 @@ fun UniquelyCraftedScreen(
         .fillMaxWidth(0.85f)
         .align(Alignment.BottomEnd)
     ) {
-      Column(
-        modifier = Modifier.padding(16.dp)
-      ) {
+      Column(modifier = Modifier.padding(16.dp)) {
         Text(
           text = "#${lyric.number}",
           fontWeight = FontWeight.Bold,
@@ -79,18 +77,18 @@ fun UniquelyCraftedScreen(
           color = MaterialTheme.colorScheme.primary,
         )
         Text(
+          text = lyric.content.replace("\n", ""),
+          maxLines = 3,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodyMedium,
+        )
+        Text(
           text = lyric.categoryName,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodySmall,
-          textDecoration = TextDecoration.Underline,
+          color = MaterialTheme.colorScheme.primary,
           modifier = Modifier.padding(vertical = 2.dp),
-        )
-        Text(
-          text = lyric.content,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-          style = MaterialTheme.typography.bodyMedium,
         )
         AnimatedVisibility(visible = lyric.timestamp != 0L) {
           Row(
@@ -118,6 +116,8 @@ fun UniquelyCraftedScreen(
 @Composable
 @Preview(showBackground = true)
 fun UniquelyCraftedScreenPreview() {
-  UniquelyCraftedScreen(lyric = Faker.lyric) {
+  HymnTheme {
+    UniquelyCraftedScreen(lyric = Faker.lyric) {
+    }
   }
 }

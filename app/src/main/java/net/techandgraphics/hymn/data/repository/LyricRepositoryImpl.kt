@@ -13,10 +13,11 @@ import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.uniquelyCraftedKey
 import net.techandgraphics.hymn.uniquelyCraftedKeyToList
 import javax.inject.Inject
+import kotlin.random.Random
 
 class LyricRepositoryImpl @Inject constructor(
   database: Database,
-  private val prefs: DataStorePrefs
+  private val prefs: DataStorePrefs,
 ) : LyricRepository {
 
   private val dao = database.lyricDao
@@ -63,7 +64,11 @@ class LyricRepositoryImpl @Inject constructor(
       val keys = (prefs uniquelyCraftedKey count).uniquelyCraftedKeyToList()
       val leftKey = keys.firstOrNull() ?: count.plus(1)
       val rightKey = keys.lastOrNull() ?: count.minus(1)
-      dao.uniquelyCrafted(getLang(), leftKey, rightKey)
+      val leftKey1 = Random.nextInt(rightKey)
+      val leftKey2 = Random.nextInt(rightKey)
+      val leftKey3 = Random.nextInt(rightKey)
+      val leftKey4 = Random.nextInt(rightKey)
+      dao.uniquelyCrafted(getLang(), leftKey, rightKey, leftKey1, leftKey2, leftKey3, leftKey4)
     }
   }
 

@@ -47,9 +47,7 @@ fun CategorisationScreenItem(
     verticalAlignment = Alignment.CenterVertically
   ) {
 
-    Column(
-      modifier = Modifier.weight(1f)
-    ) {
+    Column(modifier = Modifier.weight(1f)) {
 
       Text(
         text = "#${data.number}",

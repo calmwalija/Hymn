@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.category
+package net.techandgraphics.hymn.ui.screen.searching.category
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
