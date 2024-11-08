@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.category
+package net.techandgraphics.hymn.ui.screen.searching.category
 
 sealed class CategoryEvent {
   class Click(val id: Int) : CategoryEvent()

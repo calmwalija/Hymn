@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search
+package net.techandgraphics.hymn.ui.screen.searching.lyric
 
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel

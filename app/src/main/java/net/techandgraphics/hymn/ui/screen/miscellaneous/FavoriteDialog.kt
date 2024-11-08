@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import net.techandgraphics.hymn.ui.screen.main.MainEvent
-import net.techandgraphics.hymn.ui.screen.search.SearchScreenItem
+import net.techandgraphics.hymn.ui.screen.searching.lyric.SearchScreenItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

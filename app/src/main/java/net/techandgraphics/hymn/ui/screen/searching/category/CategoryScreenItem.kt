@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.category
+package net.techandgraphics.hymn.ui.screen.searching.category
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,7 @@ import net.techandgraphics.hymn.hymnCount
 fun CategoryScreenItem(
   category: Category,
   event: (CategoryEvent) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
 ) {
   val context = LocalContext.current
   Row(
@@ -43,8 +43,8 @@ fun CategoryScreenItem(
       contentDescription = null,
       contentScale = ContentScale.Crop,
       modifier = Modifier
-        .clip(RoundedCornerShape(50))
-        .size(64.dp)
+        .clip(RoundedCornerShape(20))
+        .size(62.dp)
     )
     Column(
       modifier = Modifier

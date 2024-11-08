@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search
+package net.techandgraphics.hymn.ui.screen.searching.lyric
 
 import net.techandgraphics.hymn.domain.model.Search
 
