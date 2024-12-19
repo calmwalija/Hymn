@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.lyric
+package net.techandgraphics.hymn.ui.screen.search.lyric
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -44,8 +45,8 @@ import net.techandgraphics.hymn.R
 
 @Composable
 fun SearchBox(
-  state: SearchState,
-  event: (SearchEvent) -> Unit,
+  state: LyricUiState,
+  event: (LyricUiEvent) -> Unit,
 ) {
 
   var keyboardText by remember { mutableStateOf(false) }
@@ -65,7 +66,7 @@ fun SearchBox(
     ) {
       BasicTextField(
         value = TextFieldValue(state.searchQuery, selection = TextRange(state.searchQuery.length)),
-        onValueChange = { if (it.text.length <= 20) event(SearchEvent.OnSearchQuery(it.text)) },
+        onValueChange = { if (it.text.length <= 20) event(LyricUiEvent.OnLyricUiQuery(it.text)) },
         maxLines = 1,
         modifier = Modifier
           .fillMaxWidth(),
@@ -127,7 +128,7 @@ fun SearchBox(
             }
             AnimatedVisibility(visible = state.searchQuery.isNotEmpty()) {
               IconButton(
-                onClick = { event(SearchEvent.ClearSearchQuery) },
+                onClick = { event(LyricUiEvent.ClearLyricUiQuery) },
                 modifier = Modifier.size(24.dp)
               ) {
                 Icon(
@@ -158,16 +159,16 @@ fun SearchBox(
     }
 
     FloatingActionButton(
-      onClick = { /*TODO*/ },
+      onClick = { },
       containerColor = MaterialTheme.colorScheme.primary.copy(alpha = .8f),
-      contentColor = Color.White,
       modifier = Modifier.size(42.dp),
       shape = RoundedCornerShape(20)
     ) {
       Icon(
-        painter = painterResource(id = R.drawable.ic_filter),
+        imageVector = Icons.AutoMirrored.Rounded.List,
         modifier = Modifier.size(16.dp),
-        contentDescription = null
+        contentDescription = null,
+        tint = Color.White
       )
     }
 

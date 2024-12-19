@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching
+package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +11,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import net.techandgraphics.hymn.ui.screen.component.ToggleSwitch
 import net.techandgraphics.hymn.ui.screen.component.ToggleSwitchItem
-import net.techandgraphics.hymn.ui.screen.searching.category.CategoryScreen
-import net.techandgraphics.hymn.ui.screen.searching.category.CategoryViewModel
-import net.techandgraphics.hymn.ui.screen.searching.lyric.SearchScreen
-import net.techandgraphics.hymn.ui.screen.searching.lyric.SearchViewModel
+import net.techandgraphics.hymn.ui.screen.search.category.CategoryScreen
+import net.techandgraphics.hymn.ui.screen.search.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.search.lyric.LyricScreen
+import net.techandgraphics.hymn.ui.screen.search.lyric.LyricUiEvent
+import net.techandgraphics.hymn.ui.screen.search.lyric.LyricViewModel
 
 open class ToggleSwitchSearchItem : ToggleSwitchItem {
   data object Category : ToggleSwitchSearchItem()
@@ -22,9 +23,9 @@ open class ToggleSwitchSearchItem : ToggleSwitchItem {
 }
 
 @Composable
-fun SearchingScreen(
+fun SearchScreen(
   activeTab: Int,
-  searchViewModel: SearchViewModel,
+  lyricViewModel: LyricViewModel,
   categoryViewModel: CategoryViewModel,
 ) {
   Column(modifier = Modifier.fillMaxSize()) {
@@ -34,7 +35,7 @@ fun SearchingScreen(
       toggleSwitchItems = ToggleSwitchSearchItem::class.nestedClasses.sortedByDescending { it.simpleName },
       tabSelected = tabSelected
     ) { tabSelected = it }
-    if (tabSelected == 0) Tab1(viewModel = searchViewModel) else Tab2(viewModel = categoryViewModel)
+    if (tabSelected == 0) Tab1(viewModel = lyricViewModel) else Tab2(viewModel = categoryViewModel)
   }
 }
 
@@ -43,7 +44,7 @@ fun Tab2(viewModel: CategoryViewModel) {
   val state = viewModel.state.collectAsState().value
   CategoryScreen(state) { event ->
     when (event) {
-//      is CategoryEvent.Click ->
+//      is CategoryUiEvent.Click ->
 //        navController.navigate(Route.Categorisation(event.id)) {
 //          launchSingleTop = true
 //        }
@@ -54,18 +55,18 @@ fun Tab2(viewModel: CategoryViewModel) {
 }
 
 @Composable
-fun Tab1(viewModel: SearchViewModel) {
+fun Tab1(viewModel: LyricViewModel) {
   val state = viewModel.state.collectAsState().value
-  SearchScreen(
+  LyricScreen(
     state = state,
     event = viewModel::onEvent,
     readEvent = { event ->
       if (state.searchQuery.trim()
         .isNotBlank()
-      ) viewModel.onEvent(net.techandgraphics.hymn.ui.screen.searching.lyric.SearchEvent.InsertSearchTag)
+      ) viewModel.onEvent(LyricUiEvent.InsertLyricUiTag)
 
       when (event) {
-//        is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
+//        is PreviewUiEvent.Click -> navController.navigate(Route.Read(event.number)) {
 //          launchSingleTop = true
 //        }
 

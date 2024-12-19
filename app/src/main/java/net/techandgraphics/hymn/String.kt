@@ -25,3 +25,5 @@ fun String.capitaliseWord() = split(" ").joinToString(" ") {
     ) else it
   }
 }
+
+fun String.removeNextLine() = replace("\n", "")

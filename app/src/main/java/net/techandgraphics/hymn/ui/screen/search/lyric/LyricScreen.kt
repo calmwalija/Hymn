@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.lyric
+package net.techandgraphics.hymn.ui.screen.search.lyric
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -19,14 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SearchScreen(
-  state: SearchState,
-  readEvent: (ReadEvent) -> Unit,
-  event: (SearchEvent) -> Unit,
+fun LyricScreen(
+  state: LyricUiState,
+  readEvent: (PreviewUiEvent) -> Unit,
+  event: (LyricUiEvent) -> Unit,
 ) {
   Column {
     SearchBox(state, event)
@@ -40,7 +40,7 @@ fun SearchScreen(
                 .padding(horizontal = 2.dp)
                 .clip(RoundedCornerShape(50))
                 .combinedClickable(
-                  onClick = { event(SearchEvent.SearchQueryTag(it.query)) },
+                  onClick = { event(LyricUiEvent.LyricUiQueryTag(it.query)) },
                   onLongClick = { }
                 ),
             ) {
@@ -60,10 +60,10 @@ fun SearchScreen(
 
     LazyColumn {
       items(state.lyrics, key = { it.lyricId }) {
-        SearchScreenItem(
+        LyricScreenItem(
           lyric = it,
           modifier = Modifier.animateItem()
-        ) { readEvent(ReadEvent.Click(it)) }
+        ) { readEvent(PreviewUiEvent.Click(it)) }
       }
     }
   }

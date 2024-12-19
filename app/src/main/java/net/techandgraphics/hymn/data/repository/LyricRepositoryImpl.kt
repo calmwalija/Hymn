@@ -10,10 +10,7 @@ import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
-import net.techandgraphics.hymn.uniquelyCraftedKey
-import net.techandgraphics.hymn.uniquelyCraftedKeyToList
 import javax.inject.Inject
-import kotlin.random.Random
 
 class LyricRepositoryImpl @Inject constructor(
   database: Database,
@@ -35,9 +32,9 @@ class LyricRepositoryImpl @Inject constructor(
     }
   }
 
-  override fun diveInto(): Flow<List<Lyric>> {
+  override suspend fun diveInto(): List<Lyric> {
     return runBlocking {
-      dao.diveInto(getLang()).map { it.map { data -> data.asModel() } }
+      dao.diveInto(getLang()).map { data -> data.asModel() }
     }
   }
 
@@ -59,17 +56,8 @@ class LyricRepositoryImpl @Inject constructor(
     return dao.queryByNumber(number).map { it.asModel() }
   }
 
-  override fun uniquelyCrafted(count: Int): Flow<List<Lyric>> {
-    return runBlocking {
-      val keys = (prefs uniquelyCraftedKey count).uniquelyCraftedKeyToList()
-      val leftKey = keys.firstOrNull() ?: count.plus(1)
-      val rightKey = keys.lastOrNull() ?: count.minus(1)
-      val leftKey1 = Random.nextInt(rightKey)
-      val leftKey2 = Random.nextInt(rightKey)
-      val leftKey3 = Random.nextInt(rightKey)
-      val leftKey4 = Random.nextInt(rightKey)
-      dao.uniquelyCrafted(getLang(), leftKey, rightKey, leftKey1, leftKey2, leftKey3, leftKey4)
-    }
+  override suspend fun uniquelyCrafted(): List<Lyric> {
+    return runBlocking { dao.uniquelyCrafted(getLang()).shuffled().take(10) }
   }
 
   override suspend fun favorite(favorite: Boolean, number: Int) {
@@ -84,5 +72,5 @@ class LyricRepositoryImpl @Inject constructor(
     return dao.backup().map { it.asModel() }
   }
 
-  override suspend fun getLastHymn(): Int = dao.getLastHymn()
+  override suspend fun getLastHymn(lang: String): Int = dao.getLastHymn(lang)
 }

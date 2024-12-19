@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.category
+package net.techandgraphics.hymn.ui.screen.search.category
 
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
@@ -25,7 +25,7 @@ class CategoryViewModel @Inject constructor(
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(CategoryState())
+  private val _state = MutableStateFlow(CategoryUiState())
   val state = _state.asStateFlow()
   private val delayDuration = 3L
   private var searchJob: Job? = null
@@ -50,13 +50,13 @@ class CategoryViewModel @Inject constructor(
         } catch (_: Exception) {
         }
       }
-      onEvent(CategoryEvent.OnSearchQuery(state.value.searchQuery))
+      onEvent(CategoryUiEvent.OnSearchQuery(state.value.searchQuery))
     }
   }
 
-  fun onEvent(event: CategoryEvent) {
+  fun onEvent(event: CategoryUiEvent) {
     when (event) {
-      is CategoryEvent.OnSearchQuery -> {
+      is CategoryUiEvent.OnSearchQuery -> {
         _state.update { it.copy(searchQuery = event.searchQuery, isSearching = true) }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
@@ -67,7 +67,7 @@ class CategoryViewModel @Inject constructor(
         }
       }
 
-      CategoryEvent.ClearSearchQuery -> {
+      CategoryUiEvent.ClearSearchQuery -> {
         analytics.tagEvent(Tag.CLEAR_CATEGORY_SEARCH_TAG, bundleOf())
         clear()
       }

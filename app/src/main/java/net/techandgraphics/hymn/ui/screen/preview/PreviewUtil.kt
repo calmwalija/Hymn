@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.read
+package net.techandgraphics.hymn.ui.screen.preview
 
 enum class Direction {
   LEFT, RIGHT
