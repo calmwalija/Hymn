@@ -39,6 +39,7 @@ import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.component.ToggleSwitch
 import net.techandgraphics.hymn.ui.screen.component.ToggleSwitchItem
 import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
+import net.techandgraphics.hymn.ui.screen.main.components.SpotlightItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 import net.techandgraphics.hymn.ui.theme.Typography
@@ -70,7 +71,7 @@ fun MainScreen(
   ) {
     var tabSelected by remember { mutableStateOf(state.lang) }
     ToggleSwitch(
-      title = "Suggested",
+      title = "Uniquely Crafted",
       toggleSwitchItems = ToggleSwitchHomeItem::class.nestedClasses.sortedByDescending { it.simpleName },
       tabSelected = if (tabSelected.contains(Lang.EN.lowercase(), ignoreCase = true)) 0 else 1
     ) {

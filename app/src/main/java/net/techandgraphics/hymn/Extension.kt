@@ -5,6 +5,9 @@ import android.widget.Toast
 import androidx.datastore.preferences.core.longPreferencesKey
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.ui.screen.main.Suggested
+import net.techandgraphics.hymn.ui.screen.main.generateSuggested
 import kotlin.random.Random
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -32,6 +35,42 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
     lyric.number
   )
   this toast msg
+}
+
+suspend fun DataStorePrefs.suggested(repository: LyricRepository): Suggested {
+  val suggested = generateSuggested(repository)
+  val english = mutableListOf<Int>()
+  val chichewa = mutableListOf<Int>()
+
+  val english4Week = get<String>(englishSuggestedForTheWeekKey, "")
+  val chichewa4Week = get<String>(chichewaSuggestedForTheWeekKey, "")
+
+  if (get<Long>(uniquelyCraftedMills, 0L) == null) {
+    if (english4Week == null) {
+      put<String>(englishSuggestedForTheWeekKey, suggested.english.joinToString(","))
+      suggested(repository)
+    }
+
+    if (chichewa4Week == null) {
+      put<String>(chichewaSuggestedForTheWeekKey, suggested.chichewa.joinToString(","))
+      suggested(repository)
+    }
+  } else {
+    when (val toAgo = get<Long>(uniquelyCraftedMills, 0L)!!.toAgo(System.currentTimeMillis())) {
+      is Ago.Minutes -> if (toAgo.value > 1) {
+        remove(longPreferencesKey(englishSuggestedForTheWeekKey))
+        remove(longPreferencesKey(chichewaSuggestedForTheWeekKey))
+        suggested(repository)
+      }
+
+      else -> Unit
+    }
+  }
+
+  english4Week?.let { it.split(",").map { it.toInt() }.also { english.addAll(it) } }
+  chichewa4Week?.let { it.split(",").map { it.toInt() }.also { chichewa.addAll(it) } }
+
+  return Suggested(english, chichewa)
 }
 
 suspend infix fun DataStorePrefs.uniquelyCraftedKey(maxValue: Int): String {

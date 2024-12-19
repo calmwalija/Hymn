@@ -5,13 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
@@ -26,32 +24,23 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val prefs: DataStorePrefs,
-  private val analytics: FirebaseAnalytics
+  private val analytics: FirebaseAnalytics,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
+
   fun get() = viewModelScope.launch {
     analytics.tagScreen(Tag.MAIN_SCREEN)
-    _state.value = _state.value.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()))
-    with(lyricRepo) {
-      diveInto().zip(uniquelyCrafted(getLastHymn())) { diveInto, uniquelyCrafted ->
-        _state.update {
-          it.copy(
-            diveInto = diveInto,
-            uniquelyCrafted = uniquelyCrafted,
-          )
-        }
-      }.launchIn(viewModelScope)
-    }
+    _state.update { it.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase())) }
+    _state.update { it.copy(diveInto = lyricRepo.diveInto()) }
+    _state.update { it.copy(uniquelyCrafted = lyricRepo.uniquelyCrafted()) }
   }
 
   private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.put(prefs.translationKey, lang)
-    get()
     _state.update { it.copy(lang = lang, onLangInvoke = true) }
-    delay(1000)
-    _state.update { it.copy(onLangInvoke = false) }
+    get()
   }
 
   fun favorite(lyric: Lyric) =

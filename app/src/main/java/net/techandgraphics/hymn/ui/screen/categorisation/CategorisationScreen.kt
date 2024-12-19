@@ -28,13 +28,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.hymnCount
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategorisationScreen(
   state: CategorisationState,
-  readEvent: (ReadEvent) -> Unit,
+  readEvent: (PreviewUiEvent) -> Unit,
   event: (CategorisationEvent) -> Unit,
 ) {
 

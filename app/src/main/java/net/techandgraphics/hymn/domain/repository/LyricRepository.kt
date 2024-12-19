@@ -6,14 +6,14 @@ import net.techandgraphics.hymn.domain.model.Lyric
 interface LyricRepository {
   fun query(query: String): Flow<List<Lyric>>
   fun queryByCategory(id: Int): Flow<List<Lyric>>
-  fun diveInto(): Flow<List<Lyric>>
+  suspend fun diveInto(): List<Lyric>
   fun queryById(lyricId: Int): Flow<List<Lyric>>
   fun favorites(): Flow<List<Lyric>>
   suspend fun upsert(lyric: List<Lyric>)
   suspend fun queryByNumber(number: Int): List<Lyric>
-  fun uniquelyCrafted(count: Int): Flow<List<Lyric>>
+  suspend fun uniquelyCrafted(): List<Lyric>
   suspend fun favorite(favorite: Boolean, number: Int)
   suspend fun read(number: Int, timestamp: Long)
   suspend fun backup(): List<Lyric>
-  suspend fun getLastHymn(): Int
+  suspend fun getLastHymn(lang: String): Int
 }

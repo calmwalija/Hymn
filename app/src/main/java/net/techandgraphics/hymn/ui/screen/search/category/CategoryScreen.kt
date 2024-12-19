@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.category
+package net.techandgraphics.hymn.ui.screen.search.category
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun CategoryScreen(
-  state: CategoryState,
-  event: (CategoryEvent) -> Unit,
+  state: CategoryUiState,
+  event: (CategoryUiEvent) -> Unit,
 ) {
   Column {
     CategorySearchBox(state, event)

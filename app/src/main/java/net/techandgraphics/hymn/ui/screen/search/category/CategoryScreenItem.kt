@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.category
+package net.techandgraphics.hymn.ui.screen.search.category
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,7 @@ import net.techandgraphics.hymn.hymnCount
 @Composable
 fun CategoryScreenItem(
   category: Category,
-  event: (CategoryEvent) -> Unit,
+  event: (CategoryUiEvent) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val context = LocalContext.current
@@ -35,7 +35,7 @@ fun CategoryScreenItem(
     verticalAlignment = Alignment.CenterVertically,
     modifier = modifier
       .fillMaxWidth()
-      .clickable { event.invoke(CategoryEvent.Click(category.lyric.categoryId)) }
+      .clickable { event.invoke(CategoryUiEvent.Click(category.lyric.categoryId)) }
       .padding(8.dp)
   ) {
     AsyncImage(

@@ -31,36 +31,13 @@ interface LyricDao {
   suspend fun queryByNumber(number: Int): List<LyricEntity>
 
   @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 5")
-  fun diveInto(lang: String): Flow<List<LyricEntity>>
+  suspend fun diveInto(lang: String): List<LyricEntity>
 
   @Query("SELECT * FROM lyric WHERE lyricId=:lyricId")
   fun queryById(lyricId: Int): Flow<List<LyricEntity>>
 
-  @Query(
-    """
-        SELECT * FROM lyric
-        WHERE lang=:lang
-        AND
-        (
-        number=:leftKey OR
-        number=:rightKey OR
-        number=:leftKey1 OR
-        number=:leftKey2 OR
-        number=:leftKey3 OR
-        number=:leftKey4
-        )
-        GROUP BY number ORDER BY number
-  """
-  )
-  fun uniquelyCrafted(
-    lang: String,
-    leftKey: Int,
-    rightKey: Int,
-    leftKey1: Int,
-    leftKey2: Int,
-    leftKey3: Int,
-    leftKey4: Int,
-  ): Flow<List<Lyric>>
+  @Query("SELECT * FROM lyric WHERE lang=:lang GROUP BY categoryName, number")
+  suspend fun uniquelyCrafted(lang: String): List<Lyric>
 
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:lang")
   suspend fun favorite(favorite: Boolean, number: Int, lang: String)

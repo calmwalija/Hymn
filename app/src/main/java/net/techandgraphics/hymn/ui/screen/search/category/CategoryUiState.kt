@@ -1,8 +1,8 @@
-package net.techandgraphics.hymn.ui.screen.searching.category
+package net.techandgraphics.hymn.ui.screen.search.category
 
 import net.techandgraphics.hymn.domain.model.Category
 
-data class CategoryState(
+data class CategoryUiState(
   val categories: List<Category> = emptyList(),
   val route: String = "",
   var searchQuery: String = "",

@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.category
+package net.techandgraphics.hymn.ui.screen.search.category
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -36,8 +36,8 @@ import net.techandgraphics.hymn.R
 
 @Composable
 fun CategorySearchBox(
-  state: CategoryState,
-  event: (CategoryEvent) -> Unit,
+  state: CategoryUiState,
+  event: (CategoryUiEvent) -> Unit,
 ) {
   Card(
     modifier = Modifier
@@ -52,7 +52,7 @@ fun CategorySearchBox(
   ) {
     BasicTextField(
       value = TextFieldValue(state.searchQuery, selection = TextRange(state.searchQuery.length)),
-      onValueChange = { if (it.text.length <= 20) event(CategoryEvent.OnSearchQuery(it.text)) },
+      onValueChange = { if (it.text.length <= 20) event(CategoryUiEvent.OnSearchQuery(it.text)) },
       maxLines = 1,
       modifier = Modifier
         .fillMaxWidth(),
@@ -114,7 +114,7 @@ fun CategorySearchBox(
 
           AnimatedVisibility(visible = state.searchQuery.isNotEmpty()) {
             IconButton(
-              onClick = { event(CategoryEvent.ClearSearchQuery) },
+              onClick = { event(CategoryUiEvent.ClearSearchQuery) },
               modifier = Modifier
                 .size(20.dp)
             ) {

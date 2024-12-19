@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.lyric
+package net.techandgraphics.hymn.ui.screen.search.lyric
 
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
@@ -27,7 +27,7 @@ import net.techandgraphics.hymn.removeSymbols
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(
+class LyricViewModel @Inject constructor(
   private val searchRepo: SearchRepository,
   private val lyricRepo: LyricRepository,
   private val analytics: FirebaseAnalytics,
@@ -36,7 +36,7 @@ class SearchViewModel @Inject constructor(
 
   private var searchJob: Job? = null
   private val delayDuration = 3L
-  private val _state = MutableStateFlow(SearchState())
+  private val _state = MutableStateFlow(LyricUiState())
   val state = _state.asStateFlow()
 
   private fun queryLyrics() = lyricRepo.query(_state.value.searchQuery)
@@ -64,7 +64,7 @@ class SearchViewModel @Inject constructor(
         } catch (_: Exception) {
         }
       }
-      onEvent(SearchEvent.OnSearchQuery(state.value.searchQuery))
+      onEvent(LyricUiEvent.OnLyricUiQuery(state.value.searchQuery))
     }
   }
 
@@ -76,13 +76,13 @@ class SearchViewModel @Inject constructor(
           _state.value.copy(searchQuery = state.value.searchQuery + it.toString())
       } catch (_: Exception) {
       }
-      onEvent(SearchEvent.OnSearchQuery(state.value.searchQuery))
+      onEvent(LyricUiEvent.OnLyricUiQuery(state.value.searchQuery))
     }
   }
 
-  fun onEvent(event: SearchEvent) {
+  fun onEvent(event: LyricUiEvent) {
     when (event) {
-      is SearchEvent.OnSearchQuery -> {
+      is LyricUiEvent.OnLyricUiQuery -> {
         _state.value =
           _state.value.copy(searchQuery = event.searchQuery, isSearching = true)
         searchJob?.cancel()
@@ -94,7 +94,7 @@ class SearchViewModel @Inject constructor(
         }
       }
 
-      is SearchEvent.SearchQueryTag -> {
+      is LyricUiEvent.LyricUiQueryTag -> {
         analytics.tagEvent(
           Tag.APPEND_SEARCH_TAG,
           bundleOf(Pair(Tag.APPEND_SEARCH_TAG, event.searchQuery))
@@ -102,7 +102,7 @@ class SearchViewModel @Inject constructor(
         searchQueryTag(event.searchQuery)
       }
 
-      SearchEvent.InsertSearchTag -> {
+      LyricUiEvent.InsertLyricUiTag -> {
         analytics.tagEvent(
           Tag.SEARCH_KEYWORD,
           bundleOf(Pair(Tag.SEARCH_KEYWORD, state.value.searchQuery))
@@ -110,12 +110,12 @@ class SearchViewModel @Inject constructor(
         onInsertSearchTag()
       }
 
-      SearchEvent.ClearSearchQuery -> {
+      LyricUiEvent.ClearLyricUiQuery -> {
         analytics.tagEvent(Tag.CLEAR_SEARCH_TAG, bundleOf())
         clearSearchQuery()
       }
 
-      is SearchEvent.OnLongPress -> onLongPress(event.search)
+      is LyricUiEvent.OnLongPress -> onLongPress(event.search)
     }
   }
 

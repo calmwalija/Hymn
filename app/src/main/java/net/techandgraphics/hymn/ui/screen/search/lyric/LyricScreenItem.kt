@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.searching.lyric
+package net.techandgraphics.hymn.ui.screen.search.lyric
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -30,11 +30,12 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.removeNextLine
 import net.techandgraphics.hymn.toTimeAgo
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
-fun SearchScreenItem(
+fun LyricScreenItem(
   lyric: Lyric,
   modifier: Modifier = Modifier,
   onEvent: (Int) -> Unit,
@@ -44,17 +45,21 @@ fun SearchScreenItem(
 
   Column(
     modifier = modifier
+      .padding(vertical = 8.dp)
       .clickable { onEvent(lyric.number) }
       .fillMaxWidth(),
   ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+    ) {
       AsyncImage(
         model = Constant.images[lyric.categoryId].drawableRes,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
           .padding(horizontal = 8.dp)
-          .size(62.dp)
+          .size(80.dp)
           .clip(RoundedCornerShape(24)),
         placeholder = painterResource(id = R.drawable.im_example)
       )
@@ -66,23 +71,25 @@ fun SearchScreenItem(
           color = MaterialTheme.colorScheme.primary,
         )
         Text(
-          text = lyric.content,
+          text = lyric.content.removeNextLine(),
           maxLines = 2,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.bodyMedium,
         )
         Text(
-          text = lyric.categoryName.trimIndent(),
+          text = lyric.categoryName,
           maxLines = 1,
           color = MaterialTheme.colorScheme.primary,
           overflow = TextOverflow.Ellipsis,
           style = MaterialTheme.typography.labelMedium,
+          letterSpacing = 0.sp
         )
-        AnimatedVisibility(visible = lyric.timestamp != 0L) {
+        AnimatedVisibility(visible = lyric.timestamp == 0L) {
           Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
               painter = painterResource(id = R.drawable.ic_access_time),
               contentDescription = null,
+              tint = MaterialTheme.colorScheme.primary,
               modifier = Modifier.padding(end = 4.dp)
             )
             Text(
@@ -103,7 +110,7 @@ fun SearchScreenItem(
 @Composable
 fun SearchScreenItemPreview() {
   HymnTheme {
-    SearchScreenItem(
+    LyricScreenItem(
       lyric = Faker.lyric,
       modifier = Modifier
     ) {

@@ -28,13 +28,13 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.diveInto
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
 fun DiveIntoItemScreen(
   data: Lyric,
-  event: (ReadEvent) -> Unit,
+  event: (PreviewUiEvent) -> Unit,
 ) {
   val context = LocalContext.current
   val visibility = if (data.timestamp != 0L) 1f else 0f

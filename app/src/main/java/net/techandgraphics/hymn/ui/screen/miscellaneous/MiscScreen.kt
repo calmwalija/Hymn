@@ -40,16 +40,16 @@ import androidx.compose.ui.unit.sp
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.toast
-import net.techandgraphics.hymn.ui.screen.read.READ_FONT_SIZE_THRESH_HOLD
-import net.techandgraphics.hymn.ui.screen.read.READ_LINE_HEIGHT_THRESH_HOLD
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
+import net.techandgraphics.hymn.ui.screen.preview.READ_FONT_SIZE_THRESH_HOLD
+import net.techandgraphics.hymn.ui.screen.preview.READ_LINE_HEIGHT_THRESH_HOLD
 import net.techandgraphics.hymn.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiscScreen(
   state: MiscState,
-  readEvent: (ReadEvent) -> Unit,
+  readEvent: (PreviewUiEvent) -> Unit,
   event: (MiscEvent) -> Unit,
 ) {
 

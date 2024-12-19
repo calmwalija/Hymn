@@ -34,12 +34,12 @@ import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscScreen
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
-import net.techandgraphics.hymn.ui.screen.read.ReadScreen
-import net.techandgraphics.hymn.ui.screen.read.ReadViewModel
-import net.techandgraphics.hymn.ui.screen.searching.SearchingScreen
-import net.techandgraphics.hymn.ui.screen.searching.category.CategoryViewModel
-import net.techandgraphics.hymn.ui.screen.searching.lyric.SearchViewModel
+import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
+import net.techandgraphics.hymn.ui.screen.search.SearchScreen
+import net.techandgraphics.hymn.ui.screen.search.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.search.lyric.LyricViewModel
 
 const val ANIMATION_DURATION = 300
 
@@ -132,10 +132,10 @@ fun AppScreen(
       }
 
       composable<Route.Searching> {
-        val searchViewModel = hiltViewModel<SearchViewModel>()
+        val lyricViewModel = hiltViewModel<LyricViewModel>()
         val categoryViewModel = hiltViewModel<CategoryViewModel>()
         val activeTab = it.toRoute<Route.Searching>().tab
-        SearchingScreen(activeTab, searchViewModel, categoryViewModel)
+        SearchScreen(activeTab, lyricViewModel, categoryViewModel)
       }
 
       composable<Route.Mixed> {
@@ -146,7 +146,7 @@ fun AppScreen(
             event = ::onEvent,
             readEvent = { event ->
               when (event) {
-                is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
+                is PreviewUiEvent.Click -> navController.navigate(Route.Read(event.number)) {
                   launchSingleTop = true
                 }
 
@@ -158,7 +158,7 @@ fun AppScreen(
       }
 
       composable<Route.Read> {
-        with(hiltViewModel<ReadViewModel>()) {
+        with(hiltViewModel<PreviewViewModel>()) {
           LaunchedEffect(key1 = true) {
             invoke(it.toRoute<Route.Read>().id)
           }
@@ -178,7 +178,7 @@ fun AppScreen(
               }
             }
           }
-          ReadScreen(state, navController, ::onEvent)
+          PreviewScreen(state, navController, ::onEvent)
         }
       }
 
@@ -193,7 +193,7 @@ fun AppScreen(
             event = ::onEvent,
             readEvent = { event ->
               when (event) {
-                is ReadEvent.Click -> navController.navigate(Route.Read(event.number)) {
+                is PreviewUiEvent.Click -> navController.navigate(Route.Read(event.number)) {
                   launchSingleTop = true
                 }
 

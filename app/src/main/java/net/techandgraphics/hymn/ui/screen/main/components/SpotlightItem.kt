@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.main
+package net.techandgraphics.hymn.ui.screen.main.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,6 +24,7 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
