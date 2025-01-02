@@ -4,6 +4,8 @@ plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.jetbrainsKotlinAndroid)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.kotlin.compose)
+  id("com.google.devtools.ksp")
   id("com.diffplug.spotless")
   id("dagger.hilt.android.plugin")
   id("org.jetbrains.kotlin.kapt")
@@ -19,13 +21,13 @@ project.afterEvaluate {
 }
 
 android {
-  compileSdk = 34
+  compileSdk = 35
   namespace = "net.techandgraphics.hymn"
 
   defaultConfig {
     applicationId = "net.techandgraphics.hymn"
     minSdk = 21
-    targetSdk = 34
+    targetSdk = 35
     versionCode = 22
     versionName = "3.1.0"
 
@@ -93,9 +95,9 @@ android {
 
   kapt {
     javacOptions {
-      option("-Xmaxerrs", 500)
-      option("-Xlint:deprecation", true)
-      option("-Xlint:unchecked", true)
+      option("-Xmaxerrs", 500.toString())
+      option("-Xlint:deprecation", true.toString())
+      option("-Xlint:unchecked", true.toString())
     }
     arguments {
       arg("plugin", "org.jetbrains.kotlin.kapt3:kotlin-allopen")
@@ -129,7 +131,7 @@ dependencies {
 
   // Room
   implementation(libs.androidx.room.runtime)
-  kapt(libs.androidx.room.compiler)
+  ksp(libs.androidx.room.compiler)
   implementation(libs.androidx.room.ktx)
 
   //Paging 3

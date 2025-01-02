@@ -1,5 +1,14 @@
 [versions]
-agp = "8.4.1"
+
+agp = "8.7.3"
+kotlin = "2.0.21"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
+composeBom = "2024.04.01"
 coilCompose = "2.5.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
@@ -16,14 +25,6 @@ hiltCompiler = "1.0.0"
 hiltAndroidCompiler = "2.48"
 hiltAndroid = "2.48"
 hiltNavigationCompose = "1.2.0"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
-junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.0"
-activityCompose = "1.9.0"
-composeBom = "2024.05.00"
 navigationRuntimeKtx = "2.7.7"
 navigationCompose = "2.8.0-beta01"
 pagingRuntimeKtx = "3.3.0"
@@ -80,3 +81,4 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
