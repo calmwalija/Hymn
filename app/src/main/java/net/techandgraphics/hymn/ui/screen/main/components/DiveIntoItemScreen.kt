@@ -34,19 +34,14 @@ import net.techandgraphics.hymn.ui.theme.HymnTheme
 @Composable
 fun DiveIntoItemScreen(
   data: Lyric,
-  event: (PreviewUiEvent) -> Unit,
+  onEvent: (PreviewUiEvent) -> Unit,
 ) {
   val context = LocalContext.current
   val visibility = if (data.timestamp != 0L) 1f else 0f
 
-  ElevatedCard(
-    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-    shape = RoundedCornerShape(50)
-  ) {
-
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+      modifier = Modifier.padding(16.dp)
     ) {
       AsyncImage(
         model = Constant.images[data.categoryId].drawableRes,
@@ -54,7 +49,7 @@ fun DiveIntoItemScreen(
         contentScale = ContentScale.Crop,
         modifier = Modifier
           .clip(RoundedCornerShape(50))
-          .size(62.dp),
+          .size(82.dp),
         placeholder = painterResource(id = R.drawable.im_help)
       )
 
@@ -88,18 +83,17 @@ fun DiveIntoItemScreen(
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.primary,
         )
+
+        Text(
+          text = data.timestamp.toTimeAgo(context).diveInto(),
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodySmall,
+          modifier = Modifier.alpha(visibility)
+        )
       }
 
-      Text(
-        text = data.timestamp.toTimeAgo(context).diveInto(),
-        overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.bodySmall,
-        modifier = Modifier
-          .alpha(visibility)
-          .padding(end = 16.dp)
-      )
     }
-  }
+
 }
 
 @Composable
