@@ -17,6 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -121,8 +123,12 @@ fun MainScreen(
       }
 
       FlowRow {
-        state.diveInto.forEach {
-          DiveIntoItemScreen(it) {
+        Card(modifier = Modifier.padding(8.dp)) {
+          state.diveInto.forEachIndexed { index, lyric ->
+            DiveIntoItemScreen(lyric) {
+            }
+            if (index.plus(1) < state.diveInto.size)
+              HorizontalDivider()
           }
         }
       }
@@ -166,14 +172,14 @@ fun MainScreen(
   }
 }
 
-@Composable
 @Preview(showBackground = true)
+@Composable
 fun MainScreenPreview() {
   HymnTheme {
     MainScreen(
       state = MainState(
         uniquelyCrafted = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric),
-        diveInto = listOf(Faker.lyric, Faker.lyric)
+        diveInto = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric)
       )
     ) {
     }
