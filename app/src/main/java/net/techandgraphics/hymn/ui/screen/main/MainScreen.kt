@@ -13,12 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,7 +40,7 @@ import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.component.ToggleSwitch
 import net.techandgraphics.hymn.ui.screen.component.ToggleSwitchItem
 import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
-import net.techandgraphics.hymn.ui.screen.main.components.SpotlightItem
+import net.techandgraphics.hymn.ui.screen.main.components.FeaturedCategoryItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 import net.techandgraphics.hymn.ui.theme.Typography
@@ -81,9 +80,11 @@ fun MainScreen(
       onEvent(MainEvent.Language(versionValue[versionEntries.indexOf(tabSelected)]))
     }
 
+    val scrollState = rememberLazyListState()
+
     if (state.uniquelyCrafted.isNotEmpty())
 
-      LazyRow {
+      LazyRow(state = scrollState) {
         items(state.uniquelyCrafted) {
           UniquelyCraftedScreen(it, onEvent)
         }
@@ -123,12 +124,8 @@ fun MainScreen(
       }
 
       FlowRow {
-        Card(modifier = Modifier.padding(8.dp)) {
-          state.diveInto.forEachIndexed { index, lyric ->
-            DiveIntoItemScreen(lyric) {
-            }
-            if (index.plus(1) < state.diveInto.size)
-              HorizontalDivider()
+        state.diveInto.forEachIndexed { index, lyric ->
+          DiveIntoItemScreen(lyric) {
           }
         }
       }
@@ -165,9 +162,11 @@ fun MainScreen(
 
       LazyRow {
         items(state.uniquelyCrafted) {
-          SpotlightItem(it, onEvent)
+          FeaturedCategoryItem(it, onEvent)
         }
       }
+
+      Spacer(modifier = Modifier.height(20.dp))
     }
   }
 }
