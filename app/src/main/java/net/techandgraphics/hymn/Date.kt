@@ -39,7 +39,7 @@ fun Long.toTimeAgo(context: Context): String {
   }
 }
 
-fun String.diveInto() = replace("ago", "").let {
+fun String.toShort() = replace("ago", "").let {
   if (it.contains("now") || it.contains(",")) return it
   val split = it.split(" ", limit = 2)
   split.first() + split.last().first()

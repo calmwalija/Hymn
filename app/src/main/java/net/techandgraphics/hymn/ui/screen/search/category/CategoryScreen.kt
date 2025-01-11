@@ -1,8 +1,9 @@
 package net.techandgraphics.hymn.ui.screen.search.category
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -13,7 +14,7 @@ fun CategoryScreen(
 ) {
   Column {
     CategorySearchBox(state, event)
-    LazyColumn {
+    LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2)) {
       items(state.categories, key = { it.lyric.categoryId }) {
         CategoryScreenItem(
           category = it,
