@@ -40,10 +40,10 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/yellow" />
 
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove" />
+<!--        <provider-->
+<!--            android:name="androidx.startup.InitializationProvider"-->
+<!--            android:authorities="${applicationId}.androidx-startup"-->
+<!--            tools:node="remove" />-->
 
     </application>
 
