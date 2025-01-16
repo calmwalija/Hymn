@@ -25,15 +25,14 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.ui.screen.main.MainEvent
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
 fun FeaturedCategoryItem(
   lyric: Lyric,
-  onEvent: (MainEvent) -> Unit,
+  onEvent: (MainUiEvent) -> Unit,
 ) {
-
   Card(
     modifier = Modifier
       .padding(horizontal = 8.dp)
@@ -44,7 +43,7 @@ fun FeaturedCategoryItem(
     ),
     shape = RoundedCornerShape(4),
     onClick = {
-      onEvent(MainEvent.Event(MainEvent.OfType.Read, lyric.number))
+      onEvent(MainUiEvent.Event(MainUiEvent.OfType.Category, lyric.categoryId))
     }
   ) {
     Box {

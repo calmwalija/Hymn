@@ -33,13 +33,13 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.ui.screen.component.TimestampComponent
 import net.techandgraphics.hymn.ui.screen.component.TimestampFormat
-import net.techandgraphics.hymn.ui.screen.main.MainEvent
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
 fun UniquelyCraftedScreen(
   lyric: Lyric,
-  onEvent: (MainEvent) -> Unit,
+  onEvent: (MainUiEvent) -> Unit,
 ) {
   val context = LocalContext.current
   Card(
@@ -52,7 +52,7 @@ fun UniquelyCraftedScreen(
     ),
     colors = CardDefaults.cardColors(),
     onClick = {
-      onEvent(MainEvent.Event(MainEvent.OfType.Read, lyric.number))
+      onEvent(MainUiEvent.Event(MainUiEvent.OfType.Preview, lyric.number))
     }
   ) {
     Box {
@@ -89,8 +89,9 @@ fun UniquelyCraftedScreen(
               brush = Brush.verticalGradient(
                 colors = listOf(
                   Color.Transparent,
+                  MaterialTheme.colorScheme.surface.copy(alpha = .7f),
                   MaterialTheme.colorScheme.surface.copy(alpha = .8f),
-                  MaterialTheme.colorScheme.surface.copy(alpha = .8f),
+                  MaterialTheme.colorScheme.surface,
                 )
               )
             )

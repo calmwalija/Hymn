@@ -21,7 +21,5 @@ object Faker {
       timestamp = System.currentTimeMillis().minus(Random.nextInt(9000000, 12300000))
     )
 
-  val category = Category(
-    lyric = lyric, "39"
-  )
+  val category = Category(lyric = lyric, "39")
 }

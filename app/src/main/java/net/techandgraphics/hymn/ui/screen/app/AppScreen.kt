@@ -29,17 +29,14 @@ import net.techandgraphics.hymn.ui.Route
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
 import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
 import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
-import net.techandgraphics.hymn.ui.screen.main.MainEvent
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscScreen
 import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
-import net.techandgraphics.hymn.ui.screen.search.SearchScreen
-import net.techandgraphics.hymn.ui.screen.search.category.CategoryViewModel
-import net.techandgraphics.hymn.ui.screen.search.lyric.LyricViewModel
 
 const val ANIMATION_DURATION = 300
 
@@ -97,15 +94,15 @@ fun AppScreen(
           val state = state.collectAsState().value
           MainScreen(state = state) { event ->
             when (event) {
-              is MainEvent.Event -> when (event.ofType) {
-                MainEvent.OfType.Category -> {
+              is MainUiEvent.Event -> when (event.ofType) {
+                MainUiEvent.OfType.Category -> {
                   onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
                   navController.navigate(Route.Categorisation(event.id)) {
                     launchSingleTop = true
                   }
                 }
 
-                MainEvent.OfType.Read -> {
+                MainUiEvent.OfType.Preview -> {
                   onAnalyticEvent(AnalyticEvent.DiveInto(event.id))
                   navController.navigate(Route.Read(event.id)) {
                     launchSingleTop = true
@@ -113,15 +110,9 @@ fun AppScreen(
                 }
               }
 
-              is MainEvent.Goto -> when (event.navigate) {
-                MainEvent.Navigate.Search -> {
-                  onAnalyticEvent(AnalyticEvent.GotoSearch)
-                  navController.navigate(Route.Searching())
-                }
-
-                MainEvent.Navigate.Category -> {
-                  onAnalyticEvent(AnalyticEvent.GotoCategory)
-                  navController.navigate(Route.Searching(1))
+              is MainUiEvent.CategoryUiEvent.GoTo -> {
+                navController.navigate(Route.Categorisation(event.category.lyric.categoryId)) {
+                  launchSingleTop = true
                 }
               }
 
@@ -129,13 +120,6 @@ fun AppScreen(
             }
           }
         }
-      }
-
-      composable<Route.Searching> {
-        val lyricViewModel = hiltViewModel<LyricViewModel>()
-        val categoryViewModel = hiltViewModel<CategoryViewModel>()
-        val activeTab = it.toRoute<Route.Searching>().tab
-        SearchScreen(activeTab, lyricViewModel, categoryViewModel)
       }
 
       composable<Route.Mixed> {

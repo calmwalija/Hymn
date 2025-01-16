@@ -7,17 +7,11 @@ val bottomNavigationList = listOf(
   BottomNavigationItem(
     title = "Home",
     route = Route.Home,
-    selectedIcon = R.drawable.ic_filled_home,
-    unSelectedIcon = R.drawable.ic_outline_home,
+    selectedIcon = R.drawable.ic_filled_home_1,
+    unSelectedIcon = R.drawable.ic_outline_home_1,
   ),
   BottomNavigationItem(
-    title = "Search",
-    route = Route.Searching(),
-    selectedIcon = R.drawable.ic_filled_search,
-    unSelectedIcon = R.drawable.ic_outline_search,
-  ),
-  BottomNavigationItem(
-    title = "Mixed",
+    title = "Misc",
     route = Route.Mixed,
     selectedIcon = R.drawable.ic_filled_options,
     unSelectedIcon = R.drawable.ic_outline_options,
