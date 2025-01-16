@@ -56,5 +56,3 @@ fun setTypography(fontFamily: FontFamily = FontFamily.Default) =
       fontFamily = fontFamily
     )
   )
-
-
