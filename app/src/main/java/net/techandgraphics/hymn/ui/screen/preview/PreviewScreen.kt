@@ -272,7 +272,7 @@ fun PreviewScreen(
             Text(
               text = lyric.key,
               fontWeight = FontWeight.Bold,
-              fontSize = MaterialTheme.typography.displaySmall.fontSize,
+              style = MaterialTheme.typography.displaySmall,
               color = MaterialTheme.colorScheme.primary
             )
 
