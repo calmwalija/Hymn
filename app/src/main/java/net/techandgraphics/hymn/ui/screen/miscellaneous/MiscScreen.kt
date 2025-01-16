@@ -158,7 +158,7 @@ fun MiscScreen(
         isChecked = dynamicColor,
         onCheckedChange = {
           dynamicColor = it
-          onThemeConfigs.invoke(ThemeConfigs(dynamicColor = darkTheme))
+          onThemeConfigs.invoke(ThemeConfigs(dynamicColor = dynamicColor))
         }
       )
 
