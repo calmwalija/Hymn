@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search.lyric
+package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,13 +21,14 @@ import net.techandgraphics.hymn.toNumber
 import net.techandgraphics.hymn.ui.screen.component.ImageComponent
 import net.techandgraphics.hymn.ui.screen.component.TimestampComponent
 import net.techandgraphics.hymn.ui.screen.component.TimestampFormat
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
 fun LyricScreenItem(
   lyric: Lyric,
   modifier: Modifier = Modifier,
-  onEvent: (Int) -> Unit,
+  onEvent: (MainUiEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
@@ -35,7 +36,9 @@ fun LyricScreenItem(
   Column(
     modifier = modifier
       .padding(vertical = 8.dp)
-      .clickable { onEvent(lyric.number) }
+      .clickable {
+        onEvent(MainUiEvent.Event(MainUiEvent.OfType.Preview, lyric.number))
+      }
       .fillMaxWidth(),
   ) {
     Row(

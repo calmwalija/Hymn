@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search.category
+package net.techandgraphics.hymn.ui.screen.category
 
 import net.techandgraphics.hymn.domain.model.Category
 

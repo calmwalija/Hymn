@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search.lyric
+package net.techandgraphics.hymn.ui.screen.search
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -14,12 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -33,7 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
@@ -42,31 +42,41 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
+import net.techandgraphics.hymn.ui.screen.main.MainUiState
 
 @Composable
 fun SearchBox(
-  state: LyricUiState,
-  event: (LyricUiEvent) -> Unit,
+  state: MainUiState,
+  onFocusRequester: (Boolean) -> Unit,
+  event: (MainUiEvent) -> Unit,
 ) {
 
   var keyboardText by remember { mutableStateOf(false) }
+  var isFocused by remember { mutableStateOf(false) }
+  val focusRequester = remember { FocusRequester() }
 
   Row(verticalAlignment = Alignment.CenterVertically) {
     Card(
       modifier = Modifier
         .weight(1f)
+        .focusRequester(focusRequester)
+        .onFocusChanged { focusState ->
+          isFocused = focusState.isFocused
+          onFocusRequester(isFocused)
+        }
         .padding(horizontal = 8.dp),
       shape = RoundedCornerShape(50),
-      colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surface
-      ),
-      elevation = CardDefaults.cardElevation(
-        defaultElevation = 1.dp
-      ),
+      colors = CardDefaults.elevatedCardColors(),
+      elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
     ) {
       BasicTextField(
         value = TextFieldValue(state.searchQuery, selection = TextRange(state.searchQuery.length)),
-        onValueChange = { if (it.text.length <= 20) event(LyricUiEvent.OnLyricUiQuery(it.text)) },
+        onValueChange = {
+          if (it.text.length <= 20) event(
+            MainUiEvent.LyricUiEvent.OnLyricUiQuery(it.text)
+          )
+        },
         maxLines = 1,
         modifier = Modifier
           .fillMaxWidth(),
@@ -120,7 +130,7 @@ fun SearchBox(
               innerTextField()
               if (state.searchQuery.isEmpty())
                 Text(
-                  text = "Which hymn are you looking for?",
+                  text = "Search by hymn number or keyword",
                   color = LocalContentColor.current.copy(alpha = 0.5f),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -128,7 +138,7 @@ fun SearchBox(
             }
             AnimatedVisibility(visible = state.searchQuery.isNotEmpty()) {
               IconButton(
-                onClick = { event(LyricUiEvent.ClearLyricUiQuery) },
+                onClick = { event(MainUiEvent.LyricUiEvent.ClearLyricUiQuery) },
                 modifier = Modifier.size(24.dp)
               ) {
                 Icon(
@@ -154,21 +164,7 @@ fun SearchBox(
             }
           }
         },
-        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
-      )
-    }
-
-    FloatingActionButton(
-      onClick = { },
-      containerColor = MaterialTheme.colorScheme.primary.copy(alpha = .8f),
-      modifier = Modifier.size(42.dp),
-      shape = RoundedCornerShape(20)
-    ) {
-      Icon(
-        imageVector = Icons.AutoMirrored.Rounded.List,
-        modifier = Modifier.size(16.dp),
-        contentDescription = null,
-        tint = Color.White
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
       )
     }
 

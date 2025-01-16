@@ -1,9 +1,11 @@
 package net.techandgraphics.hymn.ui.screen.main.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,20 +22,25 @@ import net.techandgraphics.hymn.toNumber
 import net.techandgraphics.hymn.ui.screen.component.ImageComponent
 import net.techandgraphics.hymn.ui.screen.component.TimestampComponent
 import net.techandgraphics.hymn.ui.screen.component.TimestampFormat
-import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 @Composable
 fun DiveIntoItemScreen(
   lyric: Lyric,
-  onEvent: (PreviewUiEvent) -> Unit,
+  onEvent: (MainUiEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
 
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.padding(16.dp)
+    modifier = Modifier
+      .wrapContentHeight()
+      .clickable {
+        onEvent(MainUiEvent.Event(MainUiEvent.OfType.Preview, lyric.number))
+      }
+      .padding(16.dp)
   ) {
 
     ImageComponent(lyric)
