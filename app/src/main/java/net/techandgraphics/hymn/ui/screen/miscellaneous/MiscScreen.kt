@@ -1,9 +1,11 @@
 package net.techandgraphics.hymn.ui.screen.miscellaneous
 
+import android.Manifest
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.graphics.Typeface
 import android.net.Uri.parse
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -19,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,8 +46,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.gson.Gson
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
+import net.techandgraphics.hymn.hash
 import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.miscellaneous.settings.SettingsSwitchComp
 import net.techandgraphics.hymn.ui.screen.miscellaneous.settings.SettingsTextComp
@@ -124,8 +129,7 @@ fun MiscScreen(
       elevation = CardDefaults.elevatedCardElevation(
         defaultElevation = 1.dp
       ),
-      colors = CardDefaults.elevatedCardColors(),
-      modifier = Modifier.padding(4.dp)
+      colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
     ) {
 
       SettingsSwitchComp(
@@ -200,6 +204,53 @@ fun MiscScreen(
     Spacer(modifier = Modifier.height(32.dp))
 
     Text(
+      text = "Data Management",
+      style = MaterialTheme.typography.titleMedium,
+      modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
+    )
+    Card(
+      elevation = CardDefaults.elevatedCardElevation(
+        defaultElevation = 1.dp
+      ),
+      colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
+    ) {
+
+      SettingsTextComp(
+        drawableRes = R.drawable.ic_upload,
+        title = "Export",
+        description = "Quickly transfer your data by exporting it in JSON format.",
+      ) {
+
+        val currentTimeMillis = System.currentTimeMillis()
+        val gson = Gson()
+        val toExport = Export(
+          currentTimeMillis = currentTimeMillis,
+          lyrics = state.toExport,
+          timeSpent = state.timeSpent,
+          timestamp = state.timeStamp,
+          search = state.search,
+          hashable = currentTimeMillis.hash(gson.toJson(state.favorites))
+        )
+        val jsonToExport = gson.toJson(toExport)
+        println(jsonToExport)
+
+        val file = ExportData.writeToInternalStorage(context, jsonToExport)
+        ExportData.shareFile(context, file)
+      }
+
+      HorizontalDivider()
+
+      SettingsTextComp(
+        drawableRes = R.drawable.ic_import,
+        title = "Import",
+        description = "Easily bring in your data by importing exported files & get started with your information in no time.",
+      ) {
+      }
+    }
+
+    Spacer(modifier = Modifier.height(32.dp))
+
+    Text(
       text = "Contact",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
@@ -208,8 +259,7 @@ fun MiscScreen(
       elevation = CardDefaults.elevatedCardElevation(
         defaultElevation = 1.dp
       ),
-      colors = CardDefaults.elevatedCardColors(),
-      modifier = Modifier.padding(4.dp)
+      colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
     ) {
 
       SettingsTextComp(
@@ -243,8 +293,7 @@ fun MiscScreen(
         elevation = CardDefaults.elevatedCardElevation(
           defaultElevation = 1.dp
         ),
-        colors = CardDefaults.elevatedCardColors(),
-        modifier = Modifier.padding(4.dp)
+        colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
       ) {
 
         val show = remember { mutableStateOf(false) }
@@ -264,13 +313,11 @@ fun MiscScreen(
         ) {
           BadgedBox(
             badge = {
-              if (state.favorites.isNotEmpty())
-                Badge(
-                  containerColor = MaterialTheme.colorScheme.primary,
-                  contentColor = Color.White
-                ) {
-                  Text(text = state.favorites.size.toString())
-                }
+              if (state.favorites.isNotEmpty()) Badge(
+                containerColor = MaterialTheme.colorScheme.primary, contentColor = Color.White
+              ) {
+                Text(text = state.favorites.size.toString())
+              }
             }
           ) {
             Icon(
@@ -280,8 +327,7 @@ fun MiscScreen(
             )
           }
           Column(
-            modifier = Modifier
-              .padding(start = 24.dp)
+            modifier = Modifier.padding(start = 24.dp)
           ) {
             Text(
               text = "Favorite Hymns",
@@ -368,5 +414,26 @@ fun MiscScreen(
         }
       }
     }
+  }
+}
+
+@Composable
+fun RequestStoragePermission(onPermissionGranted: () -> Unit) {
+  val context = LocalContext.current
+  val launcher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.RequestPermission()
+  ) { isGranted ->
+    if (isGranted) {
+      onPermissionGranted()
+    } else {
+      Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+    }
+  }
+  Button(
+    onClick = {
+      launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
+  ) {
+    Text("Request Permission")
   }
 }

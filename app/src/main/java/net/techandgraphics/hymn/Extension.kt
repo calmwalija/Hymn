@@ -8,6 +8,7 @@ import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.ui.screen.main.Suggested
 import net.techandgraphics.hymn.ui.screen.main.generateSuggested
+import java.security.MessageDigest
 import kotlin.random.Random
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -93,10 +94,13 @@ suspend infix fun DataStorePrefs.uniquelyCraftedKey(maxValue: Int): String {
   }
 }
 
-fun String.uniquelyCraftedKeyToList(): List<Int> =
-  removeSymbols()
-    .drop(1)
-    .dropLast(1)
-    .split(" ")
-    .map { it.toInt() }
-    .sorted()
+fun Long.hash(text: String, algorithm: String = "SHA-512"): String {
+  val theKey = toString()
+    .substring(5, toString().length.minus(3))
+    .toInt()
+    .times(toString().sumOf { it.digitToInt() })
+    .toString()
+  val bytes =
+    MessageDigest.getInstance(algorithm).digest(theKey.plus(text).plus(theKey).toByteArray())
+  return bytes.joinToString("") { "%02x".format(it) }
+}
