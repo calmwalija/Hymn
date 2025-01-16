@@ -21,4 +21,7 @@ interface SearchDao {
 
   @Query("SELECT * FROM Search WHERE lang=:lang ORDER BY id DESC LIMIT 9")
   fun query(lang: String): Flow<List<SearchEntity>>
+
+  @Query("SELECT * FROM Search")
+  suspend fun toExport(): List<SearchEntity>
 }

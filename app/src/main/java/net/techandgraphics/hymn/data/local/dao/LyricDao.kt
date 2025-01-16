@@ -53,4 +53,7 @@ interface LyricDao {
 
   @Query("SELECT number FROM lyric WHERE lang=:lang ORDER BY number DESC LIMIT 1")
   suspend fun getLastHymn(lang: String = Lang.CH.lowercase()): Int
+
+  @Query("SELECT  * FROM lyric WHERE timestamp > 0 OR favorite = 1 ")
+  suspend fun toExport(): List<LyricEntity>
 }

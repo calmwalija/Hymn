@@ -38,6 +38,10 @@ class LyricRepositoryImpl @Inject constructor(
     }
   }
 
+  override suspend fun toExport(): List<Lyric> {
+    return dao.toExport().map { it.asModel() }
+  }
+
   override fun queryById(lyricId: Int): Flow<List<Lyric>> {
     return dao.queryById(lyricId).map { it.map { data -> data.asModel() } }
   }
