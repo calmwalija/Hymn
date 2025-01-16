@@ -60,7 +60,6 @@ import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.screen.search.LyricScreenItem
 import net.techandgraphics.hymn.ui.screen.search.SearchBox
 import net.techandgraphics.hymn.ui.theme.HymnTheme
-import net.techandgraphics.hymn.ui.theme.Typography
 
 open class ToggleSwitchHomeItem : ToggleSwitchItem {
   data object English : ToggleSwitchHomeItem()
@@ -173,7 +172,7 @@ fun MainScreen(
 
         Text(
           text = "Uniquely Crafted",
-          style = Typography.titleMedium,
+          style = MaterialTheme.typography.titleMedium,
           modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 26.dp)
             .fillMaxWidth()
@@ -196,7 +195,7 @@ fun MainScreen(
           ) {
             Text(
               text = "Dive Into",
-              style = Typography.titleMedium,
+              style = MaterialTheme.typography.titleMedium,
               modifier = Modifier.weight(1f)
             )
           }
@@ -230,7 +229,7 @@ fun MainScreen(
             ) {
               Text(
                 text = "Featured Categories",
-                style = Typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
               )
               Row(verticalAlignment = Alignment.CenterVertically) {

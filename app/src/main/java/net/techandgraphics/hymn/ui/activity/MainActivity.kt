@@ -10,7 +10,12 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.ui.screen.app.AppScreen
@@ -29,12 +34,26 @@ class MainActivity : ComponentActivity() {
       setKeepOnScreenCondition { viewModel.state.value.completed }
     }
     setContent {
-      HymnTheme {
+      var darkTheme by remember { mutableStateOf(false) }
+      var dynamicColor by remember { mutableStateOf(false) }
+      var fontFamily by remember { mutableStateOf<FontFamily>(FontFamily.Default) }
+
+      HymnTheme(
+        darkTheme = darkTheme,
+        dynamicColor = dynamicColor,
+        fontFamily = fontFamily
+      ) {
         Surface(
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
         ) {
-          AppScreen()
+          AppScreen(
+            onThemeConfigs = { config ->
+              config.darkTheme?.let { darkTheme = it }
+              config.dynamicColor?.let { dynamicColor = it }
+              config.fontFamily?.let { fontFamily = it }
+            }
+          )
         }
       }
     }
