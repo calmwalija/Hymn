@@ -3,6 +3,7 @@ package net.techandgraphics.hymn.ui.screen.app
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -37,11 +38,11 @@ import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
-
-const val ANIMATION_DURATION = 300
+import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 
 @Composable
 fun AppScreen(
+  onThemeConfigs: (ThemeConfigs) -> Unit,
   navController: NavHostController = rememberNavController(),
 ) {
 
@@ -64,6 +65,7 @@ fun AppScreen(
               Text(
                 text = item.title,
                 fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodySmall
               )
             },
             icon = {
@@ -85,7 +87,6 @@ fun AppScreen(
       navController = navController,
       startDestination = Route.Home,
       modifier = Modifier.padding(it),
-
     ) {
 
       composable<Route.Home> {
@@ -126,7 +127,8 @@ fun AppScreen(
         with(hiltViewModel<MiscViewModel>()) {
           val state = state.collectAsState().value
           MiscScreen(
-            state,
+            onThemeConfigs = onThemeConfigs,
+            state = state,
             event = ::onEvent,
             readEvent = { event ->
               when (event) {

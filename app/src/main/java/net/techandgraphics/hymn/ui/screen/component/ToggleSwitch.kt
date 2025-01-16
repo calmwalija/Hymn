@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.ui.theme.HymnTheme
-import net.techandgraphics.hymn.ui.theme.Typography
 import kotlin.reflect.KClass
 
 interface ToggleSwitchItem
@@ -40,7 +39,7 @@ fun ToggleSwitch(
       text = title,
       maxLines = 1,
       overflow = TextOverflow.Ellipsis,
-      style = Typography.titleMedium,
+      style = MaterialTheme.typography.titleMedium,
       modifier = Modifier
         .padding(end = 4.dp)
         .weight(1f)
