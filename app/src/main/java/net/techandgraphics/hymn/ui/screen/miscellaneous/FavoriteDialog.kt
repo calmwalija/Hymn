@@ -24,8 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import net.techandgraphics.hymn.ui.screen.main.MainEvent
-import net.techandgraphics.hymn.ui.screen.search.SearchScreenItem
+import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
+import net.techandgraphics.hymn.ui.screen.search.LyricScreenItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +33,7 @@ fun FavoriteDialog(
   show: MutableState<Boolean>,
   state: MiscState,
   event: (MiscEvent) -> Unit,
-  onEvent: (MainEvent) -> Unit
+  onEvent: (MainUiEvent) -> Unit
 ) {
 
   if (show.value && state.favorites.isNotEmpty()) {
@@ -78,7 +78,7 @@ fun FavoriteDialog(
                 }
               },
               content = {
-                SearchScreenItem(
+                LyricScreenItem(
                   lyric = lyric,
                   //                  index = index,
 //                  size = state.favorites.size,

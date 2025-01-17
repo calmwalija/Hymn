@@ -8,4 +8,5 @@ interface SearchRepository {
   suspend fun delete(data: SearchEntity)
   suspend fun clear()
   fun query(): Flow<List<SearchEntity>>
+  suspend fun toExport(): List<SearchEntity>
 }

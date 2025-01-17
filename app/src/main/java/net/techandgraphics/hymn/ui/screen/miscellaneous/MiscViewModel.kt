@@ -9,11 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
+import net.techandgraphics.hymn.domain.repository.SearchRepository
+import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
+import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
@@ -23,6 +27,9 @@ import javax.inject.Inject
 class MiscViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val otherRepo: OtherRepository,
+  private val timeSpentRepo: TimeSpentRepository,
+  private val timestampRepo: TimestampRepository,
+  private val searchRepo: SearchRepository,
   private val prefs: DataStorePrefs,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
@@ -33,6 +40,7 @@ class MiscViewModel @Inject constructor(
   init {
     analytics.tagScreen(Tag.MISC_SCREEN)
     viewModelScope.launch {
+      onQuery()
       lyricRepo.favorites().onEach { favorites ->
         _state.value = _state.value.copy(
           favorites = favorites,
@@ -40,6 +48,17 @@ class MiscViewModel @Inject constructor(
           fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
         )
       }.launchIn(this)
+    }
+  }
+
+  private suspend fun onQuery() {
+    _state.update {
+      it.copy(
+        timeSpent = timeSpentRepo.query(),
+        timeStamp = timestampRepo.query(),
+        search = searchRepo.toExport(),
+        toExport = lyricRepo.toExport().map { it.toExport() }
+      )
     }
   }
 

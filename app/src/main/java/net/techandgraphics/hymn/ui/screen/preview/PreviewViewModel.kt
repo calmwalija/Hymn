@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.read
+package net.techandgraphics.hymn.ui.screen.preview
 
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
@@ -32,7 +32,7 @@ import net.techandgraphics.hymn.firebase.tagScreen
 import javax.inject.Inject
 
 @HiltViewModel
-class ReadViewModel @Inject constructor(
+class PreviewViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val timestampRepo: TimestampRepository,
   private val timeSpentRepo: TimeSpentRepository,
@@ -41,7 +41,7 @@ class ReadViewModel @Inject constructor(
   private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(ReadState())
+  private val _state = MutableStateFlow(PreviewUiState())
   val state = _state.asStateFlow()
   private val currentTimeMillis = System.currentTimeMillis()
   private val maxTimeSpent: Long = 60_000.times(2)
@@ -53,12 +53,12 @@ class ReadViewModel @Inject constructor(
 
   private suspend fun getLang() = prefs.get(prefs.translationKey, Lang.EN.lowercase())
 
-  private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<LyricKey> {
+  private fun List<Lyric>.mapLyricKey(inverse: Boolean = true): List<PreviewLyricKey> {
     var currentPosition = 1
     return runBlocking {
       filter { if (inverse.not()) it.lang == getLang() else (it.lang != getLang()) }
         .map { lyric ->
-          LyricKey(
+          PreviewLyricKey(
             key = if (lyric.chorus == 0) (currentPosition++).toString() else prefs.context.getString(
               R.string.chorus
             ),
@@ -73,8 +73,8 @@ class ReadViewModel @Inject constructor(
     with(lyricRepo.queryByNumber(savedStateHandle.get<Int>(identifier) ?: 1)) {
       firebaseAnalytics(first())
       _state.value = _state.value.copy(
-        lyricKeyInverse = mapLyricKey(true),
-        lyricKey = mapLyricKey(false),
+        previewLyricKeyInverse = mapLyricKey(true),
+        previewLyricKey = mapLyricKey(false),
         fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
       )
       if (setLyricsData.not()) return@launch
@@ -84,7 +84,7 @@ class ReadViewModel @Inject constructor(
 
   private fun setLyricsData() = with(state.value) {
     viewModelScope.launch {
-      val data = if (translationInverse) lyricKeyInverse else lyricKey
+      val data = if (translationInverse) previewLyricKeyInverse else previewLyricKey
       _state.update { it.copy(lyrics = data) }
       translationJob?.cancel()
       delay(1000)
@@ -107,10 +107,10 @@ class ReadViewModel @Inject constructor(
       }
     }
 
-  fun onEvent(event: ReadEvent) {
+  fun onEvent(event: PreviewUiEvent) {
     when (event) {
-      is ReadEvent.Click -> Unit
-      is ReadEvent.Favorite -> {
+      is PreviewUiEvent.Click -> Unit
+      is PreviewUiEvent.Favorite -> {
         analytics.tagEvent(
           if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
           bundleOf(Pair(Tag.READ_SCREEN, event.data.title))
@@ -118,12 +118,12 @@ class ReadViewModel @Inject constructor(
         favorite(event.data)
       }
 
-      is ReadEvent.FontSize -> {
+      is PreviewUiEvent.FontSize -> {
         analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.READ_SCREEN, event.size.toString())))
         fontSize(event.size)
       }
 
-      ReadEvent.TranslationInverse -> {
+      PreviewUiEvent.TranslationInverse -> {
         analytics.tagEvent(
           Tag.TRANSLATION_INVERSE,
           bundleOf(Pair(Tag.READ_SCREEN, !state.value.translationInverse))
@@ -132,11 +132,11 @@ class ReadViewModel @Inject constructor(
         setLyricsData()
       }
 
-      is ReadEvent.HorizontalDragGesture -> onHorizontalDragGesture(event)
+      is PreviewUiEvent.HorizontalDragGesture -> onHorizontalDragGesture(event)
     }
   }
 
-  private fun onHorizontalDragGesture(event: ReadEvent.HorizontalDragGesture) =
+  private fun onHorizontalDragGesture(event: PreviewUiEvent.HorizontalDragGesture) =
     viewModelScope.launch {
       val lyricNumber = state.value.lyrics.first().lyric.number
       channel.send(

@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.read
+package net.techandgraphics.hymn.ui.screen.preview
 
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
@@ -66,10 +66,10 @@ const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadScreen(
-  state: ReadState,
+fun PreviewScreen(
+  state: PreviewUiState,
   navController: NavHostController,
-  event: (ReadEvent) -> Unit
+  event: (PreviewUiEvent) -> Unit
 ) {
 
   val context = LocalContext.current
@@ -84,8 +84,8 @@ fun ReadScreen(
     topBar = {
       TopAppBar(
         title = {
-          if (state.lyricKey.isNotEmpty()) {
-            val lyric = state.lyricKey.first().lyric
+          if (state.previewLyricKey.isNotEmpty()) {
+            val lyric = state.previewLyricKey.first().lyric
             Row(
               verticalAlignment = Alignment.CenterVertically,
               modifier = Modifier
@@ -142,24 +142,24 @@ fun ReadScreen(
           }
         },
         actions = {
-          if (state.lyricKey.isNotEmpty()) {
+          if (state.previewLyricKey.isNotEmpty()) {
             IconButton(
               onClick = {
-                context addRemoveFavoriteToast state.lyricKey.first().lyric
-                event(ReadEvent.Favorite(state.lyricKey.first().lyric))
+                context addRemoveFavoriteToast state.previewLyricKey.first().lyric
+                event(PreviewUiEvent.Favorite(state.previewLyricKey.first().lyric))
               },
             ) {
               Icon(
-                imageVector = if (state.lyricKey.first().lyric.favorite)
+                imageVector = if (state.previewLyricKey.first().lyric.favorite)
                   Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                 contentDescription = "Favorite",
                 modifier = Modifier.size(20.dp)
               )
             }
           }
-          if (state.lyricKeyInverse.isNotEmpty()) {
+          if (state.previewLyricKeyInverse.isNotEmpty()) {
             IconButton(
-              onClick = { event(ReadEvent.TranslationInverse) },
+              onClick = { event(PreviewUiEvent.TranslationInverse) },
               modifier = Modifier
                 .padding(end = 8.dp)
             ) {
@@ -211,7 +211,7 @@ fun ReadScreen(
             ) {
               Slider(
                 value = state.fontSize.toFloat(),
-                onValueChange = { event(ReadEvent.FontSize(it.toInt())) },
+                onValueChange = { event(PreviewUiEvent.FontSize(it.toInt())) },
                 colors = SliderDefaults.colors(
                   thumbColor = MaterialTheme.colorScheme.primary,
                   activeTrackColor = MaterialTheme.colorScheme.primary,
@@ -246,8 +246,8 @@ fun ReadScreen(
           detectHorizontalDragGestures { change, dragAmount ->
             change.consume()
             when {
-              dragAmount > 20 -> event(ReadEvent.HorizontalDragGesture(Direction.RIGHT))
-              dragAmount < -20 -> event(ReadEvent.HorizontalDragGesture(Direction.LEFT))
+              dragAmount > 20 -> event(PreviewUiEvent.HorizontalDragGesture(Direction.RIGHT))
+              dragAmount < -20 -> event(PreviewUiEvent.HorizontalDragGesture(Direction.LEFT))
             }
 
             Log.e("TAG", "dragAmount: " + dragAmount)
@@ -272,7 +272,7 @@ fun ReadScreen(
             Text(
               text = lyric.key,
               fontWeight = FontWeight.Bold,
-              fontSize = MaterialTheme.typography.displaySmall.fontSize,
+              style = MaterialTheme.typography.displaySmall,
               color = MaterialTheme.colorScheme.primary
             )
 

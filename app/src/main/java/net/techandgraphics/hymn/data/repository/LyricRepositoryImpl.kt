@@ -10,13 +10,11 @@ import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
-import net.techandgraphics.hymn.uniquelyCraftedKey
-import net.techandgraphics.hymn.uniquelyCraftedKeyToList
 import javax.inject.Inject
 
 class LyricRepositoryImpl @Inject constructor(
   database: Database,
-  private val prefs: DataStorePrefs
+  private val prefs: DataStorePrefs,
 ) : LyricRepository {
 
   private val dao = database.lyricDao
@@ -34,10 +32,14 @@ class LyricRepositoryImpl @Inject constructor(
     }
   }
 
-  override fun diveInto(): Flow<List<Lyric>> {
+  override suspend fun diveInto(): List<Lyric> {
     return runBlocking {
-      dao.diveInto(getLang()).map { it.map { data -> data.asModel() } }
+      dao.diveInto(getLang()).map { data -> data.asModel() }
     }
+  }
+
+  override suspend fun toExport(): List<Lyric> {
+    return dao.toExport().map { it.asModel() }
   }
 
   override fun queryById(lyricId: Int): Flow<List<Lyric>> {
@@ -58,13 +60,8 @@ class LyricRepositoryImpl @Inject constructor(
     return dao.queryByNumber(number).map { it.asModel() }
   }
 
-  override fun uniquelyCrafted(count: Int): Flow<List<Lyric>> {
-    return runBlocking {
-      val keys = (prefs uniquelyCraftedKey count).uniquelyCraftedKeyToList()
-      val leftKey = keys.firstOrNull() ?: count.plus(1)
-      val rightKey = keys.lastOrNull() ?: count.minus(1)
-      dao.uniquelyCrafted(getLang(), leftKey, rightKey)
-    }
+  override suspend fun uniquelyCrafted(): List<Lyric> {
+    return runBlocking { dao.uniquelyCrafted(getLang()).shuffled().take(10) }
   }
 
   override suspend fun favorite(favorite: Boolean, number: Int) {
@@ -79,5 +76,5 @@ class LyricRepositoryImpl @Inject constructor(
     return dao.backup().map { it.asModel() }
   }
 
-  override suspend fun getLastHymn(): Int = dao.getLastHymn()
+  override suspend fun getLastHymn(lang: String): Int = dao.getLastHymn(lang)
 }
