@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class DataStorePrefs @Inject constructor(
   @ApplicationContext
-  val context: Context
+  val context: Context,
 ) {
 
   val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFS_NAME)
@@ -34,6 +34,9 @@ class DataStorePrefs @Inject constructor(
   val translationKey = context.getString(R.string.translation_key)
   val uniquelyCraftedKey = context.getString(R.string.uniquely_crafted_key)
   val uniquelyCraftedMills = context.getString(R.string.uniquely_crafted_mills_key)
+
+  val englishSuggestedForTheWeekKey = "suggestedForTheWeekKey"
+  val chichewaSuggestedForTheWeekKey = "chichewaSuggestedForTheWeekKey"
 
   suspend inline fun <reified T> put(key: String, value: T) {
     context.dataStore.edit {

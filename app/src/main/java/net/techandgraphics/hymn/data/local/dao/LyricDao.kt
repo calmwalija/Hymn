@@ -30,14 +30,14 @@ interface LyricDao {
   @Query("SELECT * FROM lyric WHERE number=:number ORDER BY lyricId ASC")
   suspend fun queryByNumber(number: Int): List<LyricEntity>
 
-  @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 4")
-  fun diveInto(lang: String): Flow<List<LyricEntity>>
+  @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 5")
+  suspend fun diveInto(lang: String): List<LyricEntity>
 
   @Query("SELECT * FROM lyric WHERE lyricId=:lyricId")
   fun queryById(lyricId: Int): Flow<List<LyricEntity>>
 
-  @Query("SELECT * FROM lyric WHERE lang=:lang AND (number=:leftKey OR number=:rightKey) GROUP BY number ORDER BY number")
-  fun uniquelyCrafted(lang: String, leftKey: Int, rightKey: Int): Flow<List<Lyric>>
+  @Query("SELECT * FROM lyric WHERE lang=:lang GROUP BY categoryName, number")
+  suspend fun uniquelyCrafted(lang: String): List<Lyric>
 
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:lang")
   suspend fun favorite(favorite: Boolean, number: Int, lang: String)
@@ -53,4 +53,7 @@ interface LyricDao {
 
   @Query("SELECT number FROM lyric WHERE lang=:lang ORDER BY number DESC LIMIT 1")
   suspend fun getLastHymn(lang: String = Lang.CH.lowercase()): Int
+
+  @Query("SELECT  * FROM lyric WHERE timestamp > 0 OR favorite = 1 ")
+  suspend fun toExport(): List<LyricEntity>
 }

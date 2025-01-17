@@ -1,245 +1,277 @@
 package net.techandgraphics.hymn.ui.screen.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.onTranslationChange
+import net.techandgraphics.hymn.ui.screen.category.CategoryItem
+import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
+import net.techandgraphics.hymn.ui.screen.component.ToggleSwitchItem
+import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
+import net.techandgraphics.hymn.ui.screen.main.components.FeaturedCategoryItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
-import net.techandgraphics.hymn.ui.screen.search.SearchScreenItem
-import net.techandgraphics.hymn.ui.theme.Typography
+import net.techandgraphics.hymn.ui.screen.search.LyricScreenItem
+import net.techandgraphics.hymn.ui.screen.search.SearchBox
+import net.techandgraphics.hymn.ui.theme.HymnTheme
 
-@OptIn(ExperimentalLayoutApi::class)
+open class ToggleSwitchHomeItem : ToggleSwitchItem {
+  data object English : ToggleSwitchHomeItem()
+  data object Chichewa : ToggleSwitchHomeItem()
+}
+
+@OptIn(
+  ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
+  ExperimentalMaterial3Api::class
+)
 @Composable
 fun MainScreen(
-  state: MainState,
-  onEvent: (MainEvent) -> Unit,
+  state: MainUiState,
+  onEvent: (MainUiEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
   val versionValue = context.resources.getStringArray(R.array.version_values)
   val versionEntries = context.resources.getStringArray(R.array.version_entries)
   val colorScheme = MaterialTheme.colorScheme
+  var showSheet by remember { mutableStateOf(false) }
+
+  val viewModel = hiltViewModel<CategoryViewModel>()
+  val categoryViewModelState = viewModel.state.collectAsState().value
+
+  var isFocused by remember { mutableStateOf(false) }
 
   LaunchedEffect(state.onLangInvoke) {
     if (state.onLangInvoke) context.onTranslationChange(state.lang)
   }
-
-  Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .verticalScroll(rememberScrollState())
-  ) {
-
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(
-      verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)
-    ) {
-      Text(
-        text = "Uniquely Crafted",
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        style = Typography.titleMedium,
-        modifier = Modifier
-          .padding(end = 4.dp)
-          .weight(1f)
-      )
-
-      Card(
-        shape = RoundedCornerShape(50),
-        colors = CardDefaults.cardColors(
-          containerColor = colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(
-          defaultElevation = 1.dp
-        ),
-      ) {
-        Row(
-          modifier = Modifier.padding(vertical = 2.dp),
-          verticalAlignment = Alignment.CenterVertically
+  val scrollState = rememberLazyListState()
+  Scaffold(
+    topBar = {
+      Column {
+        Spacer(modifier = Modifier.height(20.dp))
+        Column(
+          modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .fillMaxWidth()
         ) {
-          versionEntries
-            .forEach {
-              val ifLang = versionValue[versionEntries.indexOf(it)] == state.lang
-              ElevatedCard(
-                modifier = Modifier
-                  .padding(horizontal = 2.dp),
-                shape = RoundedCornerShape(50),
-                colors = CardDefaults.cardColors(
-                  containerColor = if (ifLang.not()) colorScheme.surface else colorScheme.primary.copy(
-                    alpha = .8f
-                  ),
-                  contentColor = if (ifLang) Color.White else colorScheme.primary.copy(
-                    alpha = .8f
-                  ),
-                ),
-                elevation = CardDefaults.cardElevation(),
-              ) {
-                Row(
-                  modifier = Modifier
-                    .clickable(enabled = state.onLangInvoke.not()) {
-                      if (versionValue[versionEntries.indexOf(it)] != state.lang) {
-                        onEvent(MainEvent.Language(versionValue[versionEntries.indexOf(it)]))
-                      }
-                    }
-                    .padding(10.dp),
-                  verticalAlignment = Alignment.CenterVertically
-                ) {
-                  Box(modifier = Modifier.height(12.dp)) {
-                    this@Card.AnimatedVisibility(
-                      visible = versionValue[
-                        versionEntries.indexOf(
-                          it
-                        )
-                      ] == state.lang
-                    ) {
-                      this@Card.AnimatedVisibility(visible = state.onLangInvoke.not()) {
-                        Icon(
-                          painter = painterResource(id = R.drawable.ic_book),
-                          contentDescription = null,
-                          modifier = Modifier.size(12.dp)
-                        )
-                      }
+          Text(
+            text = "Discover",
+            style = MaterialTheme.typography.displaySmall
+              .copy(fontSize = 30.sp, fontWeight = FontWeight.Bold),
+          )
+          Text(text = "Which hymn are you looking for?")
+        }
 
-                      this@Card.AnimatedVisibility(visible = state.onLangInvoke) {
-                        CircularProgressIndicator(
-                          strokeWidth = 2.dp,
-                          color = colorScheme.secondary,
-                          modifier = Modifier.size(12.dp)
-                        )
-                      }
-                    }
-                  }
+        SearchBox(
+          state = state,
+          onFocusRequester = { isFocused = it },
+          event = onEvent
+        )
+
+        AnimatedVisibility(visible = state.searchQuery.trim().isEmpty()) {
+          Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow {
+              items(state.search, key = { it.query }) {
+                ElevatedCard(
+                  onClick = {
+                    onEvent(MainUiEvent.LyricUiEvent.LyricUiQueryTag(it.query))
+                    isFocused = true
+                  },
+                  elevation = CardDefaults.cardElevation(
+                    defaultElevation = 1.dp
+                  ),
+                  shape = RoundedCornerShape(20),
+                  modifier = Modifier.padding(horizontal = 4.dp)
+                ) {
                   Text(
-                    text = it,
-                    style = MaterialTheme.typography.labelSmall,
+                    text = "#${it.tag}",
+                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
                     maxLines = 1,
+                    color = MaterialTheme.colorScheme.primary,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                   )
                 }
               }
             }
+          }
+        }
+      }
+    },
+  ) {
+
+    AnimatedVisibility(isFocused && state.searchQuery.trim().isNotEmpty()) {
+      LazyColumn(modifier = Modifier.padding(it)) {
+        items(state.lyrics, key = { it.lyricId }) {
+          LyricScreenItem(
+            lyric = it,
+            onEvent = { event ->
+              onEvent(MainUiEvent.LyricUiEvent.InsertLyricUiTag)
+              onEvent(event)
+            },
+            modifier = Modifier.animateItem()
+          )
         }
       }
     }
 
-    if (state.uniquelyCrafted.isNotEmpty())
-      LazyRow {
-        items(state.uniquelyCrafted) {
-          UniquelyCraftedScreen(it, onEvent)
-        }
-      }
-
-    if (state.diveInto.isNotEmpty()) {
-      Spacer(modifier = Modifier.height(8.dp))
-
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
+    AnimatedVisibility(state.searchQuery.trim().isEmpty()) {
+      Column(
         modifier = Modifier
-          .clickable { onEvent(MainEvent.Goto(MainEvent.Navigate.Search)) }
-          .padding(horizontal = 8.dp, vertical = 16.dp)
+          .padding(it)
+          .fillMaxSize()
+          .verticalScroll(rememberScrollState())
       ) {
-        Text(
-          text = "Dive Into",
-          style = Typography.titleMedium,
-          modifier = Modifier.weight(1f)
-        )
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Text(
-            text = "Find More",
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = colorScheme.primary
-          )
-          Spacer(modifier = Modifier.width(4.dp))
-          Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = colorScheme.primary
-          )
-        }
-      }
 
-      FlowRow {
-        state.diveInto.forEach {
-          SearchScreenItem(it) {
-            onEvent(MainEvent.Event(MainEvent.OfType.Read, it))
+        Text(
+          text = "Uniquely Crafted",
+          style = MaterialTheme.typography.titleMedium,
+          modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 26.dp)
+            .fillMaxWidth()
+        )
+
+        if (state.uniquelyCrafted.isNotEmpty()) {
+          LazyRow(state = scrollState) {
+            items(state.uniquelyCrafted) {
+              UniquelyCraftedScreen(it, onEvent)
+            }
+          }
+        }
+
+        if (state.diveInto.isNotEmpty()) {
+          Spacer(modifier = Modifier.height(8.dp))
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+              .padding(horizontal = 8.dp, vertical = 26.dp)
+          ) {
+            Text(
+              text = "Dive Into",
+              style = MaterialTheme.typography.titleMedium,
+              modifier = Modifier.weight(1f)
+            )
+          }
+
+          state.diveInto.forEach {
+            DiveIntoItemScreen(it, onEvent)
+          }
+
+          if (showSheet) {
+            ModalBottomSheet(onDismissRequest = { showSheet = false }) {
+              LazyVerticalGrid(columns = GridCells.Fixed(1)) {
+                items(categoryViewModelState.categories) {
+                  CategoryItem(it) { event ->
+                    showSheet = false
+                    onEvent(event)
+                  }
+                }
+              }
+            }
+          }
+
+          if (state.uniquelyCrafted.isNotEmpty()) {
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier
+                .clickable {
+                  onEvent(MainUiEvent.CategoryUiEvent.OnViewCategories)
+                  showSheet = true
+                }
+                .padding(horizontal = 8.dp, vertical = 26.dp)
+            ) {
+              Text(
+                text = "Featured Categories",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
+              )
+              Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                  text = "See All",
+                  style = MaterialTheme.typography.labelMedium,
+                  fontWeight = FontWeight.Bold,
+                  color = colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                  imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                  contentDescription = null,
+                  modifier = Modifier.size(20.dp),
+                  tint = colorScheme.primary
+                )
+              }
+            }
+
+            LazyRow {
+              items(state.uniquelyCrafted) {
+                FeaturedCategoryItem(it, onEvent)
+              }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
           }
         }
       }
     }
+  }
 
-    if (state.uniquelyCrafted.isNotEmpty()) {
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .clickable { onEvent(MainEvent.Goto(MainEvent.Navigate.Category)) }
-          .padding(horizontal = 8.dp, vertical = 16.dp)
-      ) {
-        Text(
-          text = "Spotlight",
-          style = Typography.titleMedium,
-          modifier = Modifier.weight(1f)
+  // @Preview(showBackground = true)
+  @Composable
+  fun MainScreenPreview() {
+    HymnTheme {
+      MainScreen(
+        state = MainUiState(
+          uniquelyCrafted = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric),
+          diveInto = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric)
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Text(
-            text = "See All",
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = colorScheme.primary
-          )
-          Spacer(modifier = Modifier.width(4.dp))
-          Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = colorScheme.primary
-          )
-        }
-      }
-
-      FlowRow {
-        state.uniquelyCrafted.forEach {
-          SpotlightItem(it, onEvent)
-        }
+      ) {
       }
     }
   }

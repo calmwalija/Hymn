@@ -14,10 +14,12 @@ fun getAppVersion(context: Context): AppVersion? {
     val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
     } else packageManager.getPackageInfo(packageName, 0)
-    AppVersion(
-      name = packageInfo.versionName,
-      number = PackageInfoCompat.getLongVersionCode(packageInfo),
-    )
+    packageInfo.versionName?.let {
+      AppVersion(
+        name = it,
+        number = PackageInfoCompat.getLongVersionCode(packageInfo),
+      )
+    }
   } catch (e: Exception) {
     null
   }

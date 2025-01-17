@@ -32,4 +32,8 @@ class SearchRepositoryImpl @Inject constructor(
   override fun query(): Flow<List<SearchEntity>> {
     return runBlocking { dao.query(getLang()) }
   }
+
+  override suspend fun toExport(): List<SearchEntity> {
+    return dao.toExport()
+  }
 }

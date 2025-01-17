@@ -9,6 +9,10 @@ class TimeSpentRepositoryImpl @Inject constructor(database: Database) : TimeSpen
 
   private val dao = database.timeSpentDao
 
+  override suspend fun query(): List<TimeSpentEntity> {
+    return dao.query()
+  }
+
   override suspend fun upsert(items: List<TimeSpentEntity>) {
     dao.upsert(items)
   }

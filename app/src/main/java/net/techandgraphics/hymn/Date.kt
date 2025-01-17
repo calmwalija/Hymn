@@ -39,6 +39,12 @@ fun Long.toTimeAgo(context: Context): String {
   }
 }
 
+fun String.toShort() = replace("ago", "").let {
+  if (it.contains("now") || it.contains(",")) return it
+  val split = it.split(" ", limit = 2)
+  split.first() + split.last().first()
+}
+
 private fun longDateFormat(timestamp: Long): String {
   val simpleDateFormat = SimpleDateFormat("dd MMM, yyyy ", Locale.getDefault())
   val currentTimeMillis = Date(timestamp)

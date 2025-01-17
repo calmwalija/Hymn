@@ -5,6 +5,10 @@ import android.widget.Toast
 import androidx.datastore.preferences.core.longPreferencesKey
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.ui.screen.main.Suggested
+import net.techandgraphics.hymn.ui.screen.main.generateSuggested
+import java.security.MessageDigest
 import kotlin.random.Random
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -34,6 +38,42 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
   this toast msg
 }
 
+suspend fun DataStorePrefs.suggested(repository: LyricRepository): Suggested {
+  val suggested = generateSuggested(repository)
+  val english = mutableListOf<Int>()
+  val chichewa = mutableListOf<Int>()
+
+  val english4Week = get<String>(englishSuggestedForTheWeekKey, "")
+  val chichewa4Week = get<String>(chichewaSuggestedForTheWeekKey, "")
+
+  if (get<Long>(uniquelyCraftedMills, 0L) == null) {
+    if (english4Week == null) {
+      put<String>(englishSuggestedForTheWeekKey, suggested.english.joinToString(","))
+      suggested(repository)
+    }
+
+    if (chichewa4Week == null) {
+      put<String>(chichewaSuggestedForTheWeekKey, suggested.chichewa.joinToString(","))
+      suggested(repository)
+    }
+  } else {
+    when (val toAgo = get<Long>(uniquelyCraftedMills, 0L)!!.toAgo(System.currentTimeMillis())) {
+      is Ago.Minutes -> if (toAgo.value > 1) {
+        remove(longPreferencesKey(englishSuggestedForTheWeekKey))
+        remove(longPreferencesKey(chichewaSuggestedForTheWeekKey))
+        suggested(repository)
+      }
+
+      else -> Unit
+    }
+  }
+
+  english4Week?.let { it.split(",").map { it.toInt() }.also { english.addAll(it) } }
+  chichewa4Week?.let { it.split(",").map { it.toInt() }.also { chichewa.addAll(it) } }
+
+  return Suggested(english, chichewa)
+}
+
 suspend infix fun DataStorePrefs.uniquelyCraftedKey(maxValue: Int): String {
   return if (get<Long>(uniquelyCraftedMills, 0L) == null) {
     val keys = mutableListOf<Int>()
@@ -54,10 +94,13 @@ suspend infix fun DataStorePrefs.uniquelyCraftedKey(maxValue: Int): String {
   }
 }
 
-fun String.uniquelyCraftedKeyToList(): List<Int> =
-  removeSymbols()
-    .drop(1)
-    .dropLast(1)
-    .split(" ")
-    .map { it.toInt() }
-    .sorted()
+fun Long.hash(text: String, algorithm: String = "SHA-512"): String {
+  val theKey = toString()
+    .substring(5, toString().length.minus(3))
+    .toInt()
+    .times(toString().sumOf { it.digitToInt() })
+    .toString()
+  val bytes =
+    MessageDigest.getInstance(algorithm).digest(theKey.plus(text).plus(theKey).toByteArray())
+  return bytes.joinToString("") { "%02x".format(it) }
+}

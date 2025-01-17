@@ -28,12 +28,12 @@ import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toTimeAgo
-import net.techandgraphics.hymn.ui.screen.read.ReadEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
 @Composable
 fun CategorisationScreenItem(
   data: Lyric,
-  readEvent: (ReadEvent) -> Unit,
+  readEvent: (PreviewUiEvent) -> Unit,
   event: (CategorisationEvent) -> Unit,
 ) {
 
@@ -41,15 +41,13 @@ fun CategorisationScreenItem(
 
   Row(
     modifier = Modifier
-      .clickable { readEvent(ReadEvent.Click(data.number)) }
+      .clickable { readEvent(PreviewUiEvent.Click(data.number)) }
       .padding(8.dp)
       .fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically
   ) {
 
-    Column(
-      modifier = Modifier.weight(1f)
-    ) {
+    Column(modifier = Modifier.weight(1f)) {
 
       Text(
         text = "#${data.number}",
