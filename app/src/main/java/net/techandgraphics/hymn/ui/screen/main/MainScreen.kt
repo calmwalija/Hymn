@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.main
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -90,6 +91,11 @@ fun MainScreen(
   LaunchedEffect(state.onLangInvoke) {
     if (state.onLangInvoke) context.onTranslationChange(state.lang)
   }
+
+  BackHandler(enabled = state.searchQuery.trim().isNotEmpty()) {
+    onEvent(MainUiEvent.LyricUiEvent.ClearLyricUiQuery)
+  }
+
   val scrollState = rememberLazyListState()
   Scaffold(
     topBar = {
