@@ -7,11 +7,11 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.9.3"
-composeBom = "2024.12.01"
+activityCompose = "1.10.0"
+composeBom = "2025.01.00"
 coilCompose = "2.5.0"
 coreSplashscreen = "1.0.1"
-datastorePreferences = "1.1.1"
+datastorePreferences = "1.1.2"
 firebaseAnalytics = "22.1.2"
 firebaseCore = "21.1.1"
 firebaseCrashlytics = "19.3.0"
@@ -32,6 +32,8 @@ perfPlugin = "1.4.2"
 roomRuntime = "2.6.1"
 serialization = "1.6.3"
 spotlessPluginGradle = "6.6.0"
+
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
