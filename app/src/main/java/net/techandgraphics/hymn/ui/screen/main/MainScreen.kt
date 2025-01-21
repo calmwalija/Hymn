@@ -2,10 +2,8 @@ package net.techandgraphics.hymn.ui.screen.main
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,31 +45,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.category.CategoryItem
 import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
-import net.techandgraphics.hymn.ui.screen.component.ToggleSwitchItem
-import net.techandgraphics.hymn.ui.screen.main.components.DiveIntoItemScreen
 import net.techandgraphics.hymn.ui.screen.main.components.FeaturedCategoryItem
+import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
-import net.techandgraphics.hymn.ui.screen.search.LyricScreenItem
-import net.techandgraphics.hymn.ui.screen.search.SearchBox
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
-open class ToggleSwitchHomeItem : ToggleSwitchItem {
-  data object English : ToggleSwitchHomeItem()
-  data object Chichewa : ToggleSwitchHomeItem()
-}
-
-@OptIn(
-  ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
-  ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
   state: MainUiState,
@@ -78,8 +66,8 @@ fun MainScreen(
 ) {
 
   val context = LocalContext.current
-  val versionValue = context.resources.getStringArray(R.array.version_values)
-  val versionEntries = context.resources.getStringArray(R.array.version_entries)
+  val versionValue = context.resources.getStringArray(R.array.translation_values)
+  val versionEntries = context.resources.getStringArray(R.array.translation_entries)
   val colorScheme = MaterialTheme.colorScheme
   var showSheet by remember { mutableStateOf(false) }
 
@@ -101,17 +89,28 @@ fun MainScreen(
     topBar = {
       Column {
         Spacer(modifier = Modifier.height(20.dp))
-        Column(
+        Row(
           modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 16.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+          verticalAlignment = Alignment.CenterVertically
         ) {
-          Text(
-            text = "Discover",
-            style = MaterialTheme.typography.displaySmall
-              .copy(fontSize = 30.sp, fontWeight = FontWeight.Bold),
-          )
-          Text(text = "Which hymn are you looking for?")
+          Column(
+            modifier = Modifier
+              .padding(end = 8.dp)
+              .weight(1f),
+          ) {
+            Text(
+              text = "Discover",
+              style = MaterialTheme.typography.displaySmall,
+              fontWeight = FontWeight.Bold
+            )
+            Text(
+              text = "Which hymn are you looking for?", maxLines = 1,
+              overflow = TextOverflow.Ellipsis
+            )
+          }
+          MainMenuItem(onEvent)
         }
 
         SearchBox(
@@ -155,14 +154,15 @@ fun MainScreen(
 
     AnimatedVisibility(isFocused && state.searchQuery.trim().isNotEmpty()) {
       LazyColumn(modifier = Modifier.padding(it)) {
-        items(state.lyrics, key = { it.lyricId }) {
+        itemsIndexed(state.lyrics, key = { _, lyric -> lyric.lyricId }) { index, lyric ->
           LyricScreenItem(
-            lyric = it,
+            lyric = lyric,
             onEvent = { event ->
               onEvent(MainUiEvent.LyricUiEvent.InsertLyricUiTag)
               onEvent(event)
             },
-            modifier = Modifier.animateItem()
+            modifier = Modifier.animateItem(),
+            showDivider = index.plus(1) < state.diveInto.size
           )
         }
       }
@@ -206,8 +206,13 @@ fun MainScreen(
             )
           }
 
-          state.diveInto.forEach {
-            DiveIntoItemScreen(it, onEvent)
+          state.diveInto.forEachIndexed { index, lyric ->
+            LyricScreenItem(
+              lyric = lyric,
+              onEvent = onEvent,
+              modifier = Modifier,
+              showDivider = index.plus(1) < state.diveInto.size
+            )
           }
 
           if (showSheet) {
@@ -267,18 +272,18 @@ fun MainScreen(
       }
     }
   }
+}
 
-  // @Preview(showBackground = true)
-  @Composable
-  fun MainScreenPreview() {
-    HymnTheme {
-      MainScreen(
-        state = MainUiState(
-          uniquelyCrafted = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric),
-          diveInto = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric)
-        )
-      ) {
-      }
+@Preview(showBackground = true)
+@Composable
+fun MainScreenPreview() {
+  HymnTheme {
+    MainScreen(
+      state = MainUiState(
+        uniquelyCrafted = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric),
+        diveInto = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric)
+      )
+    ) {
     }
   }
 }

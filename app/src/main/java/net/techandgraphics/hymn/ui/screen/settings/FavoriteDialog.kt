@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.miscellaneous
+package net.techandgraphics.hymn.ui.screen.settings
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,14 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
-import net.techandgraphics.hymn.ui.screen.search.LyricScreenItem
+import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteDialog(
   show: MutableState<Boolean>,
-  state: MiscState,
-  event: (MiscEvent) -> Unit,
+  state: SettingsUiState,
+  event: (SettingsUiEvent) -> Unit,
   onEvent: (MainUiEvent) -> Unit
 ) {
 
@@ -57,7 +57,7 @@ fun FavoriteDialog(
             val dismissState = rememberSwipeToDismissBoxState(
               confirmValueChange = {
                 if (it == SwipeToDismissBoxValue.StartToEnd)
-                  event(MiscEvent.RemoveFav(lyric))
+                  event(SettingsUiEvent.RemoveFav(lyric))
                 true
               },
               positionalThreshold = { 150f },

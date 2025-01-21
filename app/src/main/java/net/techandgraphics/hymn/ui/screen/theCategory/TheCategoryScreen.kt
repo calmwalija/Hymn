@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.categorisation
+package net.techandgraphics.hymn.ui.screen.theCategory
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,24 +29,17 @@ import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.hymnCount
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategorisationScreen(
-  state: CategorisationState,
-  readEvent: (PreviewUiEvent) -> Unit,
-  event: (CategorisationEvent) -> Unit,
+fun TheCategoryScreen(
+  state: TheCategoryState,
+  onPreviewUiEvent: (PreviewUiEvent) -> Unit,
+  onEvent: (TheCategoryUiEvent) -> Unit,
 ) {
-
   val context = LocalContext.current
-
   Column {
-
     if (state.category.isNotEmpty()) {
       val data = state.category.first()
-      Box(
-        contentAlignment = Alignment.Center
-      ) {
-
+      Box(contentAlignment = Alignment.Center) {
         AsyncImage(
           model = Constant.images[data.lyric.categoryId].drawableRes,
           contentDescription = null,
@@ -57,7 +49,6 @@ fun CategorisationScreen(
             .fillMaxWidth()
             .shadow(elevation = 10.dp)
         )
-
         Card(
           colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
@@ -96,7 +87,7 @@ fun CategorisationScreen(
 
     LazyColumn {
       items(state.lyric, key = { it.lyricId }) {
-        CategorisationScreenItem(it, readEvent, event)
+        CategorisationScreenItem(it, onPreviewUiEvent, onEvent)
       }
     }
   }

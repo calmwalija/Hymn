@@ -1,6 +1,5 @@
-package net.techandgraphics.hymn.ui.screen.categorisation
+package net.techandgraphics.hymn.ui.screen.theCategory
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,77 +18,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.toTimeAgo
+import net.techandgraphics.hymn.ui.screen.component.TimestampComponent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
 @Composable
 fun CategorisationScreenItem(
-  data: Lyric,
-  readEvent: (PreviewUiEvent) -> Unit,
-  event: (CategorisationEvent) -> Unit,
+  lyric: Lyric,
+  onPreviewUiEvent: (PreviewUiEvent) -> Unit,
+  onEvent: (TheCategoryUiEvent) -> Unit,
 ) {
-
   val context = LocalContext.current
-
   Row(
     modifier = Modifier
-      .clickable { readEvent(PreviewUiEvent.Click(data.number)) }
+      .clickable { onPreviewUiEvent(PreviewUiEvent.Click(lyric.number)) }
       .padding(8.dp)
       .fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically
   ) {
-
     Column(modifier = Modifier.weight(1f)) {
-
       Text(
-        text = "#${data.number}",
+        text = "#${lyric.number}",
         fontWeight = FontWeight.Bold,
         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
         color = MaterialTheme.colorScheme.primary
       )
-
       Text(
-        text = data.content.trimIndent(),
+        text = lyric.content.trimIndent(),
         maxLines = 3,
         overflow = TextOverflow.Ellipsis,
         style = MaterialTheme.typography.bodyMedium
       )
-
-      AnimatedVisibility(visible = data.timestamp != 0L) {
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Icon(
-            painter = painterResource(id = R.drawable.ic_access_time),
-            contentDescription = null,
-            modifier = Modifier.padding(end = 4.dp)
-          )
-          Text(
-            text = data.timestamp.toTimeAgo(context),
-            overflow = TextOverflow.Ellipsis,
-            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-            letterSpacing = 0.sp
-          )
-        }
-      }
+      TimestampComponent(context, lyric)
     }
 
     IconButton(
       onClick = {
-        context addRemoveFavoriteToast data
-        event(CategorisationEvent.Favorite(data))
+        context addRemoveFavoriteToast lyric
+        onEvent(TheCategoryUiEvent.Favorite(lyric))
       }
     ) {
       Icon(
-        imageVector = if (data.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+        imageVector = if (lyric.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
         contentDescription = null,
         tint = MaterialTheme.colorScheme.primary
       )

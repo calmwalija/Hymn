@@ -1,70 +1,52 @@
-package net.techandgraphics.hymn.ui.screen.miscellaneous
+package net.techandgraphics.hymn.ui.screen.settings
 
-import android.Manifest
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.graphics.Typeface
 import android.net.Uri.parse
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.gson.Gson
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.hash
-import net.techandgraphics.hymn.toast
-import net.techandgraphics.hymn.ui.screen.miscellaneous.settings.SettingsSwitchComp
-import net.techandgraphics.hymn.ui.screen.miscellaneous.settings.SettingsTextComp
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
-import net.techandgraphics.hymn.ui.screen.preview.READ_FONT_SIZE_THRESH_HOLD
-import net.techandgraphics.hymn.ui.screen.preview.READ_LINE_HEIGHT_THRESH_HOLD
+import net.techandgraphics.hymn.ui.screen.settings.components.ApostleCreedDialog
+import net.techandgraphics.hymn.ui.screen.settings.components.LordsPrayerDialog
+import net.techandgraphics.hymn.ui.screen.settings.components.SettingsSwitchComp
+import net.techandgraphics.hymn.ui.screen.settings.components.SettingsTextComp
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiscScreen(
-  state: MiscState,
+fun SettingsScreen(
+  state: SettingsUiState,
   readEvent: (PreviewUiEvent) -> Unit,
-  event: (MiscEvent) -> Unit,
+  event: (SettingsUiEvent) -> Unit,
   onThemeConfigs: (ThemeConfigs) -> Unit
 ) {
 
@@ -131,19 +113,6 @@ fun MiscScreen(
       ),
       colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
     ) {
-
-      SettingsSwitchComp(
-        drawableRes = R.drawable.ic_theme,
-        title = "Theme",
-        description = "Customize your experience by choosing between Light and Dark themes",
-        isChecked = darkTheme,
-        onCheckedChange = {
-          darkTheme = it
-          onThemeConfigs.invoke(ThemeConfigs(darkTheme = darkTheme))
-        }
-      )
-
-      HorizontalDivider()
 
       SettingsSwitchComp(
         drawableRes = R.drawable.ic_keyboard,
@@ -280,9 +249,7 @@ fun MiscScreen(
         context.startActivity(Intent(ACTION_VIEW).setData(parse(playStoreUrl)))
       }
     }
-
     if (state.complementary.isNotEmpty()) {
-
       Spacer(modifier = Modifier.height(32.dp))
       Text(
         text = "Complementary",
@@ -295,81 +262,6 @@ fun MiscScreen(
         ),
         colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
       ) {
-
-        val show = remember { mutableStateOf(false) }
-
-        Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-              if (state.favorites.isEmpty()) {
-                context toast context.getString(R.string.no_fav_hymn)
-                return@clickable
-              }
-              show.value = true
-            }
-            .padding(16.dp),
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          BadgedBox(
-            badge = {
-              if (state.favorites.isNotEmpty()) Badge(
-                containerColor = MaterialTheme.colorScheme.primary, contentColor = Color.White
-              ) {
-                Text(text = state.favorites.size.toString())
-              }
-            }
-          ) {
-            Icon(
-              painter = painterResource(id = R.drawable.ic_outline_favorite),
-              contentDescription = null,
-              modifier = Modifier.size(28.dp),
-            )
-          }
-          Column(
-            modifier = Modifier.padding(start = 24.dp)
-          ) {
-            Text(
-              text = "Favorite Hymns",
-              color = MaterialTheme.colorScheme.primary,
-            )
-
-            Text(
-              text = stringResource(id = R.string.favorite),
-              style = MaterialTheme.typography.bodyMedium,
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis
-            )
-          }
-        }
-
-        HorizontalDivider()
-
-        if (lordsPrayerShow) {
-          ModalBottomSheet(onDismissRequest = { lordsPrayerShow = false }) {
-            Column(
-              horizontalAlignment = Alignment.CenterHorizontally,
-              modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-              Text(
-                text = state.complementary.first().groupName,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge
-              )
-              Spacer(modifier = Modifier.height(16.dp))
-              Text(
-                text = state.complementary.first().content,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
-                fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
-              )
-              Spacer(modifier = Modifier.height(32.dp))
-            }
-          }
-        }
-
         SettingsTextComp(
           drawableRes = R.drawable.ic_prayer,
           title = state.complementary.first().groupName,
@@ -380,30 +272,8 @@ fun MiscScreen(
 
         HorizontalDivider()
 
-        if (apostleCreedShow) {
-          ModalBottomSheet(onDismissRequest = { apostleCreedShow = false }) {
-            Column(
-              horizontalAlignment = Alignment.CenterHorizontally,
-              modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-              Text(
-                text = state.complementary.last().groupName,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge
-              )
-              Spacer(modifier = Modifier.height(16.dp))
-              Text(
-                text = state.complementary.last().content,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
-                fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
-              )
-              Spacer(modifier = Modifier.height(32.dp))
-            }
-          }
-        }
+        if (lordsPrayerShow) LordsPrayerDialog(state) { lordsPrayerShow = false }
+        if (apostleCreedShow) ApostleCreedDialog(state) { apostleCreedShow = false }
 
         SettingsTextComp(
           drawableRes = R.drawable.ic_creed,
@@ -414,26 +284,5 @@ fun MiscScreen(
         }
       }
     }
-  }
-}
-
-@Composable
-fun RequestStoragePermission(onPermissionGranted: () -> Unit) {
-  val context = LocalContext.current
-  val launcher = rememberLauncherForActivityResult(
-    contract = ActivityResultContracts.RequestPermission()
-  ) { isGranted ->
-    if (isGranted) {
-      onPermissionGranted()
-    } else {
-      Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
-    }
-  }
-  Button(
-    onClick = {
-      launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    }
-  ) {
-    Text("Request Permission")
   }
 }
