@@ -53,6 +53,17 @@ android {
   }
 
   buildTypes {
+
+    create("dev") {
+      applicationIdSuffix = ".dev"
+      versionNameSuffix = "-dev"
+      firebaseCrashlytics {
+        mappingFileUploadEnabled = false
+      }
+      signingConfig = signingConfigs.getByName("debug")
+    }
+
+
     release {
       isMinifyEnabled = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -156,6 +167,10 @@ dependencies {
 
   // Splash Screen
   implementation(libs.androidx.core.splashscreen)
+
+
+  implementation(libs.accompanist.systemuicontroller)
+
 
   //Coil
   implementation(libs.coil.compose)
