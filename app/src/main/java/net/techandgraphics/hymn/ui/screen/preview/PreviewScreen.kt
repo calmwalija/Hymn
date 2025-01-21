@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -181,8 +182,8 @@ fun PreviewScreen(
             )
           }
         },
-        modifier = Modifier
-          .shadow(elevation = 8.dp),
+        windowInsets = WindowInsets(top = 0.dp),
+        modifier = Modifier.shadow(elevation = 8.dp),
       )
     },
   ) { paddingValues ->
