@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.categorisation
+package net.techandgraphics.hymn.ui.screen.theCategory
 
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
@@ -19,13 +19,13 @@ import net.techandgraphics.hymn.firebase.tagScreen
 import javax.inject.Inject
 
 @HiltViewModel
-class CategorisationViewModel @Inject constructor(
+class TheCategoryViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val categoryRepo: CategoryRepository,
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(CategorisationState())
+  private val _state = MutableStateFlow(TheCategoryState())
   val state = _state.asStateFlow()
 
   operator fun invoke(id: Int) = with(id) {
@@ -43,9 +43,9 @@ class CategorisationViewModel @Inject constructor(
       }
     }
 
-  fun onEvent(event: CategorisationEvent) {
+  fun onEvent(event: TheCategoryUiEvent) {
     when (event) {
-      is CategorisationEvent.Favorite -> {
+      is TheCategoryUiEvent.Favorite -> {
         analytics.tagEvent(
           if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
           bundleOf(Pair(Tag.CATEGORISATION_SCREEN, state.value.lyric.first().title))

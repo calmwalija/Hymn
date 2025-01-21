@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.search
+package net.techandgraphics.hymn.ui.screen.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -42,8 +42,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
-import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
-import net.techandgraphics.hymn.ui.screen.main.MainUiState
 
 @Composable
 fun SearchBox(

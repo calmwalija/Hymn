@@ -11,6 +11,12 @@ sealed interface MainUiEvent {
   enum class OfType { Category, Preview }
   data class Event(val ofType: OfType, val id: Int) : MainUiEvent
 
+  sealed class MenuItem {
+    data object Settings : MainUiEvent
+    data object Translation : MainUiEvent
+    data object Favorites : MainUiEvent
+  }
+
   sealed class LyricUiEvent {
     class OnLyricUiQuery(val searchQuery: String) : MainUiEvent
     class LyricUiQueryTag(val searchQuery: String) : MainUiEvent

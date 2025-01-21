@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.miscellaneous
+package net.techandgraphics.hymn.ui.screen.settings
 
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
@@ -24,7 +24,7 @@ import net.techandgraphics.hymn.firebase.tagScreen
 import javax.inject.Inject
 
 @HiltViewModel
-class MiscViewModel @Inject constructor(
+class SettingsViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
   private val otherRepo: OtherRepository,
   private val timeSpentRepo: TimeSpentRepository,
@@ -34,7 +34,7 @@ class MiscViewModel @Inject constructor(
   private val analytics: FirebaseAnalytics
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(MiscState())
+  private val _state = MutableStateFlow(SettingsUiState())
   val state = _state.asStateFlow()
 
   init {
@@ -62,9 +62,9 @@ class MiscViewModel @Inject constructor(
     }
   }
 
-  fun onEvent(event: MiscEvent) {
+  fun onEvent(event: SettingsUiEvent) {
     when (event) {
-      is MiscEvent.RemoveFav -> {
+      is SettingsUiEvent.RemoveFav -> {
         analytics.tagEvent(
           if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
           bundleOf(Pair(Tag.MISC_SCREEN, event.data.title))
@@ -72,35 +72,35 @@ class MiscViewModel @Inject constructor(
         favorite(event.data)
       }
 
-      is MiscEvent.OpenCreed -> {
+      is SettingsUiEvent.OpenCreed -> {
         analytics.tagEvent(
           Tag.OPEN_CREED,
           bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
         )
       }
 
-      is MiscEvent.OpenFavorite -> {
+      is SettingsUiEvent.OpenFavorite -> {
         analytics.tagEvent(
           Tag.OPEN_FAVORITE,
           bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
         )
       }
 
-      is MiscEvent.OpenFeedback -> {
+      is SettingsUiEvent.OpenFeedback -> {
         analytics.tagEvent(
           Tag.OPEN_FEEDBACK,
           bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
         )
       }
 
-      is MiscEvent.OpenLordsPrayer -> {
+      is SettingsUiEvent.OpenLordsPrayer -> {
         analytics.tagEvent(
           Tag.OPEN_LORDS_PRAYER,
           bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
         )
       }
 
-      is MiscEvent.OpenRating -> {
+      is SettingsUiEvent.OpenRating -> {
         analytics.tagEvent(
           Tag.OPEN_RATING,
           bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))

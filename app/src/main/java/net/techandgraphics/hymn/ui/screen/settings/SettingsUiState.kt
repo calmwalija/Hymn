@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.miscellaneous
+package net.techandgraphics.hymn.ui.screen.settings
 
 import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
@@ -7,7 +7,7 @@ import net.techandgraphics.hymn.data.local.entities.TimestampEntity
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.model.Other
 
-data class MiscState(
+data class SettingsUiState(
   val favorites: List<Lyric> = emptyList(),
   val complementary: List<Other> = emptyList(),
   val timeSpent: List<TimeSpentEntity> = emptyList(),

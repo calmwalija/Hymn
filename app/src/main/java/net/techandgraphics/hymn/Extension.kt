@@ -23,8 +23,8 @@ infix fun Context.toast(message: String) =
   Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 infix fun Context.onTranslationChange(str: String) {
-  val versionEntity = resources.getStringArray(R.array.version_entries)
-  val versionValue = resources.getStringArray(R.array.version_values)
+  val versionEntity = resources.getStringArray(R.array.translation_entries)
+  val versionValue = resources.getStringArray(R.array.translation_values)
   val versionName = if (str == versionValue[0]) versionEntity.first() else versionEntity.last()
   val msg = getString(R.string.change_book_translation, versionName)
   this toast msg

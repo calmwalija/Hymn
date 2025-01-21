@@ -87,14 +87,3 @@ fun CategoryItem(
     )
   }
 }
-
-// @PreviewLightDark
-// @Composable
-// fun CategoryItemPreview() {
-//  HymnTheme {
-//    CategoryItem(
-//      category = Faker.category,
-//      event = {}
-//    )
-//  }
-// }

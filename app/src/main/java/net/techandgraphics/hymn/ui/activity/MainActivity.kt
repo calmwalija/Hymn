@@ -34,12 +34,10 @@ class MainActivity : ComponentActivity() {
       setKeepOnScreenCondition { viewModel.state.value.completed }
     }
     setContent {
-      var darkTheme by remember { mutableStateOf(false) }
       var dynamicColor by remember { mutableStateOf(false) }
       var fontFamily by remember { mutableStateOf<FontFamily>(FontFamily.Default) }
 
       HymnTheme(
-        darkTheme = darkTheme,
         dynamicColor = dynamicColor,
         fontFamily = fontFamily
       ) {
@@ -49,7 +47,6 @@ class MainActivity : ComponentActivity() {
         ) {
           AppScreen(
             onThemeConfigs = { config ->
-              config.darkTheme?.let { darkTheme = it }
               config.dynamicColor?.let { dynamicColor = it }
               config.fontFamily?.let { fontFamily = it }
             }

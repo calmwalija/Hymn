@@ -76,9 +76,11 @@ fun UniquelyCraftedScreen(
             .fillMaxWidth()
         ) {
 
-          Card(shape = RoundedCornerShape(8)) {
-            Box(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
-              TimestampComponent(context, lyric, TimestampFormat.Short)
+          androidx.compose.animation.AnimatedVisibility(lyric.timestamp > 0) {
+            Card(shape = RoundedCornerShape(8)) {
+              Box(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
+                TimestampComponent(context, lyric, TimestampFormat.Short)
+              }
             }
           }
         }
