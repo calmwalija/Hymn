@@ -61,7 +61,7 @@ class LyricRepositoryImpl @Inject constructor(
   }
 
   override suspend fun uniquelyCrafted(): List<Lyric> {
-    return runBlocking { dao.uniquelyCrafted(getLang()).shuffled().take(10) }
+    return runBlocking { dao.uniquelyCrafted(getLang()) }
   }
 
   override suspend fun favorite(favorite: Boolean, number: Int) {

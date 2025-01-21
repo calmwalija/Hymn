@@ -36,7 +36,7 @@ interface LyricDao {
   @Query("SELECT * FROM lyric WHERE lyricId=:lyricId")
   fun queryById(lyricId: Int): Flow<List<LyricEntity>>
 
-  @Query("SELECT * FROM lyric WHERE lang=:lang GROUP BY categoryName, number")
+  @Query("SELECT * FROM lyric WHERE lang=:lang GROUP BY categoryName, number ORDER BY RANDOM() LIMIT 10")
   suspend fun uniquelyCrafted(lang: String): List<Lyric>
 
   @Query("UPDATE lyric SET favorite=:favorite WHERE number=:number AND lang=:lang")

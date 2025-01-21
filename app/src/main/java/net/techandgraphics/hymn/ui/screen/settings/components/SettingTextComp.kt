@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.miscellaneous.settings
+package net.techandgraphics.hymn.ui.screen.settings.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

@@ -29,7 +29,6 @@ private val LightColorScheme = lightColorScheme(
 )
 
 data class ThemeConfigs(
-  val darkTheme: Boolean? = null,
   val dynamicColor: Boolean? = null,
   val fontFamily: FontFamily? = null
 )

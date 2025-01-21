@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.miscellaneous
+package net.techandgraphics.hymn.ui.screen.settings
 
 import android.content.Context
 import androidx.core.app.ShareCompat

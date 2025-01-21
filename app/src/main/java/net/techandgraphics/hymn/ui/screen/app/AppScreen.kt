@@ -12,17 +12,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.techandgraphics.hymn.ui.Route
-import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationScreen
-import net.techandgraphics.hymn.ui.screen.categorisation.CategorisationViewModel
 import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
-import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscScreen
-import net.techandgraphics.hymn.ui.screen.miscellaneous.MiscViewModel
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
+import net.techandgraphics.hymn.ui.screen.settings.SettingsScreen
+import net.techandgraphics.hymn.ui.screen.settings.SettingsViewModel
+import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryScreen
+import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryViewModel
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 
 @Composable
@@ -44,21 +44,27 @@ fun AppScreen(
             is MainUiEvent.Event -> when (event.ofType) {
               MainUiEvent.OfType.Category -> {
                 onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
-                navController.navigate(Route.Categorisation(event.id)) {
+                navController.navigate(Route.TheCategory(event.id)) {
                   launchSingleTop = true
                 }
               }
 
               MainUiEvent.OfType.Preview -> {
                 onAnalyticEvent(AnalyticEvent.DiveInto(event.id))
-                navController.navigate(Route.Read(event.id)) {
+                navController.navigate(Route.Preview(event.id)) {
                   launchSingleTop = true
                 }
               }
             }
 
             is MainUiEvent.CategoryUiEvent.GoTo -> {
-              navController.navigate(Route.Categorisation(event.category.lyric.categoryId)) {
+              navController.navigate(Route.TheCategory(event.category.lyric.categoryId)) {
+                launchSingleTop = true
+              }
+            }
+
+            is MainUiEvent.MenuItem.Settings -> {
+              navController.navigate(Route.Settings) {
                 launchSingleTop = true
               }
             }
@@ -69,16 +75,16 @@ fun AppScreen(
       }
     }
 
-    composable<Route.Mixed> {
-      with(hiltViewModel<MiscViewModel>()) {
+    composable<Route.Settings> {
+      with(hiltViewModel<SettingsViewModel>()) {
         val state = state.collectAsState().value
-        MiscScreen(
+        SettingsScreen(
           onThemeConfigs = onThemeConfigs,
           state = state,
           event = ::onEvent,
           readEvent = { event ->
             when (event) {
-              is PreviewUiEvent.Click -> navController.navigate(Route.Read(event.number)) {
+              is PreviewUiEvent.Click -> navController.navigate(Route.Preview(event.number)) {
                 launchSingleTop = true
               }
 
@@ -89,23 +95,21 @@ fun AppScreen(
       }
     }
 
-    composable<Route.Read> {
+    composable<Route.Preview> {
       with(hiltViewModel<PreviewViewModel>()) {
         LaunchedEffect(key1 = true) {
-          invoke(it.toRoute<Route.Read>().id)
+          invoke(it.toRoute<Route.Preview>().id)
         }
         val state = state.collectAsState().value
-
         val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-
         LaunchedEffect(key1 = channelFlow) {
           lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             channelFlow.collect {
-
-              navController.popBackStack(Route.Read(it.old), inclusive = true)
-
-              navController.navigate(Route.Read(it.new)) {
-                launchSingleTop = true
+              with(navController) {
+                popBackStack(Route.Preview(it.old), inclusive = true)
+                navigate(Route.Preview(it.new)) {
+                  launchSingleTop = true
+                }
               }
             }
           }
@@ -114,18 +118,18 @@ fun AppScreen(
       }
     }
 
-    composable<Route.Categorisation> {
-      with(hiltViewModel<CategorisationViewModel>()) {
+    composable<Route.TheCategory> {
+      with(hiltViewModel<TheCategoryViewModel>()) {
         LaunchedEffect(key1 = true) {
-          invoke(it.toRoute<Route.Categorisation>().id)
+          invoke(it.toRoute<Route.TheCategory>().id)
         }
         val state = state.collectAsState().value
-        CategorisationScreen(
+        TheCategoryScreen(
           state = state,
-          event = ::onEvent,
-          readEvent = { event ->
+          onEvent = ::onEvent,
+          onPreviewUiEvent = { event ->
             when (event) {
-              is PreviewUiEvent.Click -> navController.navigate(Route.Read(event.number)) {
+              is PreviewUiEvent.Click -> navController.navigate(Route.Preview(event.number)) {
                 launchSingleTop = true
               }
 

@@ -93,7 +93,7 @@ fun PreviewScreen(
                 .fillMaxSize()
                 .clickable {
                   navController.navigate(
-                    Route.Categorisation(state.lyrics.first().lyric.categoryId),
+                    Route.TheCategory(state.lyrics.first().lyric.categoryId),
                   ) {
                     popUpTo(navController.graph.findStartDestination().id)
                     launchSingleTop = true
@@ -131,7 +131,7 @@ fun PreviewScreen(
           IconButton(
             onClick = {
               navController.popBackStack(
-                Route.Read(state.lyrics.first().lyric.number),
+                Route.Preview(state.lyrics.first().lyric.number),
                 inclusive = true
               )
             }
