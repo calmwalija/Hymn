@@ -8,6 +8,6 @@ import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 @Dao
 interface TimeSpentDao : BaseDao<TimeSpentEntity> {
 
-  @Query("SELECT * FROM time_spent")
-  suspend fun query(): List<TimeSpentEntity>
+  @Query("SELECT SUM(timeSpent) as timeSpent, number, id, lang from time_spent group by number")
+  suspend fun toExport(): List<TimeSpentEntity>
 }

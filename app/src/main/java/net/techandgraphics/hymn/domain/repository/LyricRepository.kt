@@ -7,14 +7,14 @@ interface LyricRepository {
   fun query(query: String): Flow<List<Lyric>>
   fun queryByCategory(id: Int): Flow<List<Lyric>>
   suspend fun diveInto(): List<Lyric>
-  suspend fun toExport(): List<Lyric>
+  suspend fun toExport(): List<Int>
   fun queryById(lyricId: Int): Flow<List<Lyric>>
   fun favorites(): Flow<List<Lyric>>
   suspend fun upsert(lyric: List<Lyric>)
   suspend fun queryByNumber(number: Int): List<Lyric>
   suspend fun uniquelyCrafted(): List<Lyric>
   suspend fun favorite(favorite: Boolean, number: Int)
-  suspend fun read(number: Int, timestamp: Long)
+  suspend fun read(number: Int, timestamp: Long, lang: String?)
   suspend fun backup(): List<Lyric>
   suspend fun getLastHymn(lang: String): Int
 }
