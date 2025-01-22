@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,6 +23,7 @@ fun SettingsTextComp(
   drawableRes: Int,
   title: String,
   description: String,
+  trailingIcon: ImageVector? = null,
   onEvent: (() -> Unit)? = null
 ) {
   Row(
@@ -39,7 +41,7 @@ fun SettingsTextComp(
     Column(
       modifier = Modifier
         .weight(1f)
-        .padding(start = 24.dp)
+        .padding(start = 24.dp, end = 16.dp)
     ) {
       Text(
         text = title,
@@ -49,9 +51,12 @@ fun SettingsTextComp(
       Text(
         text = description,
         style = MaterialTheme.typography.bodySmall,
-        maxLines = 2,
+        maxLines = if (trailingIcon == null) 2 else 3,
         overflow = TextOverflow.Ellipsis
       )
+    }
+    trailingIcon?.let {
+      Icon(imageVector = it, null, modifier = Modifier.padding(8.dp))
     }
   }
 }

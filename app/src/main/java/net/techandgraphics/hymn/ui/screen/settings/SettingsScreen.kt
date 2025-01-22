@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.graphics.Typeface
 import android.net.Uri.parse
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -32,12 +33,16 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
-import net.techandgraphics.hymn.hash
-import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.settings.components.ApostleCreedDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.LordsPrayerDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsSwitchComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsTextComp
+import net.techandgraphics.hymn.ui.screen.settings.export.ExportData
+import net.techandgraphics.hymn.ui.screen.settings.export.fileName
+import net.techandgraphics.hymn.ui.screen.settings.export.hash
+import net.techandgraphics.hymn.ui.screen.settings.export.share
+import net.techandgraphics.hymn.ui.screen.settings.export.toHash
+import net.techandgraphics.hymn.ui.screen.settings.export.write
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 import java.io.File
 
@@ -45,8 +50,7 @@ import java.io.File
 @Composable
 fun SettingsScreen(
   state: SettingsUiState,
-  readEvent: (PreviewUiEvent) -> Unit,
-  event: (SettingsUiEvent) -> Unit,
+  onEvent: (SettingsUiEvent) -> Unit,
   onThemeConfigs: (ThemeConfigs) -> Unit
 ) {
 
@@ -57,10 +61,9 @@ fun SettingsScreen(
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
 
-  var darkTheme by remember { mutableStateOf(false) }
-  var digitKeyboard by remember { mutableStateOf(false) }
   var dynamicColor by remember { mutableStateOf(false) }
   var fontFamily by remember { mutableStateOf(false) }
+  var showFilePicker by remember { mutableStateOf(false) }
 
   Column(
     modifier = Modifier
@@ -68,21 +71,18 @@ fun SettingsScreen(
       .verticalScroll(rememberScrollState())
       .padding(horizontal = 8.dp),
   ) {
-
     Spacer(modifier = Modifier.height(32.dp))
     Text(
       text = "About App",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
     )
-
     Card(
       colors = CardDefaults.cardColors(
         containerColor = MaterialTheme.colorScheme.surface
       ),
       modifier = Modifier.padding(4.dp)
     ) {
-
       SettingsTextComp(
         drawableRes = R.drawable.ic_developer,
         title = "Developers",
@@ -103,7 +103,7 @@ fun SettingsScreen(
     Spacer(modifier = Modifier.height(32.dp))
 
     Text(
-      text = "Settings",
+      text = "Appearance",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
     )
@@ -113,29 +113,19 @@ fun SettingsScreen(
       ),
       colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
     ) {
-
-      SettingsSwitchComp(
-        drawableRes = R.drawable.ic_keyboard,
-        title = "Text Keyboard",
-        description = "Toggle between the Numpad and Text Keyboard for easier input, depending on your needs.",
-        isChecked = digitKeyboard,
-        onCheckedChange = { digitKeyboard = it }
-      )
-
-      HorizontalDivider()
-
-      SettingsSwitchComp(
-        drawableRes = R.drawable.ic_color,
-        title = "Colors",
-        description = "Automatically change the color style based on your background wallpaper colors.",
-        isChecked = dynamicColor,
-        onCheckedChange = {
-          dynamicColor = it
-          onThemeConfigs.invoke(ThemeConfigs(dynamicColor = dynamicColor))
-        }
-      )
-
-      HorizontalDivider()
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        SettingsSwitchComp(
+          drawableRes = R.drawable.ic_color,
+          title = "Wallpaper Colors",
+          description = "Automatically change the color style based on your background wallpaper colors.",
+          isChecked = dynamicColor,
+          onCheckedChange = {
+            dynamicColor = it
+            onThemeConfigs.invoke(ThemeConfigs(dynamicColor = dynamicColor))
+          }
+        )
+        HorizontalDivider()
+      }
 
       val fontPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -161,7 +151,7 @@ fun SettingsScreen(
 
       SettingsSwitchComp(
         drawableRes = R.drawable.ic_font_face,
-        title = "Default Font",
+        title = "App Font Style",
         description = "Choose your preferred font family to personalize the app's appearance and make reading more comfortable.",
         isChecked = fontFamily,
         onCheckedChange = {
@@ -169,11 +159,9 @@ fun SettingsScreen(
         }
       )
     }
-
     Spacer(modifier = Modifier.height(32.dp))
-
     Text(
-      text = "Data Management",
+      text = "Hymn Data",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
     )
@@ -192,28 +180,41 @@ fun SettingsScreen(
 
         val currentTimeMillis = System.currentTimeMillis()
         val gson = Gson()
-        val toExport = Export(
+        val toExportData = ExportData(
           currentTimeMillis = currentTimeMillis,
-          lyrics = state.toExport,
-          timeSpent = state.timeSpent,
-          timestamp = state.timeStamp,
-          search = state.search,
-          hashable = currentTimeMillis.hash(gson.toJson(state.favorites))
+          favorites = state.favExport,
+          timeSpent = state.timeSpentExport,
+          timestamp = state.timeStampExport,
+          search = state.searchExport,
         )
-        val jsonToExport = gson.toJson(toExport)
-        println(jsonToExport)
-
-        val file = ExportData.writeToInternalStorage(context, jsonToExport)
-        ExportData.shareFile(context, file)
+        val hashable = currentTimeMillis.hash(toExportData.toHash())
+        val jsonToExport = gson.toJson(toExportData.copy(hashable = hashable))
+        val file = context.write(jsonToExport, fileName())
+        context.share(file)
       }
 
       HorizontalDivider()
 
+      val fontPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+      ) { uri ->
+        uri?.let { selectedUri ->
+          val tempFile = File(context.cacheDir, "data.json")
+          context.contentResolver.openInputStream(selectedUri)?.use { input ->
+            tempFile.outputStream().use { output ->
+              input.copyTo(output)
+            }
+          }
+
+          onEvent(SettingsUiEvent.Import(tempFile))
+        }
+      }
       SettingsTextComp(
         drawableRes = R.drawable.ic_import,
         title = "Import",
         description = "Easily bring in your data by importing exported files & get started with your information in no time.",
       ) {
+        fontPickerLauncher.launch("application/json")
       }
     }
 

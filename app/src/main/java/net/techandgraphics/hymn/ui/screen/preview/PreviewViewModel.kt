@@ -94,8 +94,9 @@ class PreviewViewModel @Inject constructor(
 
   private fun read(data: Lyric) = with(data) {
     viewModelScope.launch {
-      lyricRepo.read(number, System.currentTimeMillis())
-      timestampRepo.upsert(listOf(data.toTimestampEntity()))
+      val currentTimeMillis = System.currentTimeMillis()
+      lyricRepo.read(number, currentTimeMillis, null)
+      timestampRepo.upsert(listOf(data.toTimestampEntity().copy(timestamp = currentTimeMillis)))
     }
   }
 

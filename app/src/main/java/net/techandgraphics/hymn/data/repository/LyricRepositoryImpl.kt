@@ -38,8 +38,8 @@ class LyricRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun toExport(): List<Lyric> {
-    return dao.toExport().map { it.asModel() }
+  override suspend fun toExport(): List<Int> {
+    return dao.toExport()
   }
 
   override fun queryById(lyricId: Int): Flow<List<Lyric>> {
@@ -68,8 +68,8 @@ class LyricRepositoryImpl @Inject constructor(
     dao.favorite(favorite, number, getLang())
   }
 
-  override suspend fun read(number: Int, timestamp: Long) {
-    dao.read(number, timestamp, getLang())
+  override suspend fun read(number: Int, timestamp: Long, lang: String?) {
+    dao.read(number, timestamp, lang ?: getLang())
   }
 
   override suspend fun backup(): List<Lyric> {
