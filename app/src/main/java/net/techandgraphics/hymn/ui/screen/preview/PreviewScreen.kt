@@ -8,11 +8,9 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,15 +20,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -53,7 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -70,7 +63,7 @@ const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 fun PreviewScreen(
   state: PreviewUiState,
   navController: NavHostController,
-  event: (PreviewUiEvent) -> Unit
+  onEvent: (PreviewUiEvent) -> Unit
 ) {
 
   val context = LocalContext.current
@@ -147,7 +140,7 @@ fun PreviewScreen(
             IconButton(
               onClick = {
                 context addRemoveFavoriteToast state.previewLyricKey.first().lyric
-                event(PreviewUiEvent.Favorite(state.previewLyricKey.first().lyric))
+                onEvent(PreviewUiEvent.Favorite(state.previewLyricKey.first().lyric))
               },
             ) {
               Icon(
@@ -160,7 +153,7 @@ fun PreviewScreen(
           }
           if (state.previewLyricKeyInverse.isNotEmpty()) {
             IconButton(
-              onClick = { event(PreviewUiEvent.TranslationInverse) },
+              onClick = { onEvent(PreviewUiEvent.TranslationInverse) },
               modifier = Modifier
                 .padding(end = 8.dp)
             ) {
@@ -188,57 +181,7 @@ fun PreviewScreen(
     },
   ) { paddingValues ->
 
-    if (fontSizeShow) {
-      Dialog(onDismissRequest = { fontSizeShow = false }) {
-        Card(
-          modifier = Modifier.padding(16.dp),
-          colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-          ),
-          elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-          ),
-        ) {
-          Column(
-            modifier = Modifier.padding(16.dp),
-          ) {
-            Text(
-              text = "Change lyrics font size",
-              modifier = Modifier.padding(start = 16.dp, top = 4.dp),
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              Slider(
-                value = state.fontSize.toFloat(),
-                onValueChange = { event(PreviewUiEvent.FontSize(it.toInt())) },
-                colors = SliderDefaults.colors(
-                  thumbColor = MaterialTheme.colorScheme.primary,
-                  activeTrackColor = MaterialTheme.colorScheme.primary,
-                ),
-                thumb = {
-                  Icon(
-                    painter = painterResource(id = R.drawable.ic_filled_circle),
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                  )
-                },
-                valueRange = 1f..16f,
-                modifier = Modifier
-                  .weight(1f)
-                  .padding(end = 16.dp),
-              )
-              Text(
-                text = state.fontSize.toString(),
-                modifier = Modifier.padding(end = 8.dp)
-              )
-            }
-          }
-        }
-      }
-    }
+    if (fontSizeShow) FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
 
     Box(
       modifier = Modifier
@@ -247,8 +190,8 @@ fun PreviewScreen(
           detectHorizontalDragGestures { change, dragAmount ->
             change.consume()
             when {
-              dragAmount > 20 -> event(PreviewUiEvent.HorizontalDragGesture(Direction.RIGHT))
-              dragAmount < -20 -> event(PreviewUiEvent.HorizontalDragGesture(Direction.LEFT))
+              dragAmount > 20 -> onEvent(PreviewUiEvent.HorizontalDragGesture(Direction.RIGHT))
+              dragAmount < -20 -> onEvent(PreviewUiEvent.HorizontalDragGesture(Direction.LEFT))
             }
 
             Log.e("TAG", "dragAmount: " + dragAmount)
@@ -256,9 +199,7 @@ fun PreviewScreen(
         }
     ) {
 
-      LazyColumn(
-        contentPadding = paddingValues
-      ) {
+      LazyColumn(contentPadding = paddingValues) {
         items(
           items = state.lyrics,
           key = { it.lyric.lyricId }

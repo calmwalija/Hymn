@@ -51,7 +51,7 @@ fun FontSizeDialog(
           Slider(
             value = state.fontSize.toFloat(),
             onValueChange = { onEvent(PreviewUiEvent.FontSize(it.toInt())) },
-            valueRange = 1f..16f,
+            valueRange = 1f..24f,
             modifier = Modifier
               .weight(1f)
               .padding(end = 16.dp),
