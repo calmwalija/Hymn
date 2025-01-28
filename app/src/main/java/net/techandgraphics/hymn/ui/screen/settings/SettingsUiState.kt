@@ -12,6 +12,7 @@ data class SettingsUiState(
   val complementary: List<Other> = emptyList(),
   val fontSize: Int = 2,
   val lang: Lang = Lang.EN,
+  val dynamicColor: Boolean = true,
 
   val timeSpentExport: List<TimeSpentExport> = emptyList(),
   val timeStampExport: List<TimestampExport> = emptyList(),
