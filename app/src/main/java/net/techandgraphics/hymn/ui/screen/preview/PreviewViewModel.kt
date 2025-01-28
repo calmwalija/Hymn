@@ -159,8 +159,8 @@ class PreviewViewModel @Inject constructor(
 
   private fun fontSize(font: Int) = viewModelScope.launch {
     _state.value = _state.value.copy(fontSize = font)
+    fontJob?.cancel()
     fontJob = viewModelScope.launch {
-      fontJob?.cancel()
       delay(1000)
       prefs.put(prefs.fontKey, font.toString())
     }
