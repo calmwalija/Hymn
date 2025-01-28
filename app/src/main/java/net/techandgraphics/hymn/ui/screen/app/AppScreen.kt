@@ -79,18 +79,10 @@ fun AppScreen(
       with(hiltViewModel<SettingsViewModel>()) {
         val state = state.collectAsState().value
         SettingsScreen(
-          onThemeConfigs = onThemeConfigs,
           state = state,
-          event = ::onEvent,
-          readEvent = { event ->
-            when (event) {
-              is PreviewUiEvent.Click -> navController.navigate(Route.Preview(event.number)) {
-                launchSingleTop = true
-              }
-
-              else -> Unit
-            }
-          }
+          onEvent = ::onEvent,
+          onThemeConfigs = onThemeConfigs,
+          channelFlow
         )
       }
     }

@@ -7,6 +7,7 @@ import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.repository.SearchRepository
+import net.techandgraphics.hymn.ui.screen.settings.export.SearchExport
 import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(
@@ -33,7 +34,7 @@ class SearchRepositoryImpl @Inject constructor(
     return runBlocking { dao.query(getLang()) }
   }
 
-  override suspend fun toExport(): List<SearchEntity> {
-    return dao.toExport()
+  override suspend fun toExport(): List<SearchExport> {
+    return dao.toExport().map { SearchExport(it.query, it.lang, it.tag) }
   }
 }

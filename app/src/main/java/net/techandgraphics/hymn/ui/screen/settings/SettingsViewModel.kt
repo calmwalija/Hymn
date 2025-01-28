@@ -1,17 +1,26 @@
 package net.techandgraphics.hymn.ui.screen.settings
 
+import android.net.Uri
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
+import net.techandgraphics.hymn.dateFormat
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
@@ -21,7 +30,14 @@ import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import
+import net.techandgraphics.hymn.ui.screen.settings.export.ExportData
+import net.techandgraphics.hymn.ui.screen.settings.export.hash
+import net.techandgraphics.hymn.ui.screen.settings.export.toHash
+import net.techandgraphics.hymn.ui.screen.settings.export.write
+import java.io.File
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -31,11 +47,14 @@ class SettingsViewModel @Inject constructor(
   private val timestampRepo: TimestampRepository,
   private val searchRepo: SearchRepository,
   private val prefs: DataStorePrefs,
-  private val analytics: FirebaseAnalytics
+  private val analytics: FirebaseAnalytics,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(SettingsUiState())
   val state = _state.asStateFlow()
+
+  private val channel = Channel<SettingsChannelEvent>()
+  val channelFlow = channel.receiveAsFlow()
 
   init {
     analytics.tagScreen(Tag.MISC_SCREEN)
@@ -51,13 +70,121 @@ class SettingsViewModel @Inject constructor(
     }
   }
 
+  private fun stressTest() {
+    Log.e("TAG", " ====================== stressTest Insert Started ======================")
+
+    lyricRepo.query("").onEach { lyrics ->
+      lyrics.forEachIndexed { index, lyric ->
+
+        Log.e(
+          "TAG",
+          " ====================== stressTest at $index  of ${lyrics.size} Done ======================"
+        )
+
+        repeat(Random.nextInt(5, 20)) {
+
+          val timeSpent = TimeSpentEntity(
+            number = lyric.number,
+            timeSpent = Random.nextLong(30000, 900000),
+            lang = lyric.lang
+          )
+          timeSpentRepo.run { upsert(listOf((timeSpent))) }
+        }
+      }
+    }.launchIn(viewModelScope)
+
+    Log.e("TAG", " ====================== stressTest Insert Done ======================")
+  }
+
+  private fun getFile(uri: Uri): File {
+    val tempFile = File(prefs.context.cacheDir, "HymnImport.json")
+    prefs.context.contentResolver.openInputStream(uri)?.use { input ->
+      tempFile.outputStream().use { output ->
+        input.copyTo(output)
+      }
+    }
+    return tempFile
+  }
+
+  private fun onImport(uri: Uri) = viewModelScope.launch {
+    channel.send(Import.Import(Import.Status.Wait))
+    runCatching {
+      val jsonString = getFile(uri).bufferedReader().use { it.readText() }
+      Gson().fromJson(jsonString, ExportData::class.java)
+    }.onSuccess { import ->
+
+      if (import == null || import.currentTimeMillis.hash(import.toHash()) != import.hashable) {
+        channel.send(Import.Import(Import.Status.Invalid))
+        return@launch
+      }
+
+      val total = import.run { search.size + favorites.size + timestamp.size + timeSpent.size }
+      var currentProgress = 0
+
+      try {
+
+        import.search.forEach {
+          searchRepo.upsert(listOf(SearchEntity(it.query, it.tag, it.lang)))
+          currentProgress += 1
+          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+        }
+
+        import.timestamp.forEach {
+          currentProgress += 1
+          if (lyricRepo.queryByNumber(number = it.number).first().timestamp < it.timestamp)
+            lyricRepo.read(it.number, it.timestamp, it.lang)
+
+          timestampRepo.import(it)
+          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+        }
+
+        import.timeSpent.forEach {
+          if (timeSpentRepo.getCount(it.toEntity()) == 0)
+            timeSpentRepo.upsert(listOf(it.toEntity()))
+          currentProgress += 1
+          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+        }
+
+        import.favorites.forEach {
+          currentProgress += 1
+          lyricRepo.favorite(true, it)
+          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+        }
+
+        channel.send(Import.Import(Import.Status.Success))
+      } catch (e: Exception) {
+        channel.send(Import.Import(Import.Status.Invalid))
+      }
+    }.onFailure {
+      channel.send(Import.Import(Import.Status.Error))
+    }
+  }
+
+  private fun onExport() {
+    viewModelScope.launch(Dispatchers.IO) {
+      val currentTimeMillis = System.currentTimeMillis()
+      val fileName = "Hymn Book BackUp ${dateFormat(currentTimeMillis)}.json"
+      val toExportData = ExportData(
+        currentTimeMillis = currentTimeMillis,
+        favorites = state.value.favExport,
+        timeSpent = state.value.timeSpentExport,
+        timestamp = state.value.timeStampExport,
+        search = state.value.searchExport,
+      )
+      val hashable = currentTimeMillis.hash(toExportData.toHash())
+      val jsonToExport = Gson().toJson(toExportData.copy(hashable = hashable))
+      val file = prefs.context.write(jsonToExport, fileName)
+      channel.send(SettingsChannelEvent.Export.Export(file))
+    }
+  }
+
   private suspend fun onQuery() {
     _state.update {
       it.copy(
-        timeSpent = timeSpentRepo.query(),
-        timeStamp = timestampRepo.query(),
-        search = searchRepo.toExport(),
-        toExport = lyricRepo.toExport().map { it.toExport() }
+        timeSpentExport = timeSpentRepo.toExport(),
+        timeStampExport = timestampRepo.toExport(),
+        searchExport = searchRepo.toExport(),
+        favExport = lyricRepo.toExport()
       )
     }
   }
@@ -106,6 +233,9 @@ class SettingsViewModel @Inject constructor(
           bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
         )
       }
+
+      is SettingsUiEvent.Import -> onImport(event.uri)
+      SettingsUiEvent.Export -> onExport()
     }
   }
 

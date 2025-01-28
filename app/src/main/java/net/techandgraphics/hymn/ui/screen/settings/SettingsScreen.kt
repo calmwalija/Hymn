@@ -4,63 +4,117 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.graphics.Typeface
 import android.net.Uri.parse
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.google.gson.Gson
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.Flow
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.getAppVersion
-import net.techandgraphics.hymn.hash
-import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
+import net.techandgraphics.hymn.toast
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Export
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import
 import net.techandgraphics.hymn.ui.screen.settings.components.ApostleCreedDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.LordsPrayerDialog
+import net.techandgraphics.hymn.ui.screen.settings.components.SettingContentComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsSwitchComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsTextComp
+import net.techandgraphics.hymn.ui.screen.settings.export.share
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 import java.io.File
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
   state: SettingsUiState,
-  readEvent: (PreviewUiEvent) -> Unit,
-  event: (SettingsUiEvent) -> Unit,
-  onThemeConfigs: (ThemeConfigs) -> Unit
+  onEvent: (SettingsUiEvent) -> Unit,
+  onThemeConfigs: (ThemeConfigs) -> Unit,
+  channelFlow: Flow<SettingsChannelEvent>
 ) {
 
   val context = LocalContext.current
   val whatsAppUrl = "https://api.whatsapp.com/send?phone=+265993563408"
   val playStoreUrl = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
 
+  var progressStatus by remember { mutableStateOf(Import.ProgressStatus(-1, -1)) }
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
 
-  var darkTheme by remember { mutableStateOf(false) }
-  var digitKeyboard by remember { mutableStateOf(false) }
   var dynamicColor by remember { mutableStateOf(false) }
   var fontFamily by remember { mutableStateOf(false) }
+  var isImporting by remember { mutableStateOf(false) }
+  val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+
+  val jsonPicker = rememberLauncherForActivityResult(contract = GetContent()) { uri ->
+    uri?.let {
+      onEvent(SettingsUiEvent.Import(it))
+    }
+  }
+
+  LaunchedEffect(key1 = channelFlow) {
+    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+      channelFlow.collect { event ->
+        when (event) {
+          is Import.Import -> when (event.status) {
+            Import.Status.Wait -> {
+              isImporting = true
+              context.toast("Working on it, please wait ...")
+            }
+
+            Import.Status.Invalid -> {
+              isImporting = false
+              context.toast("Processing failed, this is an invalid file.")
+            }
+
+            Import.Status.Error -> {
+              isImporting = false
+              context.toast("Something went wrong, please try again")
+            }
+
+            Import.Status.Success -> {
+              isImporting = false
+              context.toast("Data has been restored successfully")
+            }
+          }
+
+          is Export.Export -> context.share(event.file)
+          is Import.Progress -> {
+//            Log.e("TAG", "SettingsScreen: " + event.progressStatus)
+            progressStatus = event.progressStatus
+          }
+        }
+      }
+    }
+  }
 
   Column(
     modifier = Modifier
@@ -68,21 +122,18 @@ fun SettingsScreen(
       .verticalScroll(rememberScrollState())
       .padding(horizontal = 8.dp),
   ) {
-
     Spacer(modifier = Modifier.height(32.dp))
     Text(
       text = "About App",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
     )
-
     Card(
       colors = CardDefaults.cardColors(
         containerColor = MaterialTheme.colorScheme.surface
       ),
       modifier = Modifier.padding(4.dp)
     ) {
-
       SettingsTextComp(
         drawableRes = R.drawable.ic_developer,
         title = "Developers",
@@ -103,7 +154,7 @@ fun SettingsScreen(
     Spacer(modifier = Modifier.height(32.dp))
 
     Text(
-      text = "Settings",
+      text = "Appearance",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
     )
@@ -113,32 +164,22 @@ fun SettingsScreen(
       ),
       colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
     ) {
-
-      SettingsSwitchComp(
-        drawableRes = R.drawable.ic_keyboard,
-        title = "Text Keyboard",
-        description = "Toggle between the Numpad and Text Keyboard for easier input, depending on your needs.",
-        isChecked = digitKeyboard,
-        onCheckedChange = { digitKeyboard = it }
-      )
-
-      HorizontalDivider()
-
-      SettingsSwitchComp(
-        drawableRes = R.drawable.ic_color,
-        title = "Colors",
-        description = "Automatically change the color style based on your background wallpaper colors.",
-        isChecked = dynamicColor,
-        onCheckedChange = {
-          dynamicColor = it
-          onThemeConfigs.invoke(ThemeConfigs(dynamicColor = dynamicColor))
-        }
-      )
-
-      HorizontalDivider()
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        SettingsSwitchComp(
+          drawableRes = R.drawable.ic_color,
+          title = "Wallpaper Colors",
+          description = "Automatically change the color style based on your background wallpaper colors.",
+          isChecked = dynamicColor,
+          onCheckedChange = {
+            dynamicColor = it
+            onThemeConfigs.invoke(ThemeConfigs(dynamicColor = dynamicColor))
+          }
+        )
+        HorizontalDivider()
+      }
 
       val fontPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = GetContent()
       ) { uri ->
         uri?.let { selectedUri ->
           val tempFile = File(context.cacheDir, "temp_font.ttf")
@@ -161,7 +202,7 @@ fun SettingsScreen(
 
       SettingsSwitchComp(
         drawableRes = R.drawable.ic_font_face,
-        title = "Default Font",
+        title = "App Font Style",
         description = "Choose your preferred font family to personalize the app's appearance and make reading more comfortable.",
         isChecked = fontFamily,
         onCheckedChange = {
@@ -169,11 +210,9 @@ fun SettingsScreen(
         }
       )
     }
-
     Spacer(modifier = Modifier.height(32.dp))
-
     Text(
-      text = "Data Management",
+      text = "Hymn Data",
       style = MaterialTheme.typography.titleMedium,
       modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
     )
@@ -188,33 +227,31 @@ fun SettingsScreen(
         drawableRes = R.drawable.ic_upload,
         title = "Export",
         description = "Quickly transfer your data by exporting it in JSON format.",
-      ) {
-
-        val currentTimeMillis = System.currentTimeMillis()
-        val gson = Gson()
-        val toExport = Export(
-          currentTimeMillis = currentTimeMillis,
-          lyrics = state.toExport,
-          timeSpent = state.timeSpent,
-          timestamp = state.timeStamp,
-          search = state.search,
-          hashable = currentTimeMillis.hash(gson.toJson(state.favorites))
-        )
-        val jsonToExport = gson.toJson(toExport)
-        println(jsonToExport)
-
-        val file = ExportData.writeToInternalStorage(context, jsonToExport)
-        ExportData.shareFile(context, file)
-      }
+      ) { onEvent(SettingsUiEvent.Export) }
 
       HorizontalDivider()
 
-      SettingsTextComp(
-        drawableRes = R.drawable.ic_import,
+      SettingContentComp(
         title = "Import",
         description = "Easily bring in your data by importing exported files & get started with your information in no time.",
-      ) {
-      }
+        onEvent = { if (!isImporting) jsonPicker.launch("application/json") },
+        content = {
+          Box(modifier = Modifier.size(28.dp), contentAlignment = Alignment.Center) {
+            if (isImporting) {
+              if (progressStatus.currentProgress > 0) CircularProgressIndicator(
+                progress = { progressStatus.currentProgress.toFloat().div(progressStatus.total) }
+              ) else {
+                CircularProgressIndicator()
+                progressStatus = Import.ProgressStatus(-1, -1)
+              }
+            } else
+              Icon(
+                painter = painterResource(id = R.drawable.ic_import),
+                contentDescription = null,
+              )
+          }
+        }
+      )
     }
 
     Spacer(modifier = Modifier.height(32.dp))
