@@ -20,6 +20,7 @@ import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
 import net.techandgraphics.hymn.ui.screen.settings.SettingsScreen
+import net.techandgraphics.hymn.ui.screen.settings.SettingsUiEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsViewModel
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryScreen
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryViewModel
@@ -80,7 +81,11 @@ fun AppScreen(
         val state = state.collectAsState().value
         SettingsScreen(
           state = state,
-          onEvent = ::onEvent,
+          onEvent = {
+            if (it is SettingsUiEvent.DynamicColor)
+              onThemeConfigs.invoke(ThemeConfigs(dynamicColor = it.isEnabled))
+            onEvent(it)
+          },
           onThemeConfigs = onThemeConfigs,
           channelFlow
         )
