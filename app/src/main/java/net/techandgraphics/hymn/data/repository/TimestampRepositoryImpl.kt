@@ -22,11 +22,13 @@ class TimestampRepositoryImpl @Inject constructor(database: Database) : Timestam
     dao.delete(item)
   }
 
-  override suspend fun import(timestamps: List<TimestampExport>) {
-    timestamps.forEach { timestamp ->
-      if (dao.ifExist(timestamp.lang, timestamp.number, timestamp.timestamp) == 0) {
-        upsert(listOf(timestamp.toEntity()))
-      }
+  override suspend fun import(timestamp: TimestampExport) {
+    if (ifExist(timestamp.toEntity()) == 0) {
+      upsert(listOf(timestamp.toEntity()))
     }
+  }
+
+  override suspend fun ifExist(timestampEntity: TimestampEntity): Int {
+    return dao.ifExist(timestampEntity.lang, timestampEntity.number, timestampEntity.timestamp)
   }
 }

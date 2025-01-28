@@ -6,11 +6,8 @@ import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import java.io.File
 import java.security.MessageDigest
-import java.util.UUID
 
 private const val TYPE = "application/json"
-
-fun fileName() = UUID.randomUUID().toString().plus(".json")
 
 fun Context.write(jsonData: String, fileName: String): File {
   openFileOutput(fileName, Context.MODE_PRIVATE).use { outputStream ->

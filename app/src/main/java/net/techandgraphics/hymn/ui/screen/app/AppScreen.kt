@@ -81,7 +81,8 @@ fun AppScreen(
         SettingsScreen(
           state = state,
           onEvent = ::onEvent,
-          onThemeConfigs = onThemeConfigs
+          onThemeConfigs = onThemeConfigs,
+          channelFlow
         )
       }
     }
