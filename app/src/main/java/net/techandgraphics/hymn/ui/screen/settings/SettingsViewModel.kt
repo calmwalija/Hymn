@@ -60,6 +60,9 @@ class SettingsViewModel @Inject constructor(
     analytics.tagScreen(Tag.MISC_SCREEN)
     viewModelScope.launch {
       onQuery()
+      _state.update {
+        it.copy(dynamicColor = prefs.get<Boolean>(prefs.dynamicColorKey, true) ?: true)
+      }
       lyricRepo.favorites().onEach { favorites ->
         _state.value = _state.value.copy(
           favorites = favorites,
@@ -236,6 +239,14 @@ class SettingsViewModel @Inject constructor(
 
       is SettingsUiEvent.Import -> onImport(event.uri)
       SettingsUiEvent.Export -> onExport()
+      is SettingsUiEvent.DynamicColor -> onDynamicColor(event.isEnabled)
+    }
+  }
+
+  private fun onDynamicColor(isEnabled: Boolean) = viewModelScope.launch {
+    prefs.put(prefs.dynamicColorKey, isEnabled)
+    _state.update {
+      it.copy(dynamicColor = prefs.get<Boolean>(prefs.dynamicColorKey, true) ?: true)
     }
   }
 

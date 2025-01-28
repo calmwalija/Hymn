@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,11 +35,11 @@ class MainActivity : ComponentActivity() {
       setKeepOnScreenCondition { viewModel.state.value.completed }
     }
     setContent {
-      var dynamicColor by remember { mutableStateOf(false) }
+      val state = viewModel.state.collectAsState().value
       var fontFamily by remember { mutableStateOf<FontFamily>(FontFamily.Default) }
 
       HymnTheme(
-        dynamicColor = dynamicColor,
+        dynamicColor = state.dynamicColorEnabled,
         fontFamily = fontFamily
       ) {
         Surface(
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
         ) {
           AppScreen(
             onThemeConfigs = { config ->
-              config.dynamicColor?.let { dynamicColor = it }
+              config.dynamicColor?.let { viewModel.onEvent(MainActivityUiEvent.DynamicColor(it)) }
               config.fontFamily?.let { fontFamily = it }
             }
           )
