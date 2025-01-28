@@ -8,6 +8,9 @@ import net.techandgraphics.hymn.data.local.entities.TimestampEntity
 @Dao
 interface TimestampDao : BaseDao<TimestampEntity> {
 
-  @Query("SELECT * FROM timestamp")
-  suspend fun query(): List<TimestampEntity>
+  @Query("SELECT MAX(timestamp) AS timestamp, number, lang, id  FROM timestamp group by number")
+  suspend fun toExport(): List<TimestampEntity>
+
+  @Query("SELECT COUNT(*) FROM timestamp WHERE number=:number AND lang=:lang AND timestamp=:timestamp")
+  suspend fun ifExist(lang: String, number: Int, timestamp: Long): Int
 }
