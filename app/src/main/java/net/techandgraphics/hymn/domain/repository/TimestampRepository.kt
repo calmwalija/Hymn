@@ -6,5 +6,6 @@ import net.techandgraphics.hymn.ui.screen.settings.export.TimestampExport
 
 interface TimestampRepository : BaseRepository<TimestampEntity> {
   suspend fun toExport(): List<TimestampExport>
-  suspend fun import(timestamp: List<TimestampExport>)
+  suspend fun import(timestamp: TimestampExport)
+  suspend fun ifExist(timestampEntity: TimestampEntity): Int
 }

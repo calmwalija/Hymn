@@ -54,3 +54,9 @@ private fun longDateFormat(timestamp: Long): String {
 private fun Resources.ago(@PluralsRes pluralRes: Int, value: Int): String {
   return "${getQuantityString(pluralRes, value, value)} ago"
 }
+
+fun dateFormat(timestamp: Long, patten: String = "MMM-yyyy"): String {
+  val simpleDateFormat = SimpleDateFormat(patten, Locale.getDefault())
+  val currentTimeMillis = Date(timestamp)
+  return simpleDateFormat.format(currentTimeMillis)
+}

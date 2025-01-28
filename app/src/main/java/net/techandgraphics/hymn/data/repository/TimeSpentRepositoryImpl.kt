@@ -14,6 +14,10 @@ class TimeSpentRepositoryImpl @Inject constructor(database: Database) : TimeSpen
     return dao.toExport().map { TimeSpentExport(it.number, it.lang, it.timeSpent) }
   }
 
+  override suspend fun getCount(timeSpentEntity: TimeSpentEntity): Int {
+    return dao.getCount(timeSpentEntity.number, timeSpentEntity.lang, timeSpentEntity.timeSpent)
+  }
+
   override suspend fun upsert(items: List<TimeSpentEntity>) {
     dao.upsert(items)
   }
