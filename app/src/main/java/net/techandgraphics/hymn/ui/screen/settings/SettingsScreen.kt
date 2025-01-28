@@ -69,7 +69,6 @@ fun SettingsScreen(
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
 
-  var dynamicColor by remember { mutableStateOf(false) }
   var fontFamily by remember { mutableStateOf(false) }
   var isImporting by remember { mutableStateOf(false) }
   val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -167,13 +166,10 @@ fun SettingsScreen(
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         SettingsSwitchComp(
           drawableRes = R.drawable.ic_color,
-          title = "Wallpaper Colors",
+          title = "Theme Color",
           description = "Automatically change the color style based on your background wallpaper colors.",
-          isChecked = dynamicColor,
-          onCheckedChange = {
-            dynamicColor = it
-            onThemeConfigs.invoke(ThemeConfigs(dynamicColor = dynamicColor))
-          }
+          isChecked = state.dynamicColor,
+          onCheckedChange = { onEvent(SettingsUiEvent.DynamicColor(it)) }
         )
         HorizontalDivider()
       }
