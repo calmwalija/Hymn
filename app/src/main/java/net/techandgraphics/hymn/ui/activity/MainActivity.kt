@@ -13,7 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.AndroidEntryPoint
 import net.techandgraphics.hymn.ui.activity.MainActivityUiEvent.DynamicColor
 import net.techandgraphics.hymn.ui.activity.MainActivityUiEvent.FontStyle
@@ -32,8 +31,6 @@ class MainActivity : ComponentActivity() {
     installSplashScreen().apply {
       setKeepOnScreenCondition { viewModel.state.value.completed }
     }
-
-    FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = false
 
     setContent {
       val state = viewModel.state.collectAsState().value
