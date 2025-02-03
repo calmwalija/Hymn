@@ -8,6 +8,7 @@ import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.ui.screen.main.Suggested
 import net.techandgraphics.hymn.ui.screen.main.generateSuggested
+import java.io.File
 import kotlin.random.Random
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -92,3 +93,5 @@ suspend infix fun DataStorePrefs.uniquelyCraftedKey(maxValue: Int): String {
     get(uniquelyCraftedKey)
   }
 }
+
+fun Context.fontFile() = File(cacheDir, "temp_font.ttf")

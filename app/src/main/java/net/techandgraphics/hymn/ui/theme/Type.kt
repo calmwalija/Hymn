@@ -20,49 +20,19 @@ private val lm = Typography().labelMedium
 private val ls = Typography().labelSmall
 
 fun setTypography(fontFamily: FontFamily = FontFamily.Default) = Typography(
-  displayLarge = dl.copy(
-    fontFamily = fontFamily,
-  ),
-  displayMedium = dm.copy(
-    fontFamily = fontFamily,
-  ),
-  displaySmall = ds.copy(
-    fontFamily = fontFamily,
-  ),
-  headlineLarge = hl.copy(
-    fontFamily = fontFamily,
-  ),
-  headlineMedium = hm.copy(
-    fontFamily = fontFamily,
-  ),
-  headlineSmall = hs.copy(
-    fontFamily = fontFamily,
-  ),
-  titleLarge = tl.copy(
-    fontFamily = fontFamily,
-  ),
-  titleMedium = tm.copy(
-    fontFamily = fontFamily,
-  ),
-  titleSmall = ts.copy(
-    fontFamily = fontFamily,
-  ),
-  bodyLarge = bl.copy(
-    fontFamily = fontFamily,
-  ),
-  bodyMedium = bm.copy(
-    fontFamily = fontFamily,
-  ),
-  bodySmall = bs.copy(
-    fontFamily = fontFamily,
-  ),
-  labelLarge = ll.copy(
-    fontFamily = fontFamily,
-  ),
-  labelMedium = lm.copy(
-    fontFamily = fontFamily,
-  ),
-  labelSmall = ls.copy(
-    fontFamily = fontFamily,
-  )
+  displayLarge = dl.copy(fontFamily = fontFamily),
+  displayMedium = dm.copy(fontFamily = fontFamily),
+  displaySmall = ds.copy(fontFamily = fontFamily),
+  headlineLarge = hl.copy(fontFamily = fontFamily),
+  headlineMedium = hm.copy(fontFamily = fontFamily),
+  headlineSmall = hs.copy(fontFamily = fontFamily),
+  titleLarge = tl.copy(fontFamily = fontFamily),
+  titleMedium = tm.copy(fontFamily = fontFamily),
+  titleSmall = ts.copy(fontFamily = fontFamily),
+  bodyLarge = bl.copy(fontFamily = fontFamily),
+  bodyMedium = bm.copy(fontFamily = fontFamily),
+  bodySmall = bs.copy(fontFamily = fontFamily),
+  labelLarge = ll.copy(fontFamily = fontFamily),
+  labelMedium = lm.copy(fontFamily = fontFamily),
+  labelSmall = ls.copy(fontFamily = fontFamily)
 )

@@ -18,6 +18,7 @@
     <string name="uniquely_crafted_key">uniquely_crafted_key</string>
     <string name="uniquely_crafted_mills_key">uniquely_crafted_mills_key</string>
     <string name="dynamic_color">dynamic_color_enabled</string>
+    <string name="font_style_enabled">font_style_enabled</string>
     <string name="shared_prefs">shared_prefs</string>
     <string name="ready_key">ready_key</string>
 
