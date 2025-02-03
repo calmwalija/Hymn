@@ -1,5 +1,8 @@
 package net.techandgraphics.hymn.ui.activity
 
+import android.graphics.Typeface
+import androidx.compose.ui.text.font.FontFamily
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,6 +13,7 @@ import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.parser.LyricParser
 import net.techandgraphics.hymn.data.parser.OtherParser
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
+import net.techandgraphics.hymn.fontFile
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +27,18 @@ class MainActivityViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   init {
-    prefs.onInitialize()
+    prefs.apply { onFontStyle(); onInitialize() }
+  }
+
+  private fun DataStorePrefs.onFontStyle() = viewModelScope.launch {
+    val isFontAvailable = get<String?>(fontStyleKey, null)
+    val fontFamily = if (isFontAvailable != null) try {
+      FontFamily(Typeface.createFromFile(prefs.context.fontFile()))
+    } catch (e: Exception) {
+      remove(stringSetPreferencesKey(fontStyleKey))
+      FontFamily.Default
+    } else FontFamily.Default
+    _state.update { it.copy(fontFamily = fontFamily) }
   }
 
   private fun DataStorePrefs.onInitialize() {
@@ -49,6 +64,8 @@ class MainActivityViewModel @Inject constructor(
         prefs.get(prefs.dynamicColorKey, event.isEnabled)
         _state.update { it.copy(dynamicColorEnabled = event.isEnabled) }
       }
+
+      is MainActivityUiEvent.FontStyle -> prefs.onFontStyle()
     }
   }
 }

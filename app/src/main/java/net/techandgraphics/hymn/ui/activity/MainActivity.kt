@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.AndroidEntryPoint
+import net.techandgraphics.hymn.ui.activity.MainActivityUiEvent.DynamicColor
+import net.techandgraphics.hymn.ui.activity.MainActivityUiEvent.FontStyle
 import net.techandgraphics.hymn.ui.screen.app.AppScreen
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
@@ -34,13 +32,15 @@ class MainActivity : ComponentActivity() {
     installSplashScreen().apply {
       setKeepOnScreenCondition { viewModel.state.value.completed }
     }
+
+    FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = false
+
     setContent {
       val state = viewModel.state.collectAsState().value
-      var fontFamily by remember { mutableStateOf<FontFamily>(FontFamily.Default) }
 
       HymnTheme(
         dynamicColor = state.dynamicColorEnabled,
-        fontFamily = fontFamily
+        fontFamily = state.fontFamily
       ) {
         Surface(
           modifier = Modifier.fillMaxSize(),
@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
         ) {
           AppScreen(
             onThemeConfigs = { config ->
-              config.dynamicColor?.let { viewModel.onEvent(MainActivityUiEvent.DynamicColor(it)) }
-              config.fontFamily?.let { fontFamily = it }
+              config.dynamicColor?.let { viewModel.onEvent(DynamicColor(it)) }
+              viewModel.onEvent(FontStyle(config.fontFamily))
             }
           )
         }

@@ -1,5 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.settings
 
+import androidx.compose.ui.text.font.FontFamily
 import java.io.File
 
 sealed interface SettingsChannelEvent {
@@ -14,4 +15,6 @@ sealed interface SettingsChannelEvent {
     data class Import(val status: Status) : SettingsChannelEvent
     data class Progress(val progressStatus: ProgressStatus) : SettingsChannelEvent
   }
+
+  data class FontStyle(val fontFamily: FontFamily?) : SettingsChannelEvent
 }
