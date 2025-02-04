@@ -4,11 +4,14 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -45,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.techandgraphics.hymn.Faker
@@ -58,7 +60,7 @@ import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MainScreen(
   state: MainUiState,
@@ -70,6 +72,7 @@ fun MainScreen(
   val versionEntries = context.resources.getStringArray(R.array.translation_entries)
   val colorScheme = MaterialTheme.colorScheme
   var showSheet by remember { mutableStateOf(false) }
+  val isImeVisible = WindowInsets.isImeVisible
 
   val viewModel = hiltViewModel<CategoryViewModel>()
   val categoryViewModelState = viewModel.state.collectAsState().value
@@ -80,7 +83,9 @@ fun MainScreen(
     if (state.onLangInvoke) context.onTranslationChange(state.lang)
   }
 
-  BackHandler(enabled = state.searchQuery.trim().isNotEmpty()) {
+  LaunchedEffect(state.searchQuery) { if (state.searchQuery.trim().isNotEmpty()) isFocused = true }
+
+  BackHandler(enabled = state.searchQuery.trim().isNotEmpty() && !isImeVisible) {
     onEvent(MainUiEvent.LyricUiEvent.ClearLyricUiQuery)
   }
 
@@ -274,7 +279,7 @@ fun MainScreen(
   }
 }
 
-@Preview(showBackground = true)
+// @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
   HymnTheme {
