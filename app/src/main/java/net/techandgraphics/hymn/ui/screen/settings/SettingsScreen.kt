@@ -45,19 +45,19 @@ import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Export
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import
 import net.techandgraphics.hymn.ui.screen.settings.components.ApostleCreedDialog
+import net.techandgraphics.hymn.ui.screen.settings.components.FilePicker
+import net.techandgraphics.hymn.ui.screen.settings.components.FontStyleDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.LordsPrayerDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingContentComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsSwitchComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsTextComp
+import net.techandgraphics.hymn.ui.screen.settings.components.SettingsTextExpComp
 import net.techandgraphics.hymn.ui.screen.settings.export.share
-import net.techandgraphics.hymn.ui.theme.ThemeConfigs
-import java.io.File
 
 @Composable
 fun SettingsScreen(
   state: SettingsUiState,
   onEvent: (SettingsUiEvent) -> Unit,
-  onThemeConfigs: (ThemeConfigs) -> Unit,
   channelFlow: Flow<SettingsChannelEvent>
 ) {
 
@@ -68,8 +68,9 @@ fun SettingsScreen(
   var progressStatus by remember { mutableStateOf(Import.ProgressStatus(-1, -1)) }
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
+  var fontStyleShow by remember { mutableStateOf(false) }
+  var filePickerShow by remember { mutableStateOf(false) }
 
-  var fontFamily by remember { mutableStateOf(false) }
   var isImporting by remember { mutableStateOf(false) }
   val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
@@ -106,9 +107,10 @@ fun SettingsScreen(
           }
 
           is Export.Export -> context.share(event.file)
-          is Import.Progress -> {
-//            Log.e("TAG", "SettingsScreen: " + event.progressStatus)
-            progressStatus = event.progressStatus
+          is Import.Progress -> progressStatus = event.progressStatus
+
+          is SettingsChannelEvent.FontStyle -> {
+            onEvent(SettingsUiEvent.Font.Apply(event.fontFamily))
           }
         }
       }
@@ -174,38 +176,39 @@ fun SettingsScreen(
         HorizontalDivider()
       }
 
-      val fontPickerLauncher = rememberLauncherForActivityResult(
-        contract = GetContent()
-      ) { uri ->
-        uri?.let { selectedUri ->
-          val tempFile = File(context.cacheDir, "temp_font.ttf")
-          context.contentResolver.openInputStream(selectedUri)?.use { input ->
-            tempFile.outputStream().use { output ->
-              input.copyTo(output)
-            }
-          }
-          onThemeConfigs.invoke(
-            ThemeConfigs(
-              fontFamily = FontFamily(
-                Typeface.createFromFile(
-                  tempFile
-                )
-              )
-            )
-          )
-        }
-      }
-
-      SettingsSwitchComp(
+      SettingsTextExpComp(
         drawableRes = R.drawable.ic_font_face,
         title = "App Font Style",
         description = "Choose your preferred font family to personalize the app's appearance and make reading more comfortable.",
-        isChecked = fontFamily,
-        onCheckedChange = {
-          fontPickerLauncher.launch("font/*")
-        }
-      )
+      ) { fontStyleShow = true }
     }
+
+    if (fontStyleShow) FontStyleDialog(
+      state,
+      onEvent = {
+        if (it is SettingsUiEvent.Font.Choose) {
+          filePickerShow = true
+          return@FontStyleDialog
+        }
+        onEvent(it)
+        fontStyleShow = false
+      }
+    ) { fontStyleShow = false }
+
+    FilePicker(
+      filePickerShow = filePickerShow,
+      onEvent = { file, name ->
+        val fontFamily: FontFamily? = try {
+          FontFamily(Typeface.createFromFile(file))
+        } catch (e: Exception) {
+          null
+        }
+        filePickerShow = false
+        fontStyleShow = false
+        onEvent(SettingsUiEvent.Font.Selected(fontFamily, name))
+      }
+    )
+
     Spacer(modifier = Modifier.height(32.dp))
     Text(
       text = "Hymn Data",
@@ -229,7 +232,7 @@ fun SettingsScreen(
 
       SettingContentComp(
         title = "Import",
-        description = "Easily bring in your data by importing exported files & get started with your information in no time.",
+        description = "Easily bring in your exported data and get started with your information in no time.",
         onEvent = { if (!isImporting) jsonPicker.launch("application/json") },
         content = {
           Box(modifier = Modifier.size(28.dp), contentAlignment = Alignment.Center) {

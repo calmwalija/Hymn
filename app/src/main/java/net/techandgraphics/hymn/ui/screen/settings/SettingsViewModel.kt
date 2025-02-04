@@ -2,7 +2,9 @@ package net.techandgraphics.hymn.ui.screen.settings
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.text.font.FontFamily
 import androidx.core.os.bundleOf
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -30,6 +32,8 @@ import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
+import net.techandgraphics.hymn.fontFile
+import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import
 import net.techandgraphics.hymn.ui.screen.settings.export.ExportData
 import net.techandgraphics.hymn.ui.screen.settings.export.hash
@@ -61,7 +65,10 @@ class SettingsViewModel @Inject constructor(
     viewModelScope.launch {
       onQuery()
       _state.update {
-        it.copy(dynamicColor = prefs.get<Boolean>(prefs.dynamicColorKey, true) ?: true)
+        it.copy(
+          dynamicColor = prefs.get<Boolean>(prefs.dynamicColorKey, true) ?: true,
+          fontFamily = prefs.get<String?>(prefs.fontStyleKey, null)
+        )
       }
       lyricRepo.favorites().onEach { favorites ->
         _state.value = _state.value.copy(
@@ -240,7 +247,30 @@ class SettingsViewModel @Inject constructor(
       is SettingsUiEvent.Import -> onImport(event.uri)
       SettingsUiEvent.Export -> onExport()
       is SettingsUiEvent.DynamicColor -> onDynamicColor(event.isEnabled)
+      SettingsUiEvent.Font.Default -> onFontDefault()
+      is SettingsUiEvent.Font.Selected -> onFontSelected(event.fontFamily, event.fontName)
+
+      else -> Unit
     }
+  }
+
+  private fun onFontDefault() = viewModelScope.launch {
+    runCatching { prefs.context.fontFile().delete() }
+    _state.update { it.copy(fontFamily = null) }
+    prefs.remove(stringPreferencesKey(prefs.fontStyleKey))
+    channel.send(SettingsChannelEvent.FontStyle(null))
+  }
+
+  private fun onFontSelected(fontFamily: FontFamily?, fontName: String?) = viewModelScope.launch {
+    if (fontFamily == null) {
+      onFontDefault()
+      prefs.context.toast("The selected font is invalid. Please choose a valid font and try again.")
+      return@launch
+    }
+
+    prefs.put(prefs.fontStyleKey, fontName)
+    _state.update { it.copy(fontFamily = fontName) }
+    channel.send(SettingsChannelEvent.FontStyle(fontFamily))
   }
 
   private fun onDynamicColor(isEnabled: Boolean) = viewModelScope.launch {

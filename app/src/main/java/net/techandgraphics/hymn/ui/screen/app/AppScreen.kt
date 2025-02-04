@@ -84,9 +84,12 @@ fun AppScreen(
           onEvent = {
             if (it is SettingsUiEvent.DynamicColor)
               onThemeConfigs.invoke(ThemeConfigs(dynamicColor = it.isEnabled))
+
+            if (it is SettingsUiEvent.Font.Apply)
+              onThemeConfigs.invoke(ThemeConfigs(fontFamily = it.fontFamily))
+
             onEvent(it)
           },
-          onThemeConfigs = onThemeConfigs,
           channelFlow
         )
       }

@@ -22,6 +22,7 @@ fun SettingsTextComp(
   drawableRes: Int,
   title: String,
   description: String,
+  maxLines: Int = 3,
   trailingIcon: ImageVector? = null,
   onEvent: (() -> Unit)? = null
 ) {
@@ -49,7 +50,7 @@ fun SettingsTextComp(
       Text(
         text = description,
         style = MaterialTheme.typography.bodySmall,
-        maxLines = if (trailingIcon == null) 2 else 3,
+        maxLines = maxLines,
         overflow = TextOverflow.Ellipsis
       )
     }
