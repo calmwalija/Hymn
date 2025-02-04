@@ -9,3 +9,6 @@
 .cxx
 local.properties
 /.kotlin/errors/
+app/google-services.json
+app/src/main/assets/lyrics.json
+app/src/main/assets/other.json
