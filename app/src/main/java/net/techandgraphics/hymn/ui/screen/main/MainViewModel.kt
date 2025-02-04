@@ -53,6 +53,11 @@ class MainViewModel @Inject constructor(
     queryLyrics()
     queryCategories()
     querySearch()
+    emptyStateSuggestedLyrics()
+  }
+
+  private fun emptyStateSuggestedLyrics() = viewModelScope.launch {
+    _state.update { it.copy(emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested()) }
   }
 
   private fun querySearch() = searchRepo.query()
@@ -169,6 +174,7 @@ class MainViewModel @Inject constructor(
     .launchIn(viewModelScope)
 
   private fun onInsertSearchTag() = viewModelScope.launch {
+    if (state.value.lyrics.isEmpty()) return@launch
     val searchQuery = state.value.searchQuery.trim().lowercase()
     val searchList = searchQuery.removeSymbols().split(" ")
     SearchEntity(
