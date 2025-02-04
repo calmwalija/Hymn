@@ -173,6 +173,12 @@ fun MainScreen(
       }
     }
 
+    AnimatedVisibility(
+      isFocused && state.searchQuery.trim().isNotEmpty() && state.lyrics.isEmpty()
+    ) {
+      SearchEmptyState(state = state, onEvent = onEvent, paddingValues = it)
+    }
+
     AnimatedVisibility(state.searchQuery.trim().isEmpty()) {
       Column(
         modifier = Modifier

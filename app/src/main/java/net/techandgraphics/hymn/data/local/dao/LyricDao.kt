@@ -48,6 +48,9 @@ interface LyricDao {
   @Query("SELECT * FROM lyric WHERE favorite = 1 AND lang=:lang GROUP BY number HAVING MIN(number) ORDER BY CAST(number AS INT) ASC")
   fun favorites(lang: String): Flow<List<LyricEntity>>
 
+  @Query("SELECT * FROM lyric WHERE timestamp > 1 AND lang=:lang GROUP BY number HAVING MIN(number) ORDER BY RANDOM(), CAST(number AS INT) ASC LIMIT 4")
+  suspend fun emptyStateSuggested(lang: String): List<LyricEntity>
+
   @Query("SELECT * FROM lyric WHERE timestamp > 0 OR favorite = 1")
   suspend fun backup(): List<LyricEntity>
 
