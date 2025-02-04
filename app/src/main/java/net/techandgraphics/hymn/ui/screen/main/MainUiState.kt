@@ -9,10 +9,7 @@ data class MainUiState(
   val uniquelyCrafted: List<Lyric> = emptyList(),
   val diveInto: List<Lyric> = emptyList(),
   val lang: String = Lang.EN.lowercase(),
-  val onLangInvoke: Boolean = false,
-
   val categories: List<Category> = emptyList(),
-
   val lyrics: List<Lyric> = emptyList(),
   val emptyStateSuggestedLyrics: List<Lyric> = emptyList(),
   var isSearching: Boolean = false,

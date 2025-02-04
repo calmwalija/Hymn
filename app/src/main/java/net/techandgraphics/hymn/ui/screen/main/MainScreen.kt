@@ -38,7 +38,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,12 +48,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import net.techandgraphics.hymn.Faker
-import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.ui.screen.category.CategoryItem
-import net.techandgraphics.hymn.ui.screen.category.CategoryViewModel
 import net.techandgraphics.hymn.ui.screen.main.components.FeaturedCategoryItem
 import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
@@ -63,24 +63,27 @@ import net.techandgraphics.hymn.ui.theme.HymnTheme
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MainScreen(
+  channelFlow: Flow<MainChannelEvent>,
   state: MainUiState,
   onEvent: (MainUiEvent) -> Unit,
 ) {
 
   val context = LocalContext.current
-  val versionValue = context.resources.getStringArray(R.array.translation_values)
-  val versionEntries = context.resources.getStringArray(R.array.translation_entries)
   val colorScheme = MaterialTheme.colorScheme
   var showSheet by remember { mutableStateOf(false) }
   val isImeVisible = WindowInsets.isImeVisible
-
-  val viewModel = hiltViewModel<CategoryViewModel>()
-  val categoryViewModelState = viewModel.state.collectAsState().value
-
+  val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
   var isFocused by remember { mutableStateOf(false) }
+  val scrollState = rememberLazyListState()
 
-  LaunchedEffect(state.onLangInvoke) {
-    if (state.onLangInvoke) context.onTranslationChange(state.lang)
+  LaunchedEffect(key1 = channelFlow) {
+    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+      channelFlow.collect { event ->
+        when (event) {
+          MainChannelEvent.Language -> context.onTranslationChange(state.lang)
+        }
+      }
+    }
   }
 
   LaunchedEffect(state.searchQuery) { if (state.searchQuery.trim().isNotEmpty()) isFocused = true }
@@ -89,7 +92,6 @@ fun MainScreen(
     onEvent(MainUiEvent.LyricUiEvent.ClearLyricUiQuery)
   }
 
-  val scrollState = rememberLazyListState()
   Scaffold(
     topBar = {
       Column {
@@ -115,7 +117,7 @@ fun MainScreen(
               overflow = TextOverflow.Ellipsis
             )
           }
-          MainMenuItem(onEvent)
+          MainMenuItem(state, onEvent)
         }
 
         SearchBox(
@@ -229,7 +231,7 @@ fun MainScreen(
           if (showSheet) {
             ModalBottomSheet(onDismissRequest = { showSheet = false }) {
               LazyVerticalGrid(columns = GridCells.Fixed(1)) {
-                items(categoryViewModelState.categories) {
+                items(state.categories) {
                   CategoryItem(it) { event ->
                     showSheet = false
                     onEvent(event)
@@ -290,6 +292,7 @@ fun MainScreen(
 fun MainScreenPreview() {
   HymnTheme {
     MainScreen(
+      channelFlow = flow { },
       state = MainUiState(
         uniquelyCrafted = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric),
         diveInto = listOf(Faker.lyric, Faker.lyric, Faker.lyric, Faker.lyric)
