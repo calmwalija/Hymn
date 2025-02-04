@@ -51,7 +51,6 @@ fun SearchBox(
 ) {
 
   var keyboardText by remember { mutableStateOf(false) }
-  var isFocused by remember { mutableStateOf(false) }
   val focusRequester = remember { FocusRequester() }
 
   Row(verticalAlignment = Alignment.CenterVertically) {
@@ -59,10 +58,7 @@ fun SearchBox(
       modifier = Modifier
         .weight(1f)
         .focusRequester(focusRequester)
-        .onFocusChanged { focusState ->
-          isFocused = focusState.isFocused
-          onFocusRequester(isFocused)
-        }
+        .onFocusChanged { onFocusRequester(it.isFocused) }
         .padding(horizontal = 8.dp),
       shape = RoundedCornerShape(50),
       colors = CardDefaults.elevatedCardColors(),
