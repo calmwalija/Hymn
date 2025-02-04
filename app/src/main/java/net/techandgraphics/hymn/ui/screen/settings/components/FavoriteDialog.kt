@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.settings
+package net.techandgraphics.hymn.ui.screen.settings.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
+import net.techandgraphics.hymn.ui.screen.settings.SettingsUiEvent
+import net.techandgraphics.hymn.ui.screen.settings.SettingsUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
