@@ -40,7 +40,7 @@ fun AppScreen(
       with(hiltViewModel<MainViewModel>()) {
         LaunchedEffect(key1 = Unit) { get() }
         val state = state.collectAsState().value
-        MainScreen(state = state) { event ->
+        MainScreen(state = state, channelFlow = channelFlow) { event ->
           when (event) {
             is MainUiEvent.Event -> when (event.ofType) {
               MainUiEvent.OfType.Category -> {

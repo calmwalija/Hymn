@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.Lang
@@ -44,6 +46,8 @@ class MainViewModel @Inject constructor(
   val state: StateFlow<MainUiState> = _state.asStateFlow()
   private var searchJob: Job? = null
   private val delayDuration = 3L
+  private val channel = Channel<MainChannelEvent>()
+  val channelFlow = channel.receiveAsFlow()
 
   fun get() = viewModelScope.launch {
     analytics.tagScreen(Tag.MAIN_SCREEN)
@@ -70,8 +74,9 @@ class MainViewModel @Inject constructor(
 
   private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.put(prefs.translationKey, lang)
-    _state.update { it.copy(lang = lang, onLangInvoke = true) }
+    _state.update { it.copy(lang = lang) }
     get()
+    channel.send(MainChannelEvent.Language)
   }
 
   fun favorite(lyric: Lyric) =
