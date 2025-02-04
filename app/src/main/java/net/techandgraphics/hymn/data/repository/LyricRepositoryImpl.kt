@@ -72,9 +72,8 @@ class LyricRepositoryImpl @Inject constructor(
     dao.read(number, timestamp, lang ?: getLang())
   }
 
-  override suspend fun backup(): List<Lyric> {
-    return dao.backup().map { it.asModel() }
-  }
-
   override suspend fun getLastHymn(lang: String): Int = dao.getLastHymn(lang)
+
+  override suspend fun emptyStateSuggested() =
+    dao.emptyStateSuggested(getLang()).map { it.asModel() }
 }
