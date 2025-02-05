@@ -11,8 +11,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -40,7 +42,6 @@ class MainViewModel @Inject constructor(
   private val analytics: FirebaseAnalytics,
   private val searchRepo: SearchRepository,
   private val categoryRepo: CategoryRepository,
-
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainUiState())
@@ -50,42 +51,47 @@ class MainViewModel @Inject constructor(
   private val channel = Channel<MainChannelEvent>()
   val channelFlow = channel.receiveAsFlow()
 
-  fun get() = viewModelScope.launch {
+  init {
+    prepareData()
+  }
+
+  private fun prepareData() = viewModelScope.launch {
     analytics.tagScreen(Tag.MAIN_SCREEN)
     prefs.getAsFlow<String>(prefs.jsonBuildKey, "")
       .filterNotNull()
       .onEach {
-        _state.update { it.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase())) }
-        _state.update { it.copy(diveInto = lyricRepo.diveInto()) }
-        _state.update { it.copy(uniquelyCrafted = lyricRepo.uniquelyCrafted()) }
-        queryLyrics()
-        queryCategories()
-        querySearch()
-        queryFavorites()
-        emptyStateSuggestedLyrics()
+        _state.update {
+          it.copy(
+            lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()),
+            uniquelyCrafted = lyricRepo.uniquelyCrafted(),
+            emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested(),
+            categories = categoryRepo.query(_state.value.searchQuery)
+          )
+        }
       }.launchIn(viewModelScope)
+    observeData()
   }
 
-  private fun emptyStateSuggestedLyrics() = viewModelScope.launch {
-    _state.update { it.copy(emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested()) }
-  }
-
-  private fun querySearch() = searchRepo.query()
-    .onEach { _state.value = _state.value.copy(search = it.map { it.asModel() }) }
-    .launchIn(viewModelScope)
-
-  private fun queryCategories() = categoryRepo.query(_state.value.searchQuery)
-    .onEach { _state.value = _state.value.copy(categories = it) }
-    .launchIn(viewModelScope)
-
-  private fun queryFavorites() = lyricRepo.favorites()
-    .onEach { _state.value = _state.value.copy(favorites = it) }
-    .launchIn(viewModelScope)
+  private fun observeData() = combine(
+    lyricRepo.query(_state.value.searchQuery.trim()),
+    searchRepo.query().map { it.map { search -> search.asModel() } },
+    lyricRepo.diveInto(),
+    lyricRepo.favorites()
+  ) { lyrics, search, diveInto, favorites ->
+    _state.update {
+      it.copy(
+        lyrics = lyrics,
+        search = search,
+        diveInto = diveInto,
+        favorites = favorites,
+      )
+    }
+  }.launchIn(viewModelScope)
 
   private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.put(prefs.translationKey, lang)
     _state.update { it.copy(lang = lang) }
-    get()
+    prepareData()
     channel.send(MainChannelEvent.Language)
   }
 
@@ -94,9 +100,6 @@ class MainViewModel @Inject constructor(
       with(lyric.copy(favorite = !lyric.favorite)) {
         lyricRepo.favorite(favorite, number)
       }
-      lyricRepo.queryById(lyric.lyricId).onEach {
-        _state.value = _state.value.copy(uniquelyCrafted = it)
-      }.launchIn(this)
     }
 
   fun onEvent(event: MainUiEvent) {
@@ -147,7 +150,6 @@ class MainViewModel @Inject constructor(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
           delay(200)
-          queryLyrics()
           delay(delayDuration.times(200))
           _state.value = _state.value.copy(isSearching = false)
         }
@@ -183,10 +185,6 @@ class MainViewModel @Inject constructor(
       onEvent(MainUiEvent.LyricUiEvent.OnLyricUiQuery(state.value.searchQuery))
     }
   }
-
-  private fun queryLyrics() = lyricRepo.query(_state.value.searchQuery.trim())
-    .onEach { _state.value = _state.value.copy(lyrics = it) }
-    .launchIn(viewModelScope)
 
   private fun onInsertSearchTag() = viewModelScope.launch {
     if (state.value.lyrics.isEmpty()) return@launch

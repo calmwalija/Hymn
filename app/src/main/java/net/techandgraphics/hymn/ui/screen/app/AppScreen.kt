@@ -38,7 +38,6 @@ fun AppScreen(
 
     composable<Route.Home> {
       with(hiltViewModel<MainViewModel>()) {
-        LaunchedEffect(key1 = Unit) { get() }
         val state = state.collectAsState().value
         MainScreen(state = state, channelFlow = channelFlow) { event ->
           when (event) {
