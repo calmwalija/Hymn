@@ -32,9 +32,9 @@ class LyricRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun diveInto(): List<Lyric> {
+  override fun diveInto(): Flow<List<Lyric>> {
     return runBlocking {
-      dao.diveInto(getLang()).map { data -> data.asModel() }
+      dao.diveInto(getLang()).map { data -> data.map { it.asModel() } }
     }
   }
 

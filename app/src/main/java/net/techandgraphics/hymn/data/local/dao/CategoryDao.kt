@@ -20,7 +20,7 @@ interface CategoryDao : BaseDao<LyricEntity> {
         ORDER BY categoryName ASC
   """
   )
-  fun query(query: String = "", lang: String): Flow<List<CategoryEmbedded>>
+  suspend fun query(query: String = "", lang: String): List<CategoryEmbedded>
 
   @Transaction
   @Query("SELECT COUNT(DISTINCT(number)) || '-' || SUM(favorite)  as count, *  FROM lyric WHERE lang=:lang  GROUP BY categoryName ORDER BY RANDOM() LIMIT 2")

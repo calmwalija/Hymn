@@ -26,9 +26,9 @@ class CategoryRepositoryImpl @Inject constructor(
     }
   }
 
-  override fun query(query: String): Flow<List<Category>> {
+  override fun query(query: String): List<Category> {
     return runBlocking {
-      dao.query(query, getLang()).map { it.map { data -> data.asModel() } }
+      dao.query(query, getLang()).map { it.asModel() }
     }
   }
 
