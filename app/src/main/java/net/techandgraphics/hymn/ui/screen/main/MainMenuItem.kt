@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -118,8 +120,17 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
 
       DropdownMenuItem(
         text = { Text("Favorites") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Settings) },
-        leadingIcon = { Icon(Icons.Outlined.FavoriteBorder, contentDescription = null) }
+        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Favorites) },
+        leadingIcon = {
+          BadgedBox(
+            badge = {
+              if (state.favorites.isNotEmpty())
+                Badge { Text(state.favorites.size.toString()) }
+            }
+          ) {
+            Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
+          }
+        }
       )
 
       DropdownMenuItem(

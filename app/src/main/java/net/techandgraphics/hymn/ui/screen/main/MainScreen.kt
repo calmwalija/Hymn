@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.onTranslationChange
+import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.category.CategoryItem
 import net.techandgraphics.hymn.ui.screen.main.components.FeaturedCategoryItem
 import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
@@ -74,6 +76,7 @@ fun MainScreen(
   val isImeVisible = WindowInsets.isImeVisible
   val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
   var isFocused by remember { mutableStateOf(false) }
+  var showFavDialog by remember { mutableStateOf(false) }
   val scrollState = rememberLazyListState()
 
   LaunchedEffect(key1 = channelFlow) {
@@ -117,8 +120,22 @@ fun MainScreen(
               overflow = TextOverflow.Ellipsis
             )
           }
-          MainMenuItem(state, onEvent)
+          MainMenuItem(state) { event ->
+            when (event) {
+              MainUiEvent.MenuItem.Favorites -> {
+                if (state.favorites.isEmpty()) {
+                  context.toast("You do not have any favorite hymns yet.")
+                  return@MainMenuItem
+                }
+                showFavDialog = true
+              }
+
+              else -> onEvent(event)
+            }
+          }
         }
+
+        if (showFavDialog) FavoriteDialog(state, onEvent) { showFavDialog = false }
 
         SearchBox(
           state = state,
@@ -287,7 +304,7 @@ fun MainScreen(
   }
 }
 
-// @Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
   HymnTheme {

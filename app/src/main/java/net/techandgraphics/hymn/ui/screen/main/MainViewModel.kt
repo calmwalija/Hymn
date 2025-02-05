@@ -57,6 +57,7 @@ class MainViewModel @Inject constructor(
     queryLyrics()
     queryCategories()
     querySearch()
+    queryFavorites()
     emptyStateSuggestedLyrics()
   }
 
@@ -70,6 +71,10 @@ class MainViewModel @Inject constructor(
 
   private fun queryCategories() = categoryRepo.query(_state.value.searchQuery)
     .onEach { _state.value = _state.value.copy(categories = it) }
+    .launchIn(viewModelScope)
+
+  private fun queryFavorites() = lyricRepo.favorites()
+    .onEach { _state.value = _state.value.copy(favorites = it) }
     .launchIn(viewModelScope)
 
   private fun languageChange(lang: String) = viewModelScope.launch {
