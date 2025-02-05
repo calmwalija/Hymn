@@ -2,7 +2,6 @@ package net.techandgraphics.hymn.ui.screen.theCategory
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -51,16 +49,16 @@ fun TheCategoryScreen(
         )
         Card(
           colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
           ),
-          shape = RoundedCornerShape(topStart = 12.dp),
+          shape = RoundedCornerShape(topStart = 16.dp),
           modifier = Modifier
             .fillMaxWidth(0.75f)
             .align(Alignment.BottomEnd)
         ) {
           Column(
             modifier = Modifier
-              .padding(12.dp)
+              .padding(24.dp)
               .wrapContentHeight()
           ) {
             Text(
@@ -68,18 +66,12 @@ fun TheCategoryScreen(
               fontWeight = FontWeight.Bold,
               maxLines = 1,
               overflow = TextOverflow.Ellipsis,
-              fontSize = MaterialTheme.typography.bodyLarge.fontSize
+              style = MaterialTheme.typography.bodyLarge
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Badge(
-              containerColor = MaterialTheme.colorScheme.primary,
-            ) {
-              Text(
-                text = data.count.hymnCount(context),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary
-              )
-            }
+            Text(
+              text = data.count.hymnCount(context),
+              style = MaterialTheme.typography.labelMedium,
+            )
           }
         }
       }
