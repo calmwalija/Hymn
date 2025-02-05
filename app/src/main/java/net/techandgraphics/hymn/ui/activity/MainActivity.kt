@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
         dynamicColor = state.dynamicColorEnabled,
         fontFamily = state.fontFamily
       ) {
+        if (state.showStartupFailure) StartupFailureDialog { finish() }
         Surface(
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
