@@ -206,15 +206,14 @@ fun MainScreen(
           .verticalScroll(rememberScrollState())
       ) {
 
-        Text(
-          text = "Uniquely Crafted",
-          style = MaterialTheme.typography.titleMedium,
-          modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 26.dp)
-            .fillMaxWidth()
-        )
-
         if (state.uniquelyCrafted.isNotEmpty()) {
+          Text(
+            text = "Uniquely Crafted",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+              .padding(horizontal = 8.dp, vertical = 26.dp)
+              .fillMaxWidth()
+          )
           LazyRow(state = scrollState) {
             items(state.uniquelyCrafted) {
               UniquelyCraftedScreen(it, onEvent)

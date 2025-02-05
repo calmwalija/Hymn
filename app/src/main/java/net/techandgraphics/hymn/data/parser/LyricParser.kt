@@ -26,20 +26,18 @@ class LyricParser @Inject constructor(
   private val searchDao = database.searchDao
   private val filename = "lyrics.json"
 
-  private suspend fun readJsonFromAssetToString(event: suspend () -> Unit) {
+  private suspend fun readJsonFromAssetToString(event: suspend (Boolean) -> Unit) {
     withContext(Dispatchers.IO) {
       val ofType: Type = object : TypeToken<List<LyricEntity>>() {}.type
-      val json = Gson().fromJson<List<LyricEntity>>(
-        context readJsonFromAssetToString filename,
-        ofType
-      )
+      val file = (context.readJsonFromAssetToString(filename) ?: "")
+      val json = Gson().fromJson<List<LyricEntity>>(file.ifEmpty { "[]" }, ofType)
       jsonParser(json, event)
     }
   }
 
   private suspend fun jsonParser(
     lyrics: List<LyricEntity>,
-    event: suspend () -> Unit = {},
+    event: suspend (Boolean) -> Unit = {},
   ) {
     val data = lyrics.map {
       val title = try {
@@ -58,10 +56,10 @@ class LyricParser @Inject constructor(
         searchDao.upsert(Constant.searchEntityTags)
       }
     }
-    event.invoke()
+    event.invoke(data.isEmpty())
   }
 
-  suspend operator fun invoke(event: suspend () -> Unit) {
+  suspend operator fun invoke(event: suspend (Boolean) -> Unit) {
     readJsonFromAssetToString(event)
   }
 }

@@ -21,24 +21,22 @@ class OtherParser @Inject constructor(
 
   private val filename = "other.json"
 
-  private suspend fun readJsonFromAssetToString(onCompleted: suspend () -> Unit) {
+  private suspend fun readJsonFromAssetToString(onCompleted: suspend (Boolean) -> Unit) {
     withContext(Dispatchers.IO) {
       val ofType: Type = object : TypeToken<List<OtherEntity>>() {}.type
-      val json = Gson().fromJson<List<OtherEntity>>(
-        context readJsonFromAssetToString filename,
-        ofType
-      )
+      val file = context.readJsonFromAssetToString(filename) ?: ""
+      val json = Gson().fromJson<List<OtherEntity>>(file.ifEmpty { "[]" }, ofType)
       with(database) {
         withTransaction {
           otherDao.clearAll()
           otherDao.upsert(json)
-          onCompleted.invoke()
+          onCompleted.invoke(json.isEmpty())
         }
       }
     }
   }
 
-  suspend operator fun invoke(event: suspend () -> Unit): Boolean {
+  suspend operator fun invoke(event: suspend (Boolean) -> Unit): Boolean {
     readJsonFromAssetToString(event)
     return false
   }

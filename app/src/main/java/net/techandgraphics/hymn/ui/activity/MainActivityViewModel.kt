@@ -46,15 +46,18 @@ class MainActivityViewModel @Inject constructor(
       val dynamicColorEnabled = get<Boolean>(dynamicColorKey, true) ?: true
       _state.update { it.copy(dynamicColorEnabled = dynamicColorEnabled) }
       if (get(jsonBuildKey) == DataStorePrefs.JSON_BUILD_KEY) {
-        _state.value = _state.value.copy(completed = false)
+        _state.value = _state.value.copy(completed = false, showStartupFailure = false)
         return@launch
       }
-      lyricParser.invoke {
-        otherParser.invoke {
-          put(jsonBuildKey, DataStorePrefs.JSON_BUILD_KEY)
-          onInitialize()
-        }
+      var lyricIsEmpty = false
+      var otherIsEmpty = false
+      lyricParser.invoke { lyricIsEmpty = it; otherParser.invoke { otherIsEmpty = it } }
+      if (lyricIsEmpty || otherIsEmpty) {
+        _state.value = _state.value.copy(completed = false, showStartupFailure = true)
+        return@launch
       }
+      put(jsonBuildKey, DataStorePrefs.JSON_BUILD_KEY)
+      onInitialize()
     }
   }
 
