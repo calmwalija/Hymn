@@ -268,7 +268,7 @@ fun SettingsScreen(
     ) {
 
       SettingsTextComp(
-        drawableRes = R.drawable.ic_feedback,
+        drawableRes = R.drawable.ic_whatsapp,
         title = "Feedback",
         description = stringResource(id = R.string.feedback),
       ) {

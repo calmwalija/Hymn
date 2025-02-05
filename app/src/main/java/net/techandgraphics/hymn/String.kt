@@ -4,9 +4,6 @@ import android.content.Context
 import net.techandgraphics.hymn.domain.model.Lyric
 import java.util.Locale
 
-fun String.capitalizeFirst() =
-  lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-
 fun Lyric.toNumber() = "#${this.number}"
 
 fun String.hymnCount(context: Context): String {
@@ -28,5 +25,3 @@ fun String.capitaliseWord() = split(" ").joinToString(" ") {
     ) else it
   }
 }
-
-fun String.removeNextLine() = replace("\n", "")
