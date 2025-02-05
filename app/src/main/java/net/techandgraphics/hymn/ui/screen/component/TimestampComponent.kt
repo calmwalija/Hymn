@@ -30,7 +30,7 @@ fun TimestampComponent(
   AnimatedVisibility(visible = lyric.timestamp > 0L) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
-        painter = painterResource(id = R.drawable.ic_access_time),
+        painter = painterResource(id = R.drawable.ic_time),
         contentDescription = null,
         modifier = Modifier.padding(end = 4.dp)
       )
