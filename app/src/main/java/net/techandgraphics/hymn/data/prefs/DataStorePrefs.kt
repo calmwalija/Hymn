@@ -11,7 +11,9 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import net.techandgraphics.hymn.R
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -55,6 +57,19 @@ class DataStorePrefs @Inject constructor(
   suspend inline fun <reified T> get(key: String, value: T): T? {
     context.dataStore.data.first().let {
       return when (value) {
+        is Int -> it[intPreferencesKey(key)] as T?
+        is String -> it[stringPreferencesKey(key)] as T?
+        is Boolean -> it[booleanPreferencesKey(key)] as T?
+        is Long -> it[longPreferencesKey(key)] as T?
+        is Float -> it[floatPreferencesKey(key)] as T?
+        else -> it[stringPreferencesKey(key)] as T?
+      }
+    }
+  }
+
+  inline fun <reified T> getAsFlow(key: String, value: T): Flow<T?> {
+    return context.dataStore.data.map {
+      when (value) {
         is Int -> it[intPreferencesKey(key)] as T?
         is String -> it[stringPreferencesKey(key)] as T?
         is Boolean -> it[booleanPreferencesKey(key)] as T?

@@ -11,6 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -51,14 +52,18 @@ class MainViewModel @Inject constructor(
 
   fun get() = viewModelScope.launch {
     analytics.tagScreen(Tag.MAIN_SCREEN)
-    _state.update { it.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase())) }
-    _state.update { it.copy(diveInto = lyricRepo.diveInto()) }
-    _state.update { it.copy(uniquelyCrafted = lyricRepo.uniquelyCrafted()) }
-    queryLyrics()
-    queryCategories()
-    querySearch()
-    queryFavorites()
-    emptyStateSuggestedLyrics()
+    prefs.getAsFlow<String>(prefs.jsonBuildKey, "")
+      .filterNotNull()
+      .onEach {
+        _state.update { it.copy(lang = prefs.get(prefs.translationKey, Lang.EN.lowercase())) }
+        _state.update { it.copy(diveInto = lyricRepo.diveInto()) }
+        _state.update { it.copy(uniquelyCrafted = lyricRepo.uniquelyCrafted()) }
+        queryLyrics()
+        queryCategories()
+        querySearch()
+        queryFavorites()
+        emptyStateSuggestedLyrics()
+      }.launchIn(viewModelScope)
   }
 
   private fun emptyStateSuggestedLyrics() = viewModelScope.launch {
