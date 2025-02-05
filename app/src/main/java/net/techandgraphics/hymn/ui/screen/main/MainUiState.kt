@@ -11,6 +11,7 @@ data class MainUiState(
   val lang: String = Lang.EN.lowercase(),
   val categories: List<Category> = emptyList(),
   val lyrics: List<Lyric> = emptyList(),
+  val favorites: List<Lyric> = emptyList(),
   val emptyStateSuggestedLyrics: List<Lyric> = emptyList(),
   var isSearching: Boolean = false,
   val search: List<Search> = emptyList(),
