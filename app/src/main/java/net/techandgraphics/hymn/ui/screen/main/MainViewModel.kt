@@ -72,6 +72,10 @@ class MainViewModel @Inject constructor(
     observeData()
   }
 
+  private fun onQueryChange() = lyricRepo.query(_state.value.searchQuery.trim())
+    .onEach { _state.value = _state.value.copy(lyrics = it) }
+    .launchIn(viewModelScope)
+
   private fun observeData() = combine(
     lyricRepo.query(_state.value.searchQuery.trim()),
     searchRepo.query().map { it.map { search -> search.asModel() } },
@@ -150,6 +154,7 @@ class MainViewModel @Inject constructor(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
           delay(200)
+          onQueryChange()
           delay(delayDuration.times(200))
           _state.value = _state.value.copy(isSearching = false)
         }
