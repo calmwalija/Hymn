@@ -1,8 +1,11 @@
 package net.techandgraphics.hymn.ui.screen.app
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -28,10 +31,12 @@ import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 
 @Composable
 fun AppScreen(
+  paddingValues: PaddingValues,
   onThemeConfigs: (ThemeConfigs) -> Unit,
   navController: NavHostController = rememberNavController(),
 ) {
   NavHost(
+    modifier = Modifier.padding(paddingValues),
     navController = navController,
     startDestination = Route.Home,
   ) {

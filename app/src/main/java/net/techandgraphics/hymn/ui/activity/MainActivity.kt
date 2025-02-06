@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -44,12 +45,15 @@ class MainActivity : ComponentActivity() {
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
         ) {
-          AppScreen(
-            onThemeConfigs = { config ->
-              config.dynamicColor?.let { viewModel.onEvent(DynamicColor(it)) }
-              viewModel.onEvent(FontStyle(config.fontFamily))
-            }
-          )
+          Scaffold {
+            AppScreen(
+              paddingValues = it,
+              onThemeConfigs = { config ->
+                config.dynamicColor?.let { viewModel.onEvent(DynamicColor(it)) }
+                viewModel.onEvent(FontStyle(config.fontFamily))
+              }
+            )
+          }
         }
       }
     }
