@@ -9,13 +9,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -222,7 +226,7 @@ fun SettingsScreen(
       colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
     ) {
 
-      SettingsTextComp(
+      SettingsTextExpComp(
         drawableRes = R.drawable.ic_upload,
         title = "Export",
         description = "Quickly transfer your data by exporting it in JSON format.",
@@ -231,7 +235,17 @@ fun SettingsScreen(
       HorizontalDivider()
 
       SettingContentComp(
-        title = "Import",
+        title = {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+              text = "Import",
+              color = MaterialTheme.colorScheme.primary,
+              fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Badge { Text("Experimental") }
+          }
+        },
         description = "Easily bring in your exported data and get started with your information in no time.",
         onEvent = { if (!isImporting) jsonPicker.launch("application/json") },
         content = {
