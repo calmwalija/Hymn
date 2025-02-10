@@ -58,6 +58,7 @@ fun HymnTheme(
     SideEffect {
       val window = (view.context as Activity).window
       systemUiController.setSystemBarsColor(color = colorScheme.primary)
+      systemUiController.setNavigationBarColor(color = colorScheme.surface)
       WindowCompat.getInsetsController(window, window.decorView).apply {
         isAppearanceLightStatusBars = !darkTheme
         isAppearanceLightNavigationBars = !darkTheme

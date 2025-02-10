@@ -279,7 +279,7 @@ fun SettingsScreen(
 
       SettingsTextComp(
         drawableRes = R.drawable.ic_rate,
-        title = "Feedback",
+        title = "Rate",
         description = stringResource(id = R.string.rate),
       ) {
         context.startActivity(Intent(ACTION_VIEW).setData(parse(playStoreUrl)))
