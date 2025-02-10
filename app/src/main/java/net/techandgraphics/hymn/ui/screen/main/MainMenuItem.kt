@@ -113,32 +113,37 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
     }
   }
 
-  IconButton(onClick = { expanded = true }) {
-    Icon(Icons.Default.MoreVert, contentDescription = "Localized description")
-
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-
-      DropdownMenuItem(
-        text = { Text("Favorites") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Favorites) },
-        leadingIcon = {
-          BadgedBox(
-            badge = {
-              if (state.favorites.isNotEmpty())
-                Badge { Text(state.favorites.size.toString()) }
+  if (state.favorites.isNotEmpty()) {
+    IconButton(onClick = { expanded = true }) {
+      BadgedBox(badge = { Badge() }) {
+        Icon(Icons.Default.MoreVert, contentDescription = "MoreVert")
+      }
+      DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+          text = { Text("Favorites") },
+          onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Favorites) },
+          leadingIcon = {
+            BadgedBox(
+              badge = {
+                if (state.favorites.isNotEmpty())
+                  Badge { Text(state.favorites.size.toString()) }
+              }
+            ) {
+              Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
             }
-          ) {
-            Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
           }
-        }
-      )
-
-      DropdownMenuItem(
-        text = { Text("Settings") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Settings) },
-        leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-        trailingIcon = {}
-      )
+        )
+        DropdownMenuItem(
+          text = { Text("Settings") },
+          onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Settings) },
+          leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
+          trailingIcon = {}
+        )
+      }
+    }
+  } else {
+    IconButton(onClick = { onEvent(MainUiEvent.MenuItem.Settings) }) {
+      Icon(Icons.Outlined.Settings, contentDescription = null)
     }
   }
 }

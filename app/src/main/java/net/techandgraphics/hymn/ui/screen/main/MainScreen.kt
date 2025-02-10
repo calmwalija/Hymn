@@ -132,9 +132,16 @@ fun MainScreen(
               else -> onEvent(event)
             }
           }
+          Spacer(modifier = Modifier.width(8.dp))
         }
 
-        if (showFavDialog) FavoriteDialog(state, onEvent) { showFavDialog = false }
+        if (showFavDialog) FavoriteDialog(
+          state,
+          onEvent = {
+            showFavDialog = false
+            onEvent(it)
+          }
+        ) { showFavDialog = false }
 
         SearchBox(
           state = state,
