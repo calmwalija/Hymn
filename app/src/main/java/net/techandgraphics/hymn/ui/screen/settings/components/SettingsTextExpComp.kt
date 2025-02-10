@@ -52,7 +52,7 @@ fun SettingsTextExpComp(
           color = MaterialTheme.colorScheme.primary,
           fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Badge { Text("Experimental") }
       }
       Text(

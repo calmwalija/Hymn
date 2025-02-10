@@ -10,13 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun SettingContentComp(
-  title: String,
+  title: @Composable () -> Unit,
   description: String,
   maxLines: Int = 3,
   content: @Composable () -> Unit,
@@ -35,11 +34,7 @@ fun SettingContentComp(
         .weight(1f)
         .padding(start = 24.dp, end = 16.dp)
     ) {
-      Text(
-        text = title,
-        color = MaterialTheme.colorScheme.primary,
-        fontWeight = FontWeight.Bold
-      )
+      title()
       Text(
         text = description,
         style = MaterialTheme.typography.bodySmall,
