@@ -94,7 +94,7 @@ fun AppScreen(
 
             onEvent(it)
           },
-          channelFlow
+          channelFlow = channelFlow
         )
       }
     }

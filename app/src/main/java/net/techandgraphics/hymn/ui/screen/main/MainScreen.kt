@@ -98,7 +98,6 @@ fun MainScreen(
   Scaffold(
     topBar = {
       Column {
-        Spacer(modifier = Modifier.height(20.dp))
         Row(
           modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 16.dp)
@@ -186,7 +185,7 @@ fun MainScreen(
               onEvent(event)
             },
             modifier = Modifier.animateItem(),
-            showDivider = index.plus(1) < state.diveInto.size
+            showDivider = index.plus(1) < state.lyrics.size
           )
         }
       }
