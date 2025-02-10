@@ -3,6 +3,7 @@ package net.techandgraphics.hymn.ui.screen.main
 import net.techandgraphics.hymn.data.local.Lang
 import net.techandgraphics.hymn.domain.model.Category
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.domain.model.Other
 import net.techandgraphics.hymn.domain.model.Search
 
 data class MainUiState(
@@ -16,4 +17,6 @@ data class MainUiState(
   var isSearching: Boolean = false,
   val search: List<Search> = emptyList(),
   var searchQuery: String = "",
+  var fontSize: Int = 1,
+  val theCreedAndLordsPrayer: List<Other> = emptyList(),
 )

@@ -1,10 +1,12 @@
-package net.techandgraphics.hymn.ui.screen.settings.components
+package net.techandgraphics.hymn.ui.screen.main.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -15,29 +17,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import net.techandgraphics.hymn.ui.screen.main.MainUiState
 import net.techandgraphics.hymn.ui.screen.preview.READ_FONT_SIZE_THRESH_HOLD
 import net.techandgraphics.hymn.ui.screen.preview.READ_LINE_HEIGHT_THRESH_HOLD
-import net.techandgraphics.hymn.ui.screen.settings.SettingsUiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ApostleCreedDialog(
-  state: SettingsUiState,
+@OptIn(ExperimentalMaterial3Api::class)
+fun LordsPrayerDialog(
+  state: MainUiState,
   onDismissRequest: () -> Unit
 ) {
   ModalBottomSheet(onDismissRequest = onDismissRequest) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = Modifier.padding(horizontal = 16.dp)
+      modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .padding(horizontal = 16.dp)
     ) {
       Text(
-        text = state.complementary.last().groupName,
+        text = state.theCreedAndLordsPrayer.first().groupName,
         color = MaterialTheme.colorScheme.primary,
         style = MaterialTheme.typography.titleLarge
       )
       Spacer(modifier = Modifier.height(16.dp))
       Text(
-        text = state.complementary.last().content,
+        text = state.theCreedAndLordsPrayer.first().content,
         style = MaterialTheme.typography.bodyMedium,
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth(),

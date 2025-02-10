@@ -13,7 +13,8 @@ sealed interface MainUiEvent {
 
   sealed class MenuItem {
     data object Settings : MainUiEvent
-    data object Translation : MainUiEvent
+    data object ApostlesCreed : MainUiEvent
+    data object LordsPrayer : MainUiEvent
     data object Favorites : MainUiEvent
   }
 
