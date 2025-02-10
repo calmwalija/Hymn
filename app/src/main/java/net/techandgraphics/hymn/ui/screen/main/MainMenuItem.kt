@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -79,8 +80,7 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
       translations.forEach { translation ->
         DropdownMenuItem(
           colors = MenuDefaults.itemColors(
-            disabledTextColor = if (currentTranslation == translation)
-              MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+            disabledTextColor = if (currentTranslation == translation) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
           ),
           enabled = currentTranslation != translation,
           text = { Text(translation.translation) },
@@ -101,55 +101,78 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
             )
           },
           trailingIcon = {
-            if (currentTranslation == translation)
-              Icon(
-                imageVector = Icons.Default.CheckCircle,
-                tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = null
-              )
+            if (currentTranslation == translation) Icon(
+              imageVector = Icons.Default.CheckCircle,
+              tint = MaterialTheme.colorScheme.onSurface,
+              contentDescription = null
+            )
           }
         )
       }
     }
   }
 
-  if (state.favorites.isNotEmpty()) {
-    IconButton(onClick = { expanded = true }) {
-      BadgedBox(badge = { Badge() }) {
-        Icon(Icons.Default.MoreVert, contentDescription = "MoreVert")
-      }
-      DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-        DropdownMenuItem(
-          text = { Text("Favorites") },
-          onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Favorites) },
-          leadingIcon = {
-            BadgedBox(
-              badge = {
-                if (state.favorites.isNotEmpty())
-                  Badge { Text(state.favorites.size.toString()) }
-              }
-            ) {
-              Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
-            }
-          }
-        )
-        DropdownMenuItem(
-          text = { Text("Settings") },
-          onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Settings) },
-          leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-          trailingIcon = {}
-        )
-      }
+  IconButton(onClick = { expanded = true }) {
+    BadgedBox(badge = { if (state.favorites.isNotEmpty()) Badge() }) {
+      Icon(Icons.Default.MoreVert, contentDescription = "MoreVert")
     }
-  } else {
-    IconButton(onClick = { onEvent(MainUiEvent.MenuItem.Settings) }) {
-      Icon(Icons.Outlined.Settings, contentDescription = null)
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+
+      DropdownMenuItem(
+        text = { Text("Favorite Hymns") },
+        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Favorites) },
+        leadingIcon = {
+          BadgedBox(
+            badge = {
+              if (state.favorites.isNotEmpty()) Badge { Text(state.favorites.size.toString()) }
+            }
+          ) {
+            Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
+          }
+        },
+        trailingIcon = { }
+      )
+
+      HorizontalDivider()
+
+      DropdownMenuItem(
+        text = { Text("Apostles Creed") },
+        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.ApostlesCreed) },
+        leadingIcon = {
+          Icon(
+            painter = painterResource(R.drawable.ic_creed),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp)
+          )
+        },
+        trailingIcon = {}
+      )
+
+      DropdownMenuItem(
+        text = { Text("Lords Prayer") },
+        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.LordsPrayer) },
+        leadingIcon = {
+          Icon(
+            painter = painterResource(R.drawable.ic_prayer),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp)
+          )
+        },
+        trailingIcon = {}
+      )
+
+      HorizontalDivider()
+
+      DropdownMenuItem(
+        text = { Text("Settings") },
+        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Settings) },
+        leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
+        trailingIcon = {}
+      )
     }
   }
 }
 
-@Preview
-@Composable
-fun MainMenuItemPreview() {
+@Preview @Composable fun MainMenuItemPreview() {
   MainMenuItem(state = MainUiState(), onEvent = {})
 }

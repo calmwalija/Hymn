@@ -48,10 +48,8 @@ import net.techandgraphics.hymn.getAppVersion
 import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Export
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import
-import net.techandgraphics.hymn.ui.screen.settings.components.ApostleCreedDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.FilePicker
 import net.techandgraphics.hymn.ui.screen.settings.components.FontStyleDialog
-import net.techandgraphics.hymn.ui.screen.settings.components.LordsPrayerDialog
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingContentComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsSwitchComp
 import net.techandgraphics.hymn.ui.screen.settings.components.SettingsTextComp
@@ -70,8 +68,6 @@ fun SettingsScreen(
   val playStoreUrl = "https://play.google.com/store/apps/details?id=net.techandgraphics.hymn"
 
   var progressStatus by remember { mutableStateOf(Import.ProgressStatus(-1, -1)) }
-  var apostleCreedShow by remember { mutableStateOf(false) }
-  var lordsPrayerShow by remember { mutableStateOf(false) }
   var fontStyleShow by remember { mutableStateOf(false) }
   var filePickerShow by remember { mutableStateOf(false) }
 
@@ -297,41 +293,6 @@ fun SettingsScreen(
         description = stringResource(id = R.string.rate),
       ) {
         context.startActivity(Intent(ACTION_VIEW).setData(parse(playStoreUrl)))
-      }
-    }
-    if (state.complementary.isNotEmpty()) {
-      Spacer(modifier = Modifier.height(32.dp))
-      Text(
-        text = "Complementary",
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(bottom = 16.dp, start = 8.dp)
-      )
-      Card(
-        elevation = CardDefaults.elevatedCardElevation(
-          defaultElevation = 1.dp
-        ),
-        colors = CardDefaults.elevatedCardColors(), modifier = Modifier.padding(4.dp)
-      ) {
-        SettingsTextComp(
-          drawableRes = R.drawable.ic_prayer,
-          title = state.complementary.first().groupName,
-          description = state.complementary.first().content.replace("\n", ""),
-        ) {
-          lordsPrayerShow = true
-        }
-
-        HorizontalDivider()
-
-        if (lordsPrayerShow) LordsPrayerDialog(state) { lordsPrayerShow = false }
-        if (apostleCreedShow) ApostleCreedDialog(state) { apostleCreedShow = false }
-
-        SettingsTextComp(
-          drawableRes = R.drawable.ic_creed,
-          title = state.complementary.last().groupName,
-          description = state.complementary.last().content.replace("\n", ""),
-        ) {
-          apostleCreedShow = true
-        }
       }
     }
   }

@@ -26,6 +26,7 @@ import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
+import net.techandgraphics.hymn.domain.repository.OtherRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.tagEvent
@@ -42,6 +43,7 @@ class MainViewModel @Inject constructor(
   private val analytics: FirebaseAnalytics,
   private val searchRepo: SearchRepository,
   private val categoryRepo: CategoryRepository,
+  private val otherRepo: OtherRepository,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainUiState())
@@ -65,7 +67,9 @@ class MainViewModel @Inject constructor(
             lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()),
             uniquelyCrafted = lyricRepo.uniquelyCrafted(),
             emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested(),
-            categories = categoryRepo.query(_state.value.searchQuery)
+            categories = categoryRepo.query(_state.value.searchQuery),
+            theCreedAndLordsPrayer = otherRepo.query(),
+            fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
           )
         }
       }.launchIn(viewModelScope)

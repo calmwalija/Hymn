@@ -57,7 +57,9 @@ import net.techandgraphics.hymn.Faker
 import net.techandgraphics.hymn.onTranslationChange
 import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.category.CategoryItem
+import net.techandgraphics.hymn.ui.screen.main.components.ApostleCreedDialog
 import net.techandgraphics.hymn.ui.screen.main.components.FeaturedCategoryItem
+import net.techandgraphics.hymn.ui.screen.main.components.LordsPrayerDialog
 import net.techandgraphics.hymn.ui.screen.main.components.LyricScreenItem
 import net.techandgraphics.hymn.ui.screen.main.components.UniquelyCraftedScreen
 import net.techandgraphics.hymn.ui.theme.HymnTheme
@@ -78,6 +80,11 @@ fun MainScreen(
   var isFocused by remember { mutableStateOf(false) }
   var showFavDialog by remember { mutableStateOf(false) }
   val scrollState = rememberLazyListState()
+  var apostleCreedShow by remember { mutableStateOf(false) }
+  var lordsPrayerShow by remember { mutableStateOf(false) }
+
+  if (lordsPrayerShow) LordsPrayerDialog(state) { lordsPrayerShow = false }
+  if (apostleCreedShow) ApostleCreedDialog(state) { apostleCreedShow = false }
 
   LaunchedEffect(key1 = channelFlow) {
     lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -129,16 +136,19 @@ fun MainScreen(
                 showFavDialog = true
               }
 
+              MainUiEvent.MenuItem.ApostlesCreed -> apostleCreedShow = true
+              MainUiEvent.MenuItem.LordsPrayer -> lordsPrayerShow = true
+
               else -> onEvent(event)
             }
           }
-          Spacer(modifier = Modifier.width(8.dp))
         }
 
         if (showFavDialog) FavoriteDialog(
-          state,
+          favorites = state.favorites,
           onEvent = {
-            showFavDialog = false
+            if (it is MainUiEvent.Event)
+              showFavDialog = false
             onEvent(it)
           }
         ) { showFavDialog = false }

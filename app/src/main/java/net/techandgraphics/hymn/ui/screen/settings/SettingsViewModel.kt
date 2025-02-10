@@ -25,7 +25,6 @@ import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.dateFormat
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
-import net.techandgraphics.hymn.domain.repository.OtherRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
 import net.techandgraphics.hymn.domain.repository.TimestampRepository
@@ -46,7 +45,6 @@ import kotlin.random.Random
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
   private val lyricRepo: LyricRepository,
-  private val otherRepo: OtherRepository,
   private val timeSpentRepo: TimeSpentRepository,
   private val timestampRepo: TimestampRepository,
   private val searchRepo: SearchRepository,
@@ -73,7 +71,6 @@ class SettingsViewModel @Inject constructor(
       lyricRepo.favorites().onEach { favorites ->
         _state.value = _state.value.copy(
           favorites = favorites,
-          complementary = otherRepo.query(),
           fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
         )
       }.launchIn(this)

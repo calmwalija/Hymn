@@ -1,4 +1,4 @@
-package net.techandgraphics.hymn.ui.screen.settings.components
+package net.techandgraphics.hymn.ui.screen.main.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import net.techandgraphics.hymn.ui.screen.main.MainUiState
 import net.techandgraphics.hymn.ui.screen.preview.READ_FONT_SIZE_THRESH_HOLD
 import net.techandgraphics.hymn.ui.screen.preview.READ_LINE_HEIGHT_THRESH_HOLD
-import net.techandgraphics.hymn.ui.screen.settings.SettingsUiState
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun LordsPrayerDialog(
-  state: SettingsUiState,
+@Composable
+fun ApostleCreedDialog(
+  state: MainUiState,
   onDismissRequest: () -> Unit
 ) {
   ModalBottomSheet(onDismissRequest = onDismissRequest) {
@@ -31,13 +31,13 @@ fun LordsPrayerDialog(
       modifier = Modifier.padding(horizontal = 16.dp)
     ) {
       Text(
-        text = state.complementary.first().groupName,
+        text = state.theCreedAndLordsPrayer.last().groupName,
         color = MaterialTheme.colorScheme.primary,
         style = MaterialTheme.typography.titleLarge
       )
       Spacer(modifier = Modifier.height(16.dp))
       Text(
-        text = state.complementary.first().content,
+        text = state.theCreedAndLordsPrayer.last().content,
         style = MaterialTheme.typography.bodyMedium,
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth(),
