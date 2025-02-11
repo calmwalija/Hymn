@@ -18,9 +18,4 @@
         <item quantity="other">%d hours</item>
     </plurals>
 
-    <plurals name="hymn">
-        <item quantity="one">hymn</item>
-        <item quantity="other">hymns</item>
-    </plurals>
-
 </resources>
