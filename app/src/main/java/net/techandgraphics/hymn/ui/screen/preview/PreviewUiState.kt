@@ -6,4 +6,6 @@ data class PreviewUiState(
   val translationInverse: Boolean = false,
   val lyrics: List<PreviewLyricKey> = emptyList(),
   val fontSize: Int = 1,
+  val gotToPrevHymn: Int = -1,
+  val gotToNextHymn: Int = -1,
 )

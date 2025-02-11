@@ -8,11 +8,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -48,8 +46,6 @@ class PreviewViewModel @Inject constructor(
   private var fontJob: Job? = null
   private var translationJob: Job? = null
   private val identifier = "identifier"
-  private val channel = Channel<HorizontalGesture>()
-  val channelFlow = channel.receiveAsFlow()
 
   private suspend fun getLang() = prefs.get(prefs.translationKey, Lang.EN.lowercase())
 
@@ -89,8 +85,16 @@ class PreviewViewModel @Inject constructor(
       translationJob?.cancel()
       delay(1000)
       read(data.first().lyric)
+      val currentHymn = state.value.lyrics.first().lyric.number
+      val gotToPrevHymn = get(currentHymn.minus(1))?.number ?: -1
+      val gotToNextHymn = get(currentHymn.plus(1))?.number ?: -1
+      _state.update {
+        it.copy(gotToPrevHymn = gotToPrevHymn, gotToNextHymn = gotToNextHymn)
+      }
     }
   }
+
+  private suspend fun get(theNumber: Int) = lyricRepo.queryByNumber(theNumber).firstOrNull()
 
   private fun read(data: Lyric) = with(data) {
     viewModelScope.launch {
@@ -133,23 +137,11 @@ class PreviewViewModel @Inject constructor(
         setLyricsData()
       }
 
-      is PreviewUiEvent.HorizontalDragGesture -> onHorizontalDragGesture(event)
+      is PreviewUiEvent.Invoke -> {
+        event.theNumber.takeIf { it > 0 }?.let { invoke(event.theNumber) }
+      }
     }
   }
-
-  private fun onHorizontalDragGesture(event: PreviewUiEvent.HorizontalDragGesture) =
-    viewModelScope.launch {
-      val lyricNumber = state.value.lyrics.first().lyric.number
-      channel.send(
-        HorizontalGesture(
-          lyricNumber,
-          when (event.direction) {
-            Direction.LEFT -> lyricNumber.minus(1)
-            Direction.RIGHT -> lyricNumber.plus(1)
-          }
-        )
-      )
-    }
 
   private fun firebaseAnalytics(lyric: Lyric) = with(analytics) {
     tagScreen(Tag.READ_SCREEN)

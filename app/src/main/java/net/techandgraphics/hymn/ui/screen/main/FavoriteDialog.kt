@@ -11,20 +11,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -33,9 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toNumber
-import net.techandgraphics.hymn.ui.screen.component.Swipe4Action
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.Event
-import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.Favorite
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.OfType
 
 @Composable
@@ -48,57 +37,39 @@ fun FavoriteDialog(
     ElevatedCard(modifier = Modifier.heightIn(max = 450.dp)) {
       LazyColumn(state = rememberLazyListState()) {
         itemsIndexed(favorites, key = { _, lyric -> lyric.lyricId }) { index, lyric ->
-          var isRevealed by remember { mutableStateOf(false) }
-          Swipe4Action(
-            onExpanded = { isRevealed = true },
-            onCollapsed = { isRevealed = false },
-            isRevealed = isRevealed,
-            actions = {
-              IconButton(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                onClick = { isRevealed = false; onEvent(Favorite(lyric)) }
-              ) {
-                Icon(Icons.Outlined.Clear, null)
-              }
-            },
-            content = {
-              Row(
-                modifier = Modifier
-                  .animateItem()
-                  .clickable { onEvent(Event(OfType.Preview, lyric.number)) }
-                  .padding(8.dp)
-                  .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                  text = lyric.toNumber(),
-                  fontWeight = FontWeight.Bold,
-                  style = MaterialTheme.typography.headlineSmall,
-                )
-                Column(
-                  modifier = Modifier
-                    .padding(16.dp)
-                    .weight(1f)
-                ) {
-                  Text(
-                    text = lyric.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.primary,
-                  )
-                  Text(
-                    text = lyric.categoryName,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall,
-                  )
-                }
-                Icon(Icons.Outlined.FavoriteBorder, null)
-                Spacer(modifier = Modifier.width(16.dp))
-              }
+          Row(
+            modifier = Modifier
+              .animateItem()
+              .clickable { onEvent(Event(OfType.Preview, lyric.number)) }
+              .padding(8.dp)
+              .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+              text = lyric.toNumber(),
+              fontWeight = FontWeight.Bold,
+              style = MaterialTheme.typography.headlineSmall,
+            )
+            Column(
+              modifier = Modifier
+                .padding(16.dp)
+                .weight(1f)
+            ) {
+              Text(
+                text = lyric.title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.primary,
+              )
+              Text(
+                text = lyric.categoryName,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodySmall,
+              )
             }
-          )
+          }
           if (index.plus(1) < favorites.size) HorizontalDivider()
         }
       }

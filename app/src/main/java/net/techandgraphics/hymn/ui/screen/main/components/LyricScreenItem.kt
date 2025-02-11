@@ -32,9 +32,7 @@ fun LyricScreenItem(
   showDivider: Boolean = true,
   onEvent: (MainUiEvent) -> Unit,
 ) {
-
   val context = LocalContext.current
-
   Column(
     modifier = modifier
       .clickable {
@@ -73,13 +71,13 @@ fun LyricScreenItem(
         TimestampComponent(context, lyric, TimestampFormat.Short)
       }
     }
-    if (showDivider)
-      HorizontalDivider(
-        modifier = Modifier
-          .padding(horizontal = 16.dp)
-          .padding(start = 84.dp)
-      )
   }
+  if (showDivider)
+    HorizontalDivider(
+      modifier = Modifier
+        .padding(horizontal = 16.dp)
+        .padding(start = 84.dp)
+    )
 }
 
 @Preview(showBackground = true)

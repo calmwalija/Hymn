@@ -7,8 +7,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -101,23 +99,8 @@ fun AppScreen(
 
     composable<Route.Preview> {
       with(hiltViewModel<PreviewViewModel>()) {
-        LaunchedEffect(key1 = true) {
-          invoke(it.toRoute<Route.Preview>().id)
-        }
+        LaunchedEffect(key1 = true) { invoke(it.toRoute<Route.Preview>().id) }
         val state = state.collectAsState().value
-        val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-        LaunchedEffect(key1 = channelFlow) {
-          lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            channelFlow.collect {
-              with(navController) {
-                popBackStack(Route.Preview(it.old), inclusive = true)
-                navigate(Route.Preview(it.new)) {
-                  launchSingleTop = true
-                }
-              }
-            }
-          }
-        }
         PreviewScreen(state, navController, ::onEvent)
       }
     }

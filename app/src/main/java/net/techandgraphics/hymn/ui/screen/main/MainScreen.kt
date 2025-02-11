@@ -1,7 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.main
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -149,6 +148,11 @@ fun MainScreen(
           onEvent = {
             if (it is MainUiEvent.Event)
               showFavDialog = false
+
+            if (it is MainUiEvent.Favorite) {
+              showFavDialog = state.favorites.isNotEmpty()
+            }
+
             onEvent(it)
           }
         ) { showFavDialog = false }
@@ -159,7 +163,7 @@ fun MainScreen(
           event = onEvent
         )
 
-        AnimatedVisibility(visible = state.searchQuery.trim().isEmpty()) {
+        if (state.searchQuery.trim().isEmpty()) {
           Column {
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow {
@@ -192,7 +196,7 @@ fun MainScreen(
     },
   ) {
 
-    AnimatedVisibility(isFocused && state.searchQuery.trim().isNotEmpty()) {
+    if (isFocused && state.searchQuery.trim().isNotEmpty()) {
       LazyColumn(modifier = Modifier.padding(it)) {
         itemsIndexed(state.lyrics, key = { _, lyric -> lyric.lyricId }) { index, lyric ->
           LyricScreenItem(
@@ -208,13 +212,11 @@ fun MainScreen(
       }
     }
 
-    AnimatedVisibility(
-      isFocused && state.searchQuery.trim().isNotEmpty() && state.lyrics.isEmpty()
-    ) {
+    if (isFocused && state.searchQuery.trim().isNotEmpty() && state.lyrics.isEmpty()) {
       SearchEmptyState(state = state, onEvent = onEvent, paddingValues = it)
     }
 
-    AnimatedVisibility(state.searchQuery.trim().isEmpty()) {
+    if (state.searchQuery.trim().isEmpty()) {
       Column(
         modifier = Modifier
           .padding(it)
@@ -263,8 +265,8 @@ fun MainScreen(
           if (showSheet) {
             ModalBottomSheet(onDismissRequest = { showSheet = false }) {
               LazyVerticalGrid(columns = GridCells.Fixed(1)) {
-                items(state.categories) {
-                  CategoryItem(it) { event ->
+                items(state.categories) { category ->
+                  CategoryItem(category) { event ->
                     showSheet = false
                     onEvent(event)
                   }
@@ -306,8 +308,8 @@ fun MainScreen(
             }
 
             LazyRow {
-              items(state.uniquelyCrafted) {
-                FeaturedCategoryItem(it, onEvent)
+              items(state.categories.shuffled().subList(2, 7)) { category ->
+                FeaturedCategoryItem(category, onEvent)
               }
             }
 
