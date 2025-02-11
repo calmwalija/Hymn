@@ -1,10 +1,8 @@
 package net.techandgraphics.hymn.ui.screen.preview
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,13 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,13 +30,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -47,13 +46,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.ui.Route
+import net.techandgraphics.hymn.ui.screen.component.SwipeBothDir4Action
 
 const val READ_FONT_SIZE_THRESH_HOLD = 15
 const val READ_LINE_HEIGHT_THRESH_HOLD = 20
@@ -85,12 +86,7 @@ fun PreviewScreen(
               modifier = Modifier
                 .fillMaxSize()
                 .clickable {
-                  navController.navigate(
-                    Route.TheCategory(state.lyrics.first().lyric.categoryId),
-                  ) {
-                    popUpTo(navController.graph.findStartDestination().id)
-                    launchSingleTop = true
-                  }
+                  navController.navigate(Route.TheCategory(state.lyrics.first().lyric.categoryId))
                 }
             ) {
               AsyncImage(
@@ -102,7 +98,6 @@ fun PreviewScreen(
                   .size(32.dp)
                   .clip(RoundedCornerShape(50))
               )
-
               Column {
                 Text(
                   text = lyric.title,
@@ -121,14 +116,7 @@ fun PreviewScreen(
           }
         },
         navigationIcon = {
-          IconButton(
-            onClick = {
-              navController.popBackStack(
-                Route.Preview(state.lyrics.first().lyric.number),
-                inclusive = true
-              )
-            }
-          ) {
+          IconButton(onClick = { navController.popBackStack() }) {
             Icon(
               imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Go Back"
@@ -180,34 +168,62 @@ fun PreviewScreen(
       )
     },
   ) { paddingValues ->
-
     if (fontSizeShow) FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
+    var isRevealed by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-        .pointerInput(Unit) {
-          detectHorizontalDragGestures { change, dragAmount ->
-            change.consume()
-            when {
-              dragAmount > 20 -> onEvent(PreviewUiEvent.HorizontalDragGesture(Direction.RIGHT))
-              dragAmount < -20 -> onEvent(PreviewUiEvent.HorizontalDragGesture(Direction.LEFT))
+    SwipeBothDir4Action(
+      isRevealed = isRevealed,
+      leftActions = {
+        Box(modifier = Modifier.padding(16.dp)) {
+          ElevatedButton(
+            enabled = state.gotToPrevHymn != -1,
+            onClick = {
+              scope.launch {
+                isRevealed = false
+                delay(300)
+                onEvent(PreviewUiEvent.Invoke(state.gotToPrevHymn))
+              }
             }
-
-            Log.e("TAG", "dragAmount: " + dragAmount)
+          ) {
+            Icon(
+              painter = painterResource(R.drawable.ic_double_arrow_left),
+              contentDescription = "Edit"
+            )
           }
         }
+      },
+      rightActions = {
+        Box(modifier = Modifier.padding(16.dp)) {
+          ElevatedButton(
+            enabled = state.gotToNextHymn != -1,
+            onClick = {
+              scope.launch {
+                isRevealed = false
+                delay(300)
+                onEvent(PreviewUiEvent.Invoke(state.gotToNextHymn))
+              }
+            }
+          ) {
+            Icon(
+              painter = painterResource(R.drawable.icdouble_arrow_right),
+              contentDescription = null,
+            )
+          }
+        }
+      },
+      onRightExpanded = { isRevealed = true },
+      onLeftExpanded = { isRevealed = true },
     ) {
-
-      LazyColumn(contentPadding = paddingValues) {
-        items(
-          items = state.lyrics,
-          key = { it.lyric.lyricId }
-        ) { lyric ->
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .verticalScroll(rememberScrollState())
+          .padding(paddingValues)
+      ) {
+        state.lyrics.forEach { lyric ->
           Column(
-            modifier = Modifier
-              .animateItem()
-              .padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
           ) {
 
@@ -217,7 +233,6 @@ fun PreviewScreen(
               style = MaterialTheme.typography.displaySmall,
               color = MaterialTheme.colorScheme.primary
             )
-
             Text(
               text = lyric.lyric.content,
               fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
