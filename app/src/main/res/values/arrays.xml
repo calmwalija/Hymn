@@ -1,19 +1,7 @@
 <resources>
 
-    <string-array name="theme_entries">
-        <item>System default</item>
-        <item>Light</item>
-        <item>Dark</item>
-    </string-array>
 
-    <string-array name="theme_values">
-        <item>system</item>
-        <item>light</item>
-        <item>dark</item>
-    </string-array>
-
-
-    <string-array name="translation_entries">
+  <string-array name="translation_entries">
         <item>English</item>
         <item>Chichewa</item>
     </string-array>
