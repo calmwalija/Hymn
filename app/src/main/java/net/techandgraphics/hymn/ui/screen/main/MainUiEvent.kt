@@ -7,6 +7,7 @@ import net.techandgraphics.hymn.domain.model.Search
 sealed interface MainUiEvent {
   class Favorite(val data: Lyric) : MainUiEvent
   class Language(val lang: String) : MainUiEvent
+  class KeyboardType(val keyboardType: String) : MainUiEvent
 
   enum class OfType { Category, Preview }
   data class Event(val ofType: OfType, val id: Int) : MainUiEvent

@@ -59,7 +59,7 @@ class SettingsViewModel @Inject constructor(
   val channelFlow = channel.receiveAsFlow()
 
   init {
-    analytics.tagScreen(Tag.MISC_SCREEN)
+    analytics.tagScreen(Tag.SETTINGS_SCREEN)
     viewModelScope.launch {
       onQuery()
       _state.update {
@@ -201,7 +201,7 @@ class SettingsViewModel @Inject constructor(
       is SettingsUiEvent.RemoveFav -> {
         analytics.tagEvent(
           if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-          bundleOf(Pair(Tag.MISC_SCREEN, event.data.title))
+          bundleOf(Pair(Tag.SETTINGS_SCREEN, event.data.title))
         )
         favorite(event.data)
       }
@@ -209,35 +209,35 @@ class SettingsViewModel @Inject constructor(
       is SettingsUiEvent.OpenCreed -> {
         analytics.tagEvent(
           Tag.OPEN_CREED,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
+          bundleOf(Pair(Tag.SETTINGS_SCREEN, state.value.lang.lowercase()))
         )
       }
 
       is SettingsUiEvent.OpenFavorite -> {
         analytics.tagEvent(
           Tag.OPEN_FAVORITE,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
+          bundleOf(Pair(Tag.SETTINGS_SCREEN, state.value.lang.lowercase()))
         )
       }
 
       is SettingsUiEvent.OpenFeedback -> {
         analytics.tagEvent(
           Tag.OPEN_FEEDBACK,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
+          bundleOf(Pair(Tag.SETTINGS_SCREEN, state.value.lang.lowercase()))
         )
       }
 
       is SettingsUiEvent.OpenLordsPrayer -> {
         analytics.tagEvent(
           Tag.OPEN_LORDS_PRAYER,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
+          bundleOf(Pair(Tag.SETTINGS_SCREEN, state.value.lang.lowercase()))
         )
       }
 
       is SettingsUiEvent.OpenRating -> {
         analytics.tagEvent(
           Tag.OPEN_RATING,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
+          bundleOf(Pair(Tag.SETTINGS_SCREEN, state.value.lang.lowercase()))
         )
       }
 

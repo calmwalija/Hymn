@@ -147,7 +147,15 @@ fun SearchBox(
             Spacer(modifier = Modifier.width(2.dp))
 
             IconButton(
-              onClick = { keyboardText = !keyboardText },
+              onClick = {
+                event(
+                  MainUiEvent.KeyboardType(
+                    if (!keyboardText) KeyboardType.Number.toString() else
+                      KeyboardType.Text.toString()
+                  )
+                )
+                keyboardText = !keyboardText
+              },
               modifier = Modifier.size(24.dp)
             ) {
               Icon(

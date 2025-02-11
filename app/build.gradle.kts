@@ -58,7 +58,7 @@ android {
       applicationIdSuffix = ".dev"
       versionNameSuffix = "-dev"
       firebaseCrashlytics {
-        mappingFileUploadEnabled = false
+        mappingFileUploadEnabled = true
       }
       signingConfig = signingConfigs.getByName("debug")
     }
@@ -71,7 +71,7 @@ android {
 
     debug {
       firebaseCrashlytics {
-        mappingFileUploadEnabled = false
+        mappingFileUploadEnabled = true
       }
     }
 
@@ -124,6 +124,8 @@ dependencies {
   // Firebase
   implementation(libs.firebase.core)
   implementation(libs.firebase.crashlytics)
+  implementation(libs.firebase.perf)
+  implementation(libs.firebase.messaging)
   implementation(libs.firebase.analytics)
   implementation(libs.firebase.messaging.ktx)
   implementation(libs.firebase.perf.ktx)

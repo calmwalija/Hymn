@@ -118,20 +118,20 @@ class PreviewViewModel @Inject constructor(
       is PreviewUiEvent.Favorite -> {
         analytics.tagEvent(
           if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-          bundleOf(Pair(Tag.READ_SCREEN, event.data.title))
+          bundleOf(Pair(Tag.PREVIEW_SCREEN, event.data.title))
         )
         favorite(event.data)
       }
 
       is PreviewUiEvent.FontSize -> {
-        analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.READ_SCREEN, event.size.toString())))
+        analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.PREVIEW_SCREEN, event.size.toString())))
         fontSize(event.size)
       }
 
       PreviewUiEvent.TranslationInverse -> {
         analytics.tagEvent(
           Tag.TRANSLATION_INVERSE,
-          bundleOf(Pair(Tag.READ_SCREEN, !state.value.translationInverse))
+          bundleOf(Pair(Tag.PREVIEW_SCREEN, !state.value.translationInverse))
         )
         _state.update { it.copy(translationInverse = !state.value.translationInverse) }
         setLyricsData()
@@ -144,7 +144,7 @@ class PreviewViewModel @Inject constructor(
   }
 
   private fun firebaseAnalytics(lyric: Lyric) = with(analytics) {
-    tagScreen(Tag.READ_SCREEN)
+    tagScreen(Tag.PREVIEW_SCREEN)
     tagEvent(Tag.HYMN_TITLE, bundleOf(Pair(Tag.HYMN_TITLE, lyric.title)))
     tagEvent(Tag.HYMN_NUMBER, bundleOf(Pair(Tag.HYMN_NUMBER, lyric.number)))
   }

@@ -121,7 +121,7 @@ class MainViewModel @Inject constructor(
       }
 
       is Language -> {
-        analytics.tagEvent(Tag.BOOK_SWITCH, bundleOf(Pair(Tag.MAIN_SCREEN, event.lang)))
+        analytics.tagEvent(Tag.TRANSLATION_OPTION, bundleOf(Pair(Tag.MAIN_SCREEN, event.lang)))
         languageChange(event.lang)
       }
 
@@ -163,6 +163,8 @@ class MainViewModel @Inject constructor(
           _state.value = _state.value.copy(isSearching = false)
         }
       }
+
+      is MainUiEvent.KeyboardType -> onAnalyticEvent(AnalyticEvent.Keyboard(event.keyboardType))
 
       else -> Unit
     }
@@ -208,13 +210,6 @@ class MainViewModel @Inject constructor(
 
   fun onAnalyticEvent(event: AnalyticEvent) {
     when (event) {
-      AnalyticEvent.GotoCategory -> {
-        analytics.tagEvent(Tag.CATEGORY_SCREEN, bundleOf(Pair(Tag.MAIN_SCREEN, null)))
-      }
-
-      AnalyticEvent.GotoSearch -> {
-        analytics.tagEvent(Tag.SEARCH_SCREEN, bundleOf(Pair(Tag.MAIN_SCREEN, null)))
-      }
 
       is AnalyticEvent.DiveInto -> {
         analytics.tagEvent(Tag.DIVE_INTO, bundleOf(Pair(Tag.MAIN_SCREEN, event.number)))
@@ -222,6 +217,10 @@ class MainViewModel @Inject constructor(
 
       is AnalyticEvent.Spotlight -> {
         analytics.tagEvent(Tag.SPOTLIGHT, bundleOf(Pair(Tag.MAIN_SCREEN, event.categoryId)))
+      }
+
+      is AnalyticEvent.Keyboard -> {
+        analytics.tagEvent(Tag.KEYBOARD_TYPE, bundleOf(Pair(Tag.MAIN_SCREEN, event.keyboard)))
       }
     }
   }
