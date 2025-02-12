@@ -9,7 +9,7 @@ object Tag {
   const val SEARCH_KEYWORD = "search_keyword"
   const val CLEAR_SEARCH_TAG = "clear_search_tag"
   const val APPEND_SEARCH_TAG = "append_search_tag"
-  const val TRANSLATION_INVERSE = "translation_inverse"
+  const val CHANGE_TRANSLATION = "change_translation"
 
   const val PREVIEW_SCREEN = "preview_screen"
   const val CATEGORY_SCREEN = "category_screen"

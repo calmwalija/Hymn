@@ -18,12 +18,15 @@ import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
-import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.GoToTheCategory
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.PopBackStack
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
 import net.techandgraphics.hymn.ui.screen.settings.SettingsScreen
 import net.techandgraphics.hymn.ui.screen.settings.SettingsUiEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsViewModel
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryScreen
+import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.Favorite
+import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.ToPreview
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryViewModel
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 
@@ -47,30 +50,19 @@ fun AppScreen(
             is MainUiEvent.Event -> when (event.ofType) {
               MainUiEvent.OfType.Category -> {
                 onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
-                navController.navigate(Route.TheCategory(event.id)) {
-                  launchSingleTop = true
-                }
+                navController.navigate(Route.TheCategory(event.id))
               }
 
               MainUiEvent.OfType.Preview -> {
                 onAnalyticEvent(AnalyticEvent.DiveInto(event.id))
-                navController.navigate(Route.Preview(event.id)) {
-                  launchSingleTop = true
-                }
+                navController.navigate(Route.Preview(event.id))
               }
             }
 
-            is MainUiEvent.CategoryUiEvent.GoTo -> {
-              navController.navigate(Route.TheCategory(event.category.lyric.categoryId)) {
-                launchSingleTop = true
-              }
-            }
+            is MainUiEvent.CategoryUiEvent.GoTo ->
+              navController.navigate(Route.TheCategory(event.category.lyric.categoryId))
 
-            is MainUiEvent.MenuItem.Settings -> {
-              navController.navigate(Route.Settings) {
-                launchSingleTop = true
-              }
-            }
+            is MainUiEvent.MenuItem.Settings -> navController.navigate(Route.Settings)
 
             else -> onEvent(event)
           }
@@ -99,31 +91,32 @@ fun AppScreen(
 
     composable<Route.Preview> {
       with(hiltViewModel<PreviewViewModel>()) {
-        LaunchedEffect(key1 = true) { invoke(it.toRoute<Route.Preview>().id) }
+        LaunchedEffect(Unit) { invoke(it.toRoute<Route.Preview>().id) }
         val state = state.collectAsState().value
-        PreviewScreen(state, navController, ::onEvent)
+        state.currentLyric
+          .takeIf { it != null }
+          ?.let {
+            PreviewScreen(state) { event ->
+              when (event) {
+                GoToTheCategory -> navController.navigate(Route.TheCategory(state.categoryId))
+                PopBackStack -> navController.popBackStack()
+                else -> onEvent(event)
+              }
+            }
+          }
       }
     }
 
     composable<Route.TheCategory> {
       with(hiltViewModel<TheCategoryViewModel>()) {
-        LaunchedEffect(key1 = true) {
-          invoke(it.toRoute<Route.TheCategory>().id)
-        }
+        LaunchedEffect(Unit) { invoke(it.toRoute<Route.TheCategory>().id) }
         val state = state.collectAsState().value
-        TheCategoryScreen(
-          state = state,
-          onEvent = ::onEvent,
-          onPreviewUiEvent = { event ->
-            when (event) {
-              is PreviewUiEvent.Click -> navController.navigate(Route.Preview(event.number)) {
-                launchSingleTop = true
-              }
-
-              else -> Unit
-            }
+        TheCategoryScreen(state = state) { event ->
+          when (event) {
+            is Favorite -> onEvent(event)
+            is ToPreview -> navController.navigate(Route.Preview(event.theHymnNumber))
           }
-        )
+        }
       }
     }
   }

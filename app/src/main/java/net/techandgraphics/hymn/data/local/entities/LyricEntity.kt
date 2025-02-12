@@ -2,7 +2,7 @@ package net.techandgraphics.hymn.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.local.Translation
 
 @Entity(tableName = "lyric")
 data class LyricEntity(
@@ -14,6 +14,6 @@ data class LyricEntity(
   val content: String,
   val favorite: Boolean = false,
   val title: String = "",
-  val lang: String = Lang.EN.name.lowercase(),
+  val lang: String = Translation.EN.name.lowercase(),
   val timestamp: Long = System.currentTimeMillis(),
 )

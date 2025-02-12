@@ -36,22 +36,21 @@ class TheCategoryViewModel @Inject constructor(
       }.launchIn(viewModelScope)
   }
 
-  fun favorite(lyric: Lyric) =
-    viewModelScope.launch {
-      with(lyric.copy(favorite = !lyric.favorite)) {
-        lyricRepo.favorite(favorite, number)
-      }
+  private fun onFavoriteHymn(lyric: Lyric) = viewModelScope.launch {
+    with(lyric.copy(favorite = !lyric.favorite)) {
+      lyricRepo.favorite(favorite, number)
+      analytics.tagEvent(
+        if (favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
+        bundleOf(Pair(Tag.CATEGORISATION_SCREEN, title))
+      )
     }
+  }
 
   fun onEvent(event: TheCategoryUiEvent) {
     when (event) {
-      is TheCategoryUiEvent.Favorite -> {
-        analytics.tagEvent(
-          if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-          bundleOf(Pair(Tag.CATEGORISATION_SCREEN, state.value.lyric.first().title))
-        )
-        favorite(event.data)
-      }
+      is TheCategoryUiEvent.Favorite -> onFavoriteHymn(event.lyric)
+
+      else -> Unit
     }
   }
 }

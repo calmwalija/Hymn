@@ -24,18 +24,16 @@ import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.addRemoveFavoriteToast
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.ui.screen.component.TimestampComponent
-import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
 @Composable
 fun CategorisationScreenItem(
   lyric: Lyric,
-  onPreviewUiEvent: (PreviewUiEvent) -> Unit,
   onEvent: (TheCategoryUiEvent) -> Unit,
 ) {
   val context = LocalContext.current
   Row(
     modifier = Modifier
-      .clickable { onPreviewUiEvent(PreviewUiEvent.Click(lyric.number)) }
+      .clickable { onEvent(TheCategoryUiEvent.ToPreview(lyric.number)) }
       .padding(8.dp)
       .fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically

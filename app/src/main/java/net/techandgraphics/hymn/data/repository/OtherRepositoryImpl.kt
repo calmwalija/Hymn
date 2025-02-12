@@ -2,7 +2,7 @@ package net.techandgraphics.hymn.data.repository
 
 import net.techandgraphics.hymn.data.asEntity
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Other
@@ -16,7 +16,7 @@ class OtherRepositoryImpl @Inject constructor(
 
   private val dao = database.otherDao
 
-  private suspend fun getLang() = prefs.get(prefs.translationKey, Lang.EN.lowercase())
+  private suspend fun getLang() = prefs.get(prefs.translationKey, Translation.EN.lowercase())
 
   override suspend fun upsert(data: List<Other>) {
     dao.upsert(data.map { it.asEntity() })

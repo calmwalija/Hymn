@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
@@ -64,7 +64,7 @@ class MainViewModel @Inject constructor(
       .onEach {
         _state.update {
           it.copy(
-            lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()),
+            lang = prefs.get(prefs.translationKey, Translation.EN.lowercase()),
             uniquelyCrafted = lyricRepo.uniquelyCrafted(),
             emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested(),
             categories = categoryRepo.query(_state.value.searchQuery),
@@ -204,7 +204,7 @@ class MainViewModel @Inject constructor(
     SearchEntity(
       query = searchQuery,
       tag = buildString { searchList.forEach { append(it) } },
-      lang = prefs.get(prefs.translationKey, Lang.EN.lowercase()),
+      lang = prefs.get(prefs.translationKey, Translation.EN.lowercase()),
     ).also { searchRepo.upsert(listOf(it)) }
   }
 

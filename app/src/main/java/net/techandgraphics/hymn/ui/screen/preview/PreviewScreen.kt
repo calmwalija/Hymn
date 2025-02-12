@@ -1,5 +1,8 @@
 package net.techandgraphics.hymn.ui.screen.preview
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -7,18 +10,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,52 +50,49 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.addRemoveFavoriteToast
-import net.techandgraphics.hymn.ui.Route
+import net.techandgraphics.hymn.toNumber
 import net.techandgraphics.hymn.ui.screen.component.SwipeBothDir4Action
 
 const val READ_FONT_SIZE_THRESH_HOLD = 15
 const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun PreviewScreen(
   state: PreviewUiState,
-  navController: NavHostController,
   onEvent: (PreviewUiEvent) -> Unit
 ) {
 
   val context = LocalContext.current
   var fontSizeShow by remember { mutableStateOf(false) }
   val rotateDegree by animateFloatAsState(
-    targetValue = if (state.translationInverse) 180f else 0f,
-    label = "Rotate Icon",
-    animationSpec = tween(durationMillis = 1000, delayMillis = 400)
+    targetValue = if (state.currentTranslation == state.defaultTranslation) 0f else 180f,
+    label = "Default Translation",
+    animationSpec = tween(durationMillis = 1000, delayMillis = 400),
   )
 
   Scaffold(
     topBar = {
       TopAppBar(
         title = {
-          if (state.previewLyricKey.isNotEmpty()) {
-            val lyric = state.previewLyricKey.first().lyric
+          Crossfade(state.currentLyric!!) { currentLyric ->
             Row(
               verticalAlignment = Alignment.CenterVertically,
               modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                  navController.navigate(Route.TheCategory(state.lyrics.first().lyric.categoryId))
-                }
+                .wrapContentSize()
+                .clip(CircleShape)
+                .clickable { onEvent(PreviewUiEvent.GoToTheCategory) }
+                .padding(8.dp)
             ) {
               AsyncImage(
-                model = Constant.images[lyric.categoryId].drawableRes,
-                contentDescription = lyric.title,
+                model = Constant.images[currentLyric.categoryId].drawableRes,
+                contentDescription = state.currentLyric.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                   .padding(horizontal = 4.dp)
@@ -100,15 +101,14 @@ fun PreviewScreen(
               )
               Column {
                 Text(
-                  text = lyric.title,
+                  text = currentLyric.title,
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis,
                   fontWeight = FontWeight.Bold,
                   style = MaterialTheme.typography.titleSmall
                 )
-
                 Text(
-                  text = "#${lyric.number}",
+                  text = currentLyric.toNumber(),
                   style = MaterialTheme.typography.bodySmall
                 )
               }
@@ -116,7 +116,7 @@ fun PreviewScreen(
           }
         },
         navigationIcon = {
-          IconButton(onClick = { navController.popBackStack() }) {
+          IconButton(onClick = { onEvent(PreviewUiEvent.PopBackStack) }) {
             Icon(
               imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Go Back"
@@ -124,24 +124,28 @@ fun PreviewScreen(
           }
         },
         actions = {
-          if (state.previewLyricKey.isNotEmpty()) {
+          Crossfade(
+            targetState = if (state.currentLyric!!.favorite)
+              Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+          ) { imageVector ->
             IconButton(
+              enabled = state.currentTranslation == state.defaultTranslation,
               onClick = {
-                context addRemoveFavoriteToast state.previewLyricKey.first().lyric
-                onEvent(PreviewUiEvent.Favorite(state.previewLyricKey.first().lyric))
+                context addRemoveFavoriteToast state.currentLyric
+                onEvent(PreviewUiEvent.Favorite(state.currentLyric))
               },
             ) {
               Icon(
-                imageVector = if (state.previewLyricKey.first().lyric.favorite)
-                  Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                imageVector = imageVector,
                 contentDescription = "Favorite",
                 modifier = Modifier.size(20.dp)
               )
             }
           }
-          if (state.previewLyricKeyInverse.isNotEmpty()) {
+
+          if (state.translations.size == 2) {
             IconButton(
-              onClick = { onEvent(PreviewUiEvent.TranslationInverse) },
+              onClick = { onEvent(PreviewUiEvent.ChangeTranslation) },
               modifier = Modifier
                 .padding(end = 8.dp)
             ) {
@@ -175,8 +179,8 @@ fun PreviewScreen(
     SwipeBothDir4Action(
       isRevealed = isRevealed,
       leftActions = {
-        Box(modifier = Modifier.padding(16.dp)) {
-          ElevatedButton(
+        Box(modifier = Modifier.padding(24.dp)) {
+          IconButton(
             enabled = state.gotToPrevHymn != -1,
             onClick = {
               scope.launch {
@@ -188,14 +192,16 @@ fun PreviewScreen(
           ) {
             Icon(
               painter = painterResource(R.drawable.ic_double_arrow_left),
-              contentDescription = "Edit"
+              contentDescription = null,
+              modifier = Modifier.size(42.dp),
+              tint = tint(state.gotToPrevHymn != -1)
             )
           }
         }
       },
       rightActions = {
-        Box(modifier = Modifier.padding(16.dp)) {
-          ElevatedButton(
+        Box(modifier = Modifier.padding(24.dp)) {
+          IconButton(
             enabled = state.gotToNextHymn != -1,
             onClick = {
               scope.launch {
@@ -208,6 +214,8 @@ fun PreviewScreen(
             Icon(
               painter = painterResource(R.drawable.icdouble_arrow_right),
               contentDescription = null,
+              modifier = Modifier.size(42.dp),
+              tint = tint(state.gotToNextHymn != -1)
             )
           }
         }
@@ -215,37 +223,44 @@ fun PreviewScreen(
       onRightExpanded = { isRevealed = true },
       onLeftExpanded = { isRevealed = true },
     ) {
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .verticalScroll(rememberScrollState())
-          .padding(paddingValues)
-      ) {
-        state.lyrics.forEach { lyric ->
-          Column(
-            modifier = Modifier.padding(top = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-          ) {
-
-            Text(
-              text = lyric.key,
-              fontWeight = FontWeight.Bold,
-              style = MaterialTheme.typography.displaySmall,
-              color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-              text = lyric.lyric.content,
-              fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
+      AnimatedContent(targetState = state.lyricsWithIndex) { lyricsWithIndex ->
+        Column(
+          modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(paddingValues)
+        ) {
+          lyricsWithIndex.forEach { lyric ->
+            Column(
               modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-              textAlign = TextAlign.Center,
-              lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
-              fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
-            )
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp),
+              horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+              Text(
+                text = lyric.index,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.primary
+              )
+              Text(
+                text = lyric.lyric.content,
+                fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
+                textAlign = TextAlign.Center,
+                lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
+                fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
+              )
+            }
           }
         }
       }
     }
   }
 }
+
+@Composable
+private fun tint(goTo: Boolean) =
+  if (!goTo) Color.LightGray.copy(alpha = .5f) else MaterialTheme.colorScheme.primary
