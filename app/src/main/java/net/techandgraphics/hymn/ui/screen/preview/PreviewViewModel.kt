@@ -103,7 +103,7 @@ class PreviewViewModel @Inject constructor(
     with(lyric.copy(favorite = !lyric.favorite)) {
       analytics.tagEvent(
         if (lyric.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-        bundleOf(Pair(Tag.READ_SCREEN, lyric.title))
+        bundleOf(Pair(Tag.PREVIEW_SCREEN, lyric.title))
       )
       lyricRepo.favorite(favorite, number)
       val lyrics = state.value.lyrics.map {
@@ -118,7 +118,7 @@ class PreviewViewModel @Inject constructor(
   private fun onChangeTranslation() = viewModelScope.launch {
     val currentTranslation = state.value.currentTranslation
     val translation = state.value.translations.first { it != currentTranslation }
-    analytics.tagEvent(Tag.CHANGE_TRANSLATION, bundleOf(Pair(Tag.READ_SCREEN, translation)))
+    analytics.tagEvent(Tag.CHANGE_TRANSLATION, bundleOf(Pair(Tag.PREVIEW_SCREEN, translation)))
     _state.update { it.copy(currentTranslation = translation) }
     currentLyric(state.value.currentTranslation)
   }
@@ -134,7 +134,7 @@ class PreviewViewModel @Inject constructor(
   }
 
   private fun onLogFirebaseAnalytics(lyric: Lyric) = with(analytics) {
-    tagScreen(Tag.READ_SCREEN)
+    tagScreen(Tag.PREVIEW_SCREEN)
     tagEvent(Tag.HYMN_TITLE, bundleOf(Pair(Tag.HYMN_TITLE, lyric.title)))
     tagEvent(Tag.HYMN_NUMBER, bundleOf(Pair(Tag.HYMN_NUMBER, lyric.number)))
   }
@@ -142,7 +142,7 @@ class PreviewViewModel @Inject constructor(
   private fun onChangeFontSize(fontSize: Int) = viewModelScope.launch {
     _state.update { it.copy(fontSize = fontSize) }
     prefs.put(prefs.fontKey, "$fontSize")
-    analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.READ_SCREEN, fontSize)))
+    analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.PREVIEW_SCREEN, fontSize)))
   }
 
   override fun onCleared() {
