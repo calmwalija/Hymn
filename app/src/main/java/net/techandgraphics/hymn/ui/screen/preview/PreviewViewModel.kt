@@ -106,8 +106,12 @@ class PreviewViewModel @Inject constructor(
         bundleOf(Pair(Tag.READ_SCREEN, lyric.title))
       )
       lyricRepo.favorite(favorite, number)
-      val lyrics = state.value.lyrics.map { it.copy(favorite = this.favorite) }
+      val lyrics = state.value.lyrics.map {
+        it.copy(favorite = if (it.lang == state.value.defaultTranslation) favorite else lyric.favorite)
+      }
+      val currentLyric = state.value.currentLyric!!.copy(favorite = favorite)
       _state.update { it.copy(lyrics = lyrics) }
+      _state.update { it.copy(currentLyric = currentLyric) }
     }
   }
 

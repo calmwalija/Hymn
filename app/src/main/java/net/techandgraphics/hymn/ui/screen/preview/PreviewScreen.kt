@@ -2,6 +2,7 @@ package net.techandgraphics.hymn.ui.screen.preview
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -9,11 +10,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -59,7 +62,7 @@ import net.techandgraphics.hymn.ui.screen.component.SwipeBothDir4Action
 const val READ_FONT_SIZE_THRESH_HOLD = 15
 const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun PreviewScreen(
   state: PreviewUiState,
@@ -82,8 +85,10 @@ fun PreviewScreen(
             Row(
               verticalAlignment = Alignment.CenterVertically,
               modifier = Modifier
-                .fillMaxSize()
+                .wrapContentSize()
+                .clip(CircleShape)
                 .clickable { onEvent(PreviewUiEvent.GoToTheCategory) }
+                .padding(8.dp)
             ) {
               AsyncImage(
                 model = Constant.images[currentLyric.categoryId].drawableRes,
@@ -119,19 +124,25 @@ fun PreviewScreen(
           }
         },
         actions = {
-          IconButton(
-            onClick = {
-              context addRemoveFavoriteToast state.currentLyric!!
-              onEvent(PreviewUiEvent.Favorite(state.currentLyric))
-            },
-          ) {
-            Icon(
-              imageVector = if (state.currentLyric!!.favorite)
-                Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-              contentDescription = "Favorite",
-              modifier = Modifier.size(20.dp)
-            )
+          Crossfade(
+            targetState = if (state.currentLyric!!.favorite)
+              Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+          ) { imageVector ->
+            IconButton(
+              enabled = state.currentTranslation == state.defaultTranslation,
+              onClick = {
+                context addRemoveFavoriteToast state.currentLyric
+                onEvent(PreviewUiEvent.Favorite(state.currentLyric))
+              },
+            ) {
+              Icon(
+                imageVector = imageVector,
+                contentDescription = "Favorite",
+                modifier = Modifier.size(20.dp)
+              )
+            }
           }
+
           if (state.translations.size == 2) {
             IconButton(
               onClick = { onEvent(PreviewUiEvent.ChangeTranslation) },
@@ -168,7 +179,7 @@ fun PreviewScreen(
     SwipeBothDir4Action(
       isRevealed = isRevealed,
       leftActions = {
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(modifier = Modifier.padding(24.dp)) {
           IconButton(
             enabled = state.gotToPrevHymn != -1,
             onClick = {
@@ -183,13 +194,13 @@ fun PreviewScreen(
               painter = painterResource(R.drawable.ic_double_arrow_left),
               contentDescription = null,
               modifier = Modifier.size(42.dp),
-              tint = MaterialTheme.colorScheme.primary
+              tint = tint(state.gotToPrevHymn != -1)
             )
           }
         }
       },
       rightActions = {
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(modifier = Modifier.padding(24.dp)) {
           IconButton(
             enabled = state.gotToNextHymn != -1,
             onClick = {
@@ -204,7 +215,7 @@ fun PreviewScreen(
               painter = painterResource(R.drawable.icdouble_arrow_right),
               contentDescription = null,
               modifier = Modifier.size(42.dp),
-              tint = MaterialTheme.colorScheme.primary
+              tint = tint(state.gotToNextHymn != -1)
             )
           }
         }
@@ -226,7 +237,6 @@ fun PreviewScreen(
                 .padding(horizontal = 16.dp),
               horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
               Text(
                 text = lyric.index,
                 fontWeight = FontWeight.Bold,
@@ -250,3 +260,7 @@ fun PreviewScreen(
     }
   }
 }
+
+@Composable
+private fun tint(goTo: Boolean) =
+  if (!goTo) Color.LightGray.copy(alpha = .5f) else MaterialTheme.colorScheme.primary
