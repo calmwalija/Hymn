@@ -1,11 +1,8 @@
 <resources>
-    <string name="app_name">Hymn Book</string>
+    <string name="app_name">Hymn App</string>
     <string name="about">This app was designed and developed by TAG in close collaboration with Zonse Media</string>
     <string name="feedback">Get in touch with us if a hymn is missing or a typo to ensure accuracy of the content</string>
     <string name="rate">Share your thoughts &amp; experiences with us by rating or review on Google Play Store</string>
-    <string name="favorite">Hymns that have a particular place in your heart</string>
-    <string name="no_fav_hymn">You do not have favorite hymns</string>
-    <string name="updates">Ensure that you have the most recent information by checking for updates</string>
     <string name="add_favorite">Hymn %d has been saved to your favorites.</string>
     <string name="remove_favorite">Hymn %d has been removed from the favorites list.</string>
     <string name="change_book_translation">You are now viewing %s translation.</string>
@@ -19,7 +16,5 @@
     <string name="uniquely_crafted_mills_key">uniquely_crafted_mills_key</string>
     <string name="dynamic_color">dynamic_color_enabled</string>
     <string name="font_style_enabled">font_style_enabled</string>
-    <string name="shared_prefs">shared_prefs</string>
-    <string name="ready_key">ready_key</string>
 
 </resources>

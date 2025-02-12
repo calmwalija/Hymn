@@ -1,6 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.main
 
-import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.domain.model.Category
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.model.Other
@@ -9,7 +9,7 @@ import net.techandgraphics.hymn.domain.model.Search
 data class MainUiState(
   val uniquelyCrafted: List<Lyric> = emptyList(),
   val diveInto: List<Lyric> = emptyList(),
-  val lang: String = Lang.EN.lowercase(),
+  val lang: String = Translation.EN.lowercase(),
   val categories: List<Category> = emptyList(),
   val lyrics: List<Lyric> = emptyList(),
   val favorites: List<Lyric> = emptyList(),
