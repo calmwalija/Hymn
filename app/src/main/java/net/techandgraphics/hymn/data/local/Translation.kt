@@ -1,6 +1,6 @@
 package net.techandgraphics.hymn.data.local
 
-enum class Lang : ToLowerCase {
+enum class Translation : ToLowerCase {
   EN, CH;
 
   override fun lowercase() = when (this) {
@@ -10,12 +10,11 @@ enum class Lang : ToLowerCase {
 }
 
 fun String.toLang() = when (this) {
-  Lang.EN.name.lowercase() -> Lang.EN
-  Lang.CH.name.lowercase() -> Lang.CH
-  else -> Lang.EN
+  Translation.EN.name.lowercase() -> Translation.EN
+  Translation.CH.name.lowercase() -> Translation.CH
+  else -> Translation.EN
 }
 
 interface ToLowerCase {
   fun lowercase(): String
-//  fun fromString(value: String): Lang
 }

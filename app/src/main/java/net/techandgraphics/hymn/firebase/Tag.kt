@@ -11,7 +11,7 @@ object Tag {
   const val CLEAR_SEARCH_TAG = "clear_search_tag"
   const val CLEAR_CATEGORY_SEARCH_TAG = "clear_category_search_tag"
   const val APPEND_SEARCH_TAG = "append_search_tag"
-  const val TRANSLATION_INVERSE = "translation_inverse"
+  const val CHANGE_TRANSLATION = "change_translation"
 
   const val SEARCH_SCREEN = "search_screen"
   const val READ_SCREEN = "read_screen"

@@ -25,12 +25,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.hymnCount
-import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 
 @Composable
 fun TheCategoryScreen(
   state: TheCategoryState,
-  onPreviewUiEvent: (PreviewUiEvent) -> Unit,
   onEvent: (TheCategoryUiEvent) -> Unit,
 ) {
   val context = LocalContext.current
@@ -79,7 +77,7 @@ fun TheCategoryScreen(
 
     LazyColumn {
       items(state.lyric, key = { it.lyricId }) {
-        CategorisationScreenItem(it, onPreviewUiEvent, onEvent)
+        CategorisationScreenItem(it, onEvent)
       }
     }
   }

@@ -1,7 +1,7 @@
 package net.techandgraphics.hymn
 
 import androidx.annotation.DrawableRes
-import net.techandgraphics.hymn.data.local.Lang.CH
+import net.techandgraphics.hymn.data.local.Translation.CH
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 
 data class CategoryRes(val categoryId: Int, @DrawableRes val drawableRes: Int)

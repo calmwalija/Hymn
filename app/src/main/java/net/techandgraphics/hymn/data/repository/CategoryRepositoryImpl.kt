@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import net.techandgraphics.hymn.data.local.Database
-import net.techandgraphics.hymn.data.local.Lang
+import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
 import net.techandgraphics.hymn.domain.model.Category
@@ -18,7 +18,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
   private val dao = database.categoryDao
 
-  private suspend fun getLang() = prefs.get(prefs.translationKey, Lang.EN.lowercase())
+  private suspend fun getLang() = prefs.get(prefs.translationKey, Translation.EN.lowercase())
 
   override suspend fun spotlight(): List<Category> {
     return runBlocking {
