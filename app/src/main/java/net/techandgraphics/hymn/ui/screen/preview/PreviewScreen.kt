@@ -2,10 +2,8 @@ package net.techandgraphics.hymn.ui.screen.preview
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,7 +60,7 @@ import net.techandgraphics.hymn.ui.screen.component.SwipeBothDir4Action
 const val READ_FONT_SIZE_THRESH_HOLD = 15
 const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewScreen(
   state: PreviewUiState,
@@ -82,35 +80,41 @@ fun PreviewScreen(
       TopAppBar(
         title = {
           Crossfade(state.currentLyric!!) { currentLyric ->
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
+            ElevatedCard(
+              enabled = state.currentTranslation == state.defaultTranslation,
+              shape = CircleShape,
               modifier = Modifier
-                .wrapContentSize()
-                .clip(CircleShape)
-                .clickable { onEvent(PreviewUiEvent.GoToTheCategory) }
-                .padding(8.dp)
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+              onClick = { onEvent(PreviewUiEvent.GoToTheCategory) }
             ) {
-              AsyncImage(
-                model = Constant.images[currentLyric.categoryId].drawableRes,
-                contentDescription = state.currentLyric.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                  .padding(horizontal = 4.dp)
-                  .size(32.dp)
-                  .clip(RoundedCornerShape(50))
-              )
-              Column {
-                Text(
-                  text = currentLyric.title,
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                  fontWeight = FontWeight.Bold,
-                  style = MaterialTheme.typography.titleSmall
+              Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(8.dp)
+              ) {
+                AsyncImage(
+                  model = Constant.images[currentLyric.categoryId].drawableRes,
+                  contentDescription = state.currentLyric.title,
+                  contentScale = ContentScale.Crop,
+                  modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(50))
                 )
-                Text(
-                  text = currentLyric.toNumber(),
-                  style = MaterialTheme.typography.bodySmall
-                )
+                Column {
+                  Text(
+                    text = currentLyric.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(end = 8.dp)
+                  )
+                  Text(
+                    text = currentLyric.toNumber(),
+                    style = MaterialTheme.typography.bodySmall
+                  )
+                }
               }
             }
           }
@@ -138,17 +142,13 @@ fun PreviewScreen(
               Icon(
                 imageVector = imageVector,
                 contentDescription = "Favorite",
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(22.dp)
               )
             }
           }
 
           if (state.translations.size == 2) {
-            IconButton(
-              onClick = { onEvent(PreviewUiEvent.ChangeTranslation) },
-              modifier = Modifier
-                .padding(end = 8.dp)
-            ) {
+            IconButton(onClick = { onEvent(PreviewUiEvent.ChangeTranslation) }) {
               Icon(
                 painter = painterResource(id = R.drawable.ic_toggle_translation),
                 contentDescription = "Translation",
@@ -163,7 +163,8 @@ fun PreviewScreen(
           ) {
             Icon(
               painter = painterResource(id = R.drawable.ic_font_size),
-              contentDescription = "Font"
+              contentDescription = "Font",
+              modifier = Modifier.size(22.dp)
             )
           }
         },
@@ -212,7 +213,7 @@ fun PreviewScreen(
             }
           ) {
             Icon(
-              painter = painterResource(R.drawable.icdouble_arrow_right),
+              painter = painterResource(R.drawable.ic_double_arrow_right),
               contentDescription = null,
               modifier = Modifier.size(42.dp),
               tint = tint(state.gotToNextHymn != -1)
