@@ -42,6 +42,13 @@ android {
     compose = true
   }
 
+  androidComponents {
+    beforeVariants(selector().withBuildType("dev")) {
+      it.enable = true
+    }
+  }
+
+
   composeOptions {
     kotlinCompilerExtensionVersion = "1.5.1"
   }
@@ -60,9 +67,11 @@ android {
       firebaseCrashlytics {
         mappingFileUploadEnabled = true
       }
+
+      isDebuggable = true
+//      initWith(buildTypes["debug"])
       signingConfig = signingConfigs.getByName("debug")
     }
-
 
     release {
       isMinifyEnabled = true
@@ -117,9 +126,23 @@ android {
     useBuildCache = true
   }
 
+  androidComponents {
+    beforeVariants(selector().withBuildType("dev")) {
+      it.enable = true
+    }
+  }
+
+
+}
+
+private fun devImplementation(theDependency: String) {
+  configurations.getByName("devImplementation").dependencies.add(
+    project.dependencies.create(theDependency)
+  )
 }
 
 dependencies {
+
 
   // Firebase
   implementation(libs.firebase.core)
@@ -186,4 +209,9 @@ dependencies {
   debugImplementation(libs.androidx.ui.tooling)
   debugImplementation(libs.androidx.ui.test.manifest)
   implementation(kotlin("reflect"))
+
+  devImplementation("androidx.compose.ui:ui-tooling:1.7.8")
+  devImplementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
+
+
 }
