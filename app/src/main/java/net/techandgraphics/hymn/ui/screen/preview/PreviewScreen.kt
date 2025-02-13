@@ -173,7 +173,10 @@ fun PreviewScreen(
       )
     },
   ) { paddingValues ->
-    if (fontSizeShow) FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
+    if (fontSizeShow) {
+      onEvent(PreviewUiEvent.Analytics.FontDialog)
+      FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
+    }
     var isRevealed by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -188,6 +191,7 @@ fun PreviewScreen(
                 isRevealed = false
                 delay(300)
                 onEvent(PreviewUiEvent.Invoke(state.gotToPrevHymn))
+                onEvent(PreviewUiEvent.Analytics.GotoPreviousHymn(state.gotToPrevHymn))
               }
             }
           ) {
@@ -209,6 +213,7 @@ fun PreviewScreen(
                 isRevealed = false
                 delay(300)
                 onEvent(PreviewUiEvent.Invoke(state.gotToNextHymn))
+                onEvent(PreviewUiEvent.Analytics.GotoNextHymn(state.gotToNextHymn))
               }
             }
           ) {
@@ -221,8 +226,14 @@ fun PreviewScreen(
           }
         }
       },
-      onRightExpanded = { isRevealed = true },
-      onLeftExpanded = { isRevealed = true },
+      onRightExpanded = {
+        isRevealed = true
+        onEvent(PreviewUiEvent.Analytics.SwipeToRight)
+      },
+      onLeftExpanded = {
+        isRevealed = true
+        onEvent(PreviewUiEvent.Analytics.SwipeToLeft)
+      },
     ) {
       AnimatedContent(targetState = state.lyricsWithIndex) { lyricsWithIndex ->
         Column(

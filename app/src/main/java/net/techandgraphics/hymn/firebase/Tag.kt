@@ -29,4 +29,14 @@ object Tag {
   const val TRANSLATION_BUTTON = "translation_button"
   const val KEYBOARD_TYPE = "keyboard_type"
   const val TRANSLATION_OPTION = "translation_option"
+  const val FONT_SIZE_DIALOG = "font_size_dialog"
+  const val GO_TO_NEXT_HYMN = "go_to_next_hymn"
+  const val GO_TO_PREVIOUS_HYMN = "go_to_previous_hymn"
+  const val GO_TO_THE_CATEGORY = "go_to_the_category"
+  const val SWIPE_TO_LEFT = "swipe_to_left"
+  const val SWIPE_TO_RIGHT = "swipe_to_right"
+
+  const val FONT_SIZE_DIALOG_STATE = "font_size_dialog_state"
+
+  const val TRANSLATION_DEFAULT = "translation_default"
 }

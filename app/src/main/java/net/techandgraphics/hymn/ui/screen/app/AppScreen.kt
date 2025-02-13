@@ -18,6 +18,7 @@ import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.GoToTheCategory
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.PopBackStack
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
@@ -98,7 +99,11 @@ fun AppScreen(
           ?.let {
             PreviewScreen(state) { event ->
               when (event) {
-                GoToTheCategory -> navController.navigate(Route.TheCategory(state.categoryId))
+                GoToTheCategory -> {
+                  onEvent(PreviewUiEvent.Analytics.GotoTheCategory)
+                  navController.navigate(Route.TheCategory(state.categoryId))
+                }
+
                 PopBackStack -> navController.popBackStack()
                 else -> onEvent(event)
               }
