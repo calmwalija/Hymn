@@ -13,6 +13,10 @@ fun FirebaseAnalytics.tagEvent(name: String, bundle: Bundle) {
   logEvent(name, bundle)
 }
 
+fun FirebaseAnalytics.tagEvent(name: String, pair: Pair<String, Any>) {
+  logEvent(name, bundleOf(pair))
+}
+
 fun FirebaseAnalytics.combined(name: String, vararg thePairs: Pair<String, Any>) {
-  thePairs.forEach { pair -> logEvent(name, bundleOf(pair)) }
+  logEvent(name, bundleOf(*thePairs))
 }

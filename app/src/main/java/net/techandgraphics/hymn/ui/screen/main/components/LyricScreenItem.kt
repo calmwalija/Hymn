@@ -35,9 +35,7 @@ fun LyricScreenItem(
   val context = LocalContext.current
   Column(
     modifier = modifier
-      .clickable {
-        onEvent(MainUiEvent.Event(MainUiEvent.OfType.Preview, lyric.number))
-      }
+      .clickable { onEvent(MainUiEvent.GotoPreview(lyric)) }
       .fillMaxWidth(),
   ) {
     Row(

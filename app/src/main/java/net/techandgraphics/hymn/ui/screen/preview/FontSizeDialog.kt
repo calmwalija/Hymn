@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,6 +37,9 @@ fun FontSizeDialog(
   onEvent: (PreviewUiEvent) -> Unit,
   onDismissRequest: () -> Unit
 ) {
+
+  LaunchedEffect(key1 = Unit) { onEvent(PreviewUiEvent.Analytics.FontDialog) }
+
   Dialog(onDismissRequest = onDismissRequest) {
     Card {
       Column(

@@ -24,8 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.toNumber
-import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.Event
-import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.OfType
 
 @Composable
 fun FavoriteDialog(
@@ -40,7 +38,7 @@ fun FavoriteDialog(
           Row(
             modifier = Modifier
               .animateItem()
-              .clickable { onEvent(Event(OfType.Preview, lyric.number)) }
+              .clickable { onEvent(MainUiEvent.GotoPreview(lyric)) }
               .padding(8.dp)
               .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically

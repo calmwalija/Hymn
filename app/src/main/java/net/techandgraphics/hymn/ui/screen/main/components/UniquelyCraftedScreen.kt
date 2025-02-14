@@ -52,7 +52,8 @@ fun UniquelyCraftedScreen(
     ),
     colors = CardDefaults.cardColors(),
     onClick = {
-      onEvent(MainUiEvent.Event(MainUiEvent.OfType.Preview, lyric.number))
+      onEvent(MainUiEvent.GotoPreview(lyric))
+      onEvent(MainUiEvent.AnalyticEvent.GotoPreviewFromUniquelyCrafted(lyric))
     }
   ) {
     Box {

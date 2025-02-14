@@ -13,7 +13,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.techandgraphics.hymn.ui.Route
-import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
@@ -48,19 +47,10 @@ fun AppScreen(
         val state = state.collectAsState().value
         MainScreen(state = state, channelFlow = channelFlow) { event ->
           when (event) {
-            is MainUiEvent.Event -> when (event.ofType) {
-              MainUiEvent.OfType.Category -> {
-                onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
-                navController.navigate(Route.TheCategory(event.id))
-              }
+            is MainUiEvent.GotoPreview ->
+              navController.navigate(Route.Preview(event.lyric.number))
 
-              MainUiEvent.OfType.Preview -> {
-                onAnalyticEvent(AnalyticEvent.DiveInto(event.id))
-                navController.navigate(Route.Preview(event.id))
-              }
-            }
-
-            is MainUiEvent.CategoryUiEvent.GoTo ->
+            is MainUiEvent.GotoCategory ->
               navController.navigate(Route.TheCategory(event.category.lyric.categoryId))
 
             is MainUiEvent.MenuItem.Settings -> navController.navigate(Route.Settings)
@@ -103,7 +93,6 @@ fun AppScreen(
                   onEvent(PreviewUiEvent.Analytics.GotoTheCategory)
                   navController.navigate(Route.TheCategory(state.categoryId))
                 }
-
                 PopBackStack -> navController.popBackStack()
                 else -> onEvent(event)
               }

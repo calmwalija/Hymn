@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
 
-data class Translation(val translation: String, @DrawableRes val icon: Int)
+data class MenuTranslation(val translation: String, @DrawableRes val icon: Int)
 
 @Composable
 fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
@@ -48,15 +48,20 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
 
   val context = LocalContext.current
   val translationEntries = context.resources.getStringArray(R.array.translation_entries)
-  val translations = listOf(
-    Translation(translationEntries.first(), R.drawable.im_translation_english),
-    Translation(translationEntries.last(), R.drawable.im_translation_chichewa),
+  val menuTranslations = listOf(
+    MenuTranslation(translationEntries.first(), R.drawable.im_translation_english),
+    MenuTranslation(translationEntries.last(), R.drawable.im_translation_chichewa),
   )
-  val currentTranslation = translations.first {
-    it.translation.contains(state.lang, ignoreCase = true)
+  val currentTranslation = menuTranslations.first {
+    it.translation.contains(state.translation, ignoreCase = true)
   }
 
-  IconButton(onClick = { translationExpanded = true }) {
+  IconButton(
+    onClick = {
+      translationExpanded = true
+      onEvent(MainUiEvent.AnalyticEvent.ShowTranslationDialog)
+    }
+  ) {
     Card(
       shape = CircleShape,
       colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -77,7 +82,7 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
       expanded = translationExpanded,
       onDismissRequest = { translationExpanded = false }
     ) {
-      translations.forEach { translation ->
+      menuTranslations.forEach { translation ->
         DropdownMenuItem(
           colors = MenuDefaults.itemColors(
             disabledTextColor = if (currentTranslation == translation) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
@@ -85,7 +90,7 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
           enabled = currentTranslation != translation,
           text = { Text(translation.translation) },
           onClick = {
-            onEvent(MainUiEvent.Language(translation.translation.take(2).lowercase()))
+            onEvent(MainUiEvent.ChangeTranslation(translation.translation.take(2).lowercase()))
             translationExpanded = false
           },
           leadingIcon = {
@@ -112,7 +117,7 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
     }
   }
 
-  IconButton(onClick = { expanded = true }) {
+  IconButton(onClick = { expanded = true; onEvent(MainUiEvent.AnalyticEvent.ShowMenuDialog) }) {
     BadgedBox(badge = { if (state.favorites.isNotEmpty()) Badge() }) {
       Icon(Icons.Default.MoreVert, contentDescription = "MoreVert")
     }
@@ -120,7 +125,11 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
 
       DropdownMenuItem(
         text = { Text("Favorite Hymns") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Favorites) },
+        onClick = {
+          expanded = false
+          onEvent(MainUiEvent.AnalyticEvent.ShowFavoriteDialog)
+          onEvent(MainUiEvent.MenuItem.Favorites)
+        },
         leadingIcon = {
           BadgedBox(
             badge = {
@@ -137,7 +146,11 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
 
       DropdownMenuItem(
         text = { Text("Apostles Creed") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.ApostlesCreed) },
+        onClick = {
+          expanded = false
+          onEvent(MainUiEvent.AnalyticEvent.ShowApostlesCreedDialog)
+          onEvent(MainUiEvent.MenuItem.ApostlesCreed)
+        },
         leadingIcon = {
           Icon(
             painter = painterResource(R.drawable.ic_creed),
@@ -150,7 +163,11 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
 
       DropdownMenuItem(
         text = { Text("Lords Prayer") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.LordsPrayer) },
+        onClick = {
+          expanded = false
+          onEvent(MainUiEvent.AnalyticEvent.ShowLordsPrayerDialog)
+          onEvent(MainUiEvent.MenuItem.LordsPrayer)
+        },
         leadingIcon = {
           Icon(
             painter = painterResource(R.drawable.ic_prayer),
@@ -165,7 +182,11 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
 
       DropdownMenuItem(
         text = { Text("Settings") },
-        onClick = { expanded = false; onEvent(MainUiEvent.MenuItem.Settings) },
+        onClick = {
+          expanded = false
+          onEvent(MainUiEvent.AnalyticEvent.GotoSettingScreen)
+          onEvent(MainUiEvent.MenuItem.Settings)
+        },
         leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
         trailingIcon = {}
       )

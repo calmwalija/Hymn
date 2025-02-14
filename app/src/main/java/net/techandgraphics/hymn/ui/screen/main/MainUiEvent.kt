@@ -2,15 +2,14 @@ package net.techandgraphics.hymn.ui.screen.main
 
 import net.techandgraphics.hymn.domain.model.Category
 import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.domain.model.Search
 
 sealed interface MainUiEvent {
-  class Favorite(val data: Lyric) : MainUiEvent
-  class Language(val lang: String) : MainUiEvent
-  class KeyboardType(val keyboardType: String) : MainUiEvent
 
-  enum class OfType { Category, Preview }
-  data class Event(val ofType: OfType, val id: Int) : MainUiEvent
+  class ChangeTranslation(val lang: String) : MainUiEvent
+
+  data class GotoPreview(val lyric: Lyric) : MainUiEvent
+  data class GotoCategory(val category: Category) : MainUiEvent
+  data object FeaturedCategories : MainUiEvent
 
   sealed class MenuItem {
     data object Settings : MainUiEvent
@@ -19,16 +18,28 @@ sealed interface MainUiEvent {
     data object Favorites : MainUiEvent
   }
 
-  sealed class LyricUiEvent {
-    class OnLyricUiQuery(val searchQuery: String) : MainUiEvent
-    class LyricUiQueryTag(val searchQuery: String) : MainUiEvent
-    data object InsertLyricUiTag : MainUiEvent
-    data object ClearLyricUiQuery : MainUiEvent
-    class OnLongPress(val search: Search) : MainUiEvent
+  sealed class LyricEvent {
+    class LyricSearch(val searchQuery: String) : MainUiEvent
+    class QueryTag(val searchQuery: String) : MainUiEvent
+    data object InsertSearchTag : MainUiEvent
+    data object ClearSearchQuery : MainUiEvent
   }
 
-  sealed class CategoryUiEvent {
-    data class GoTo(val category: Category) : MainUiEvent
-    data object OnViewCategories : MainUiEvent
+  sealed interface AnalyticEvent : MainUiEvent {
+
+    data class KeyboardType(val keyboardType: String) : AnalyticEvent
+    data class SearchEmptyState(val keyword: String) : AnalyticEvent
+    data object ShowTranslationDialog : AnalyticEvent
+    data object ShowMenuDialog : AnalyticEvent
+    data object ShowFavoriteDialog : AnalyticEvent
+    data object ShowApostlesCreedDialog : AnalyticEvent
+    data object ShowLordsPrayerDialog : AnalyticEvent
+    data object GotoSettingScreen : AnalyticEvent
+    data object ShowFeaturedCategoriesDialog : AnalyticEvent
+    data class GotoPreviewFromFavorite(val lyric: Lyric) : AnalyticEvent
+    data class GotoPreviewFromUniquelyCrafted(val lyric: Lyric) : AnalyticEvent
+    data class GotoPreviewFromDiveInto(val theNumber: Int) : AnalyticEvent
+    data class GotoTheCategory(val category: Category) : AnalyticEvent
+    data class GotoPreviewFromSearch(val lyric: Lyric) : AnalyticEvent
   }
 }

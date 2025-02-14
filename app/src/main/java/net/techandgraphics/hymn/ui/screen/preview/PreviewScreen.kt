@@ -173,10 +173,7 @@ fun PreviewScreen(
       )
     },
   ) { paddingValues ->
-    if (fontSizeShow) {
-      onEvent(PreviewUiEvent.Analytics.FontDialog)
-      FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
-    }
+    if (fontSizeShow) FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
     var isRevealed by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
