@@ -19,14 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import net.techandgraphics.hymn.ui.screen.settings.SettingsUiEvent
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FontStyleDialog(
   state: SettingsUiState,
-  onEvent: (SettingsUiEvent) -> Unit,
+  onEvent: (SettingsEvent) -> Unit,
   onDismissRequest: () -> Unit
 ) {
   ModalBottomSheet(onDismissRequest = onDismissRequest) {
@@ -44,12 +44,12 @@ fun FontStyleDialog(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
           .fillMaxWidth()
-          .clickable { onEvent(SettingsUiEvent.Font.Default) }
+          .clickable { onEvent(SettingsEvent.FontStyle.Default) }
           .padding(horizontal = 16.dp, vertical = 8.dp)
       ) {
         RadioButton(
           selected = state.fontFamily.isNullOrEmpty(),
-          onClick = { onEvent(SettingsUiEvent.Font.Default) },
+          onClick = { onEvent(SettingsEvent.FontStyle.Default) },
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(text = "Default")
@@ -59,12 +59,12 @@ fun FontStyleDialog(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
           .fillMaxWidth()
-          .clickable { onEvent(SettingsUiEvent.Font.Choose) }
+          .clickable { onEvent(SettingsEvent.FontStyle.Choose) }
           .padding(horizontal = 16.dp, vertical = 8.dp)
       ) {
         RadioButton(
           selected = state.fontFamily.isNullOrBlank().not(),
-          onClick = { onEvent(SettingsUiEvent.Font.Choose) },
+          onClick = { onEvent(SettingsEvent.FontStyle.Choose) },
         )
         Spacer(modifier = Modifier.width(4.dp))
         Column(verticalArrangement = Arrangement.Center) {

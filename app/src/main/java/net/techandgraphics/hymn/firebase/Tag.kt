@@ -49,4 +49,13 @@ object Tag {
   const val GOTO_PREVIEW_FROM_FAVORITE = "goto_preview_from_favorite"
   const val GOTO_PREVIEW_FROM_DIVE_INTO = "goto_preview_from_dive_into"
   const val GOTO_PREVIEW_FROM_UNIQUE_CRAFTED = "goto_preview_from_unique_crafted"
+
+  const val THEME_COLOR = "theme_color"
+  const val APP_FONT_STYLE = "app_font_style"
+  const val EXPORT_DATA = "export_data"
+  const val EXPORT_DATA_TIMESTAMP = "export_data_timestamp"
+  const val EXPORT_DATA_DATE = "export_data_date"
+  const val IMPORT_DATA = "import_data"
+  const val IMPORT_DATA_FILE = "import_data_file"
+  const val IMPORT_DATA_STATUS = "import_data_status"
 }

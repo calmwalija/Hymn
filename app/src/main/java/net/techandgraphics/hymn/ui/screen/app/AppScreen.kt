@@ -21,8 +21,8 @@ import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.GoToTheCategory
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.PopBackStack
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsScreen
-import net.techandgraphics.hymn.ui.screen.settings.SettingsUiEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsViewModel
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryScreen
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.Favorite
@@ -67,10 +67,10 @@ fun AppScreen(
         SettingsScreen(
           state = state,
           onEvent = {
-            if (it is SettingsUiEvent.DynamicColor)
+            if (it is SettingsEvent.DynamicColor)
               onThemeConfigs.invoke(ThemeConfigs(dynamicColor = it.isEnabled))
 
-            if (it is SettingsUiEvent.Font.Apply)
+            if (it is SettingsEvent.FontStyle.Apply)
               onThemeConfigs.invoke(ThemeConfigs(fontFamily = it.fontFamily))
 
             onEvent(it)
