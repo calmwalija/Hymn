@@ -13,16 +13,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.techandgraphics.hymn.ui.Route
-import net.techandgraphics.hymn.ui.screen.main.AnalyticEvent
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
+import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.GoToTheCategory
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.PopBackStack
 import net.techandgraphics.hymn.ui.screen.preview.PreviewViewModel
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsScreen
-import net.techandgraphics.hymn.ui.screen.settings.SettingsUiEvent
 import net.techandgraphics.hymn.ui.screen.settings.SettingsViewModel
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryScreen
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.Favorite
@@ -47,19 +47,10 @@ fun AppScreen(
         val state = state.collectAsState().value
         MainScreen(state = state, channelFlow = channelFlow) { event ->
           when (event) {
-            is MainUiEvent.Event -> when (event.ofType) {
-              MainUiEvent.OfType.Category -> {
-                onAnalyticEvent(AnalyticEvent.Spotlight(event.id))
-                navController.navigate(Route.TheCategory(event.id))
-              }
+            is MainUiEvent.GotoPreview ->
+              navController.navigate(Route.Preview(event.lyric.number))
 
-              MainUiEvent.OfType.Preview -> {
-                onAnalyticEvent(AnalyticEvent.DiveInto(event.id))
-                navController.navigate(Route.Preview(event.id))
-              }
-            }
-
-            is MainUiEvent.CategoryUiEvent.GoTo ->
+            is MainUiEvent.GotoCategory ->
               navController.navigate(Route.TheCategory(event.category.lyric.categoryId))
 
             is MainUiEvent.MenuItem.Settings -> navController.navigate(Route.Settings)
@@ -76,10 +67,10 @@ fun AppScreen(
         SettingsScreen(
           state = state,
           onEvent = {
-            if (it is SettingsUiEvent.DynamicColor)
+            if (it is SettingsEvent.DynamicColor)
               onThemeConfigs.invoke(ThemeConfigs(dynamicColor = it.isEnabled))
 
-            if (it is SettingsUiEvent.Font.Apply)
+            if (it is SettingsEvent.FontStyle.Apply)
               onThemeConfigs.invoke(ThemeConfigs(fontFamily = it.fontFamily))
 
             onEvent(it)
@@ -98,7 +89,10 @@ fun AppScreen(
           ?.let {
             PreviewScreen(state) { event ->
               when (event) {
-                GoToTheCategory -> navController.navigate(Route.TheCategory(state.categoryId))
+                GoToTheCategory -> {
+                  onEvent(PreviewUiEvent.Analytics.GotoTheCategory)
+                  navController.navigate(Route.TheCategory(state.categoryId))
+                }
                 PopBackStack -> navController.popBackStack()
                 else -> onEvent(event)
               }

@@ -23,6 +23,7 @@ import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
 import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.domain.toTimestampEntity
 import net.techandgraphics.hymn.firebase.Tag
+import net.techandgraphics.hymn.firebase.combined
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
 import javax.inject.Inject
@@ -76,9 +77,9 @@ class PreviewViewModel @Inject constructor(
       _state.update { it.copy(defaultTranslation = getTranslation()) }
       _state.update { it.copy(categoryId = first { lyric -> lyric.lang == getTranslation() }.categoryId) }
       _state.update { it.copy(fontSize = prefs.get(prefs.fontKey, defaultFontSize).toInt()) }
-      state.value.currentLyric?.let { onLogFirebaseAnalytics(it) }
       currentLyric(state.value.defaultTranslation)
       onLogLyricInfo(state.value.currentLyric!!)
+      state.value.currentLyric?.let { onLogFirebaseAnalytics(it) }
       canGoBackAndForth()
     }
   }
@@ -102,8 +103,8 @@ class PreviewViewModel @Inject constructor(
   private fun onFavoriteHymn(lyric: Lyric) = viewModelScope.launch {
     with(lyric.copy(favorite = !lyric.favorite)) {
       analytics.tagEvent(
-        if (lyric.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-        bundleOf(Pair(Tag.READ_SCREEN, lyric.title))
+        if (!lyric.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
+        bundleOf(Pair(Tag.ADD_FAVORITE, lyric.title))
       )
       lyricRepo.favorite(favorite, number)
       val lyrics = state.value.lyrics.map {
@@ -118,7 +119,7 @@ class PreviewViewModel @Inject constructor(
   private fun onChangeTranslation() = viewModelScope.launch {
     val currentTranslation = state.value.currentTranslation
     val translation = state.value.translations.first { it != currentTranslation }
-    analytics.tagEvent(Tag.CHANGE_TRANSLATION, bundleOf(Pair(Tag.READ_SCREEN, translation)))
+    analytics.tagEvent(Tag.CHANGE_TRANSLATION, bundleOf(Pair(Tag.CHANGE_TRANSLATION, translation)))
     _state.update { it.copy(currentTranslation = translation) }
     currentLyric(state.value.currentTranslation)
   }
@@ -129,20 +130,79 @@ class PreviewViewModel @Inject constructor(
       is PreviewUiEvent.FontSize -> onChangeFontSize(event.size)
       is PreviewUiEvent.Invoke -> onInvoke(event.theNumber)
       PreviewUiEvent.ChangeTranslation -> onChangeTranslation()
+      PreviewUiEvent.Analytics.FontDialog -> logFontDialog()
+      PreviewUiEvent.Analytics.SwipeToRight -> logSwipeToRight()
+      PreviewUiEvent.Analytics.SwipeToLeft -> logSwipeToLeft()
+      PreviewUiEvent.Analytics.GotoTheCategory -> logGotoTheCategory()
+      is PreviewUiEvent.Analytics.GotoNextHymn -> logGoToNextHymn(event.theNumber)
+      is PreviewUiEvent.Analytics.GotoPreviousHymn -> logGoToPreviousHymn(event.theNumber)
+
       else -> Unit
     }
   }
 
+  private fun logSwipeToLeft() {
+    analytics.combined(
+      name = Tag.SWIPE_TO_LEFT,
+      Pair(Tag.HYMN_NUMBER, state.value.theHymnNumber),
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+    )
+  }
+
+  private fun logSwipeToRight() {
+    analytics.combined(
+      name = Tag.SWIPE_TO_RIGHT,
+      Pair(Tag.HYMN_NUMBER, state.value.theHymnNumber),
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+    )
+  }
+
+  private fun logGotoTheCategory() =
+    analytics.combined(
+      name = Tag.GO_TO_THE_CATEGORY,
+      Pair(Tag.HYMN_NUMBER, state.value.theHymnNumber),
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+    )
+
+  private fun logGoToPreviousHymn(theNumber: Int) {
+    analytics.combined(
+      name = Tag.GO_TO_PREVIOUS_HYMN,
+      Pair(Tag.HYMN_NUMBER, theNumber),
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+    )
+  }
+
+  private fun logGoToNextHymn(theNumber: Int) =
+    analytics.combined(
+      name = Tag.GO_TO_NEXT_HYMN,
+      Pair(Tag.HYMN_NUMBER, theNumber),
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+    )
+
+  private fun logFontDialog() =
+    analytics.combined(
+      Tag.FONT_SIZE_DIALOG,
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+      Pair(Tag.FONT_SIZE_DIALOG_STATE, "Open"),
+    )
+
   private fun onLogFirebaseAnalytics(lyric: Lyric) = with(analytics) {
-    tagScreen(Tag.READ_SCREEN)
-    tagEvent(Tag.HYMN_TITLE, bundleOf(Pair(Tag.HYMN_TITLE, lyric.title)))
-    tagEvent(Tag.HYMN_NUMBER, bundleOf(Pair(Tag.HYMN_NUMBER, lyric.number)))
+    tagScreen(Tag.PREVIEW_SCREEN)
+    combined(
+      name = Tag.HYMN_TITLE,
+      Pair(Tag.HYMN_TITLE, lyric.title),
+      Pair(Tag.HYMN_NUMBER, lyric.number),
+    )
   }
 
   private fun onChangeFontSize(fontSize: Int) = viewModelScope.launch {
     _state.update { it.copy(fontSize = fontSize) }
     prefs.put(prefs.fontKey, "$fontSize")
-    analytics.tagEvent(Tag.FONT_SIZE, bundleOf(Pair(Tag.READ_SCREEN, fontSize)))
+    analytics.combined(
+      name = Tag.FONT_SIZE,
+      Pair(Tag.FONT_SIZE, fontSize),
+      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+    )
   }
 
   override fun onCleared() {

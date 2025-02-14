@@ -68,7 +68,7 @@ fun SearchBox(
         value = TextFieldValue(state.searchQuery, selection = TextRange(state.searchQuery.length)),
         onValueChange = {
           if (it.text.length <= 20) event(
-            MainUiEvent.LyricUiEvent.OnLyricUiQuery(it.text)
+            MainUiEvent.LyricEvent.LyricSearch(it.text)
           )
         },
         maxLines = 1,
@@ -132,7 +132,7 @@ fun SearchBox(
             }
             AnimatedVisibility(visible = state.searchQuery.isNotEmpty()) {
               IconButton(
-                onClick = { event(MainUiEvent.LyricUiEvent.ClearLyricUiQuery) },
+                onClick = { event(MainUiEvent.LyricEvent.ClearSearchQuery) },
                 modifier = Modifier.size(24.dp)
               ) {
                 Icon(
@@ -147,7 +147,15 @@ fun SearchBox(
             Spacer(modifier = Modifier.width(2.dp))
 
             IconButton(
-              onClick = { keyboardText = !keyboardText },
+              onClick = {
+                event(
+                  MainUiEvent.AnalyticEvent.KeyboardType(
+                    if (!keyboardText) KeyboardType.Number.toString() else
+                      KeyboardType.Text.toString()
+                  )
+                )
+                keyboardText = !keyboardText
+              },
               modifier = Modifier.size(24.dp)
             ) {
               Icon(

@@ -59,7 +59,7 @@ import net.techandgraphics.hymn.ui.screen.settings.export.share
 @Composable
 fun SettingsScreen(
   state: SettingsUiState,
-  onEvent: (SettingsUiEvent) -> Unit,
+  onEvent: (SettingsEvent) -> Unit,
   channelFlow: Flow<SettingsChannelEvent>
 ) {
 
@@ -76,7 +76,7 @@ fun SettingsScreen(
 
   val jsonPicker = rememberLauncherForActivityResult(contract = GetContent()) { uri ->
     uri?.let {
-      onEvent(SettingsUiEvent.Import(it))
+      onEvent(SettingsEvent.Import(it))
     }
   }
 
@@ -110,7 +110,7 @@ fun SettingsScreen(
           is Import.Progress -> progressStatus = event.progressStatus
 
           is SettingsChannelEvent.FontStyle -> {
-            onEvent(SettingsUiEvent.Font.Apply(event.fontFamily))
+            onEvent(SettingsEvent.FontStyle.Apply(event.fontFamily))
           }
         }
       }
@@ -171,7 +171,7 @@ fun SettingsScreen(
           title = "Theme Color",
           description = "Automatically change the color style based on your background wallpaper colors.",
           isChecked = state.dynamicColor,
-          onCheckedChange = { onEvent(SettingsUiEvent.DynamicColor(it)) }
+          onCheckedChange = { onEvent(SettingsEvent.DynamicColor(it)) }
         )
         HorizontalDivider()
       }
@@ -186,7 +186,7 @@ fun SettingsScreen(
     if (fontStyleShow) FontStyleDialog(
       state,
       onEvent = {
-        if (it is SettingsUiEvent.Font.Choose) {
+        if (it is SettingsEvent.FontStyle.Choose) {
           filePickerShow = true
           return@FontStyleDialog
         }
@@ -205,7 +205,7 @@ fun SettingsScreen(
         }
         filePickerShow = false
         fontStyleShow = false
-        onEvent(SettingsUiEvent.Font.Selected(fontFamily, name))
+        onEvent(SettingsEvent.FontStyle.Selected(fontFamily, name))
       }
     )
 
@@ -225,8 +225,8 @@ fun SettingsScreen(
       SettingsTextExpComp(
         drawableRes = R.drawable.ic_upload,
         title = "Export",
-        description = "Quickly transfer your data by exporting it in JSON format.",
-      ) { onEvent(SettingsUiEvent.Export) }
+        description = "Easily transfer your data and store it wherever you like.",
+      ) { onEvent(SettingsEvent.Export) }
 
       HorizontalDivider()
 
@@ -282,6 +282,7 @@ fun SettingsScreen(
         title = "Feedback",
         description = stringResource(id = R.string.feedback),
       ) {
+        onEvent(SettingsEvent.Analytics.Feedback)
         context.startActivity(Intent(ACTION_VIEW).setData(parse(whatsAppUrl)))
       }
 
@@ -292,6 +293,7 @@ fun SettingsScreen(
         title = "Rate",
         description = stringResource(id = R.string.rate),
       ) {
+        onEvent(SettingsEvent.Analytics.Rating)
         context.startActivity(Intent(ACTION_VIEW).setData(parse(playStoreUrl)))
       }
     }

@@ -64,7 +64,7 @@ fun SearchEmptyState(
           LyricScreenItem(
             lyric = lyric,
             onEvent = { event ->
-              onEvent(MainUiEvent.LyricUiEvent.InsertLyricUiTag)
+              onEvent(MainUiEvent.LyricEvent.InsertSearchTag)
               onEvent(event)
             },
             modifier = Modifier.animateItem(),

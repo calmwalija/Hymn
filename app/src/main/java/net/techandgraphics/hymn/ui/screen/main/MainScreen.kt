@@ -82,14 +82,14 @@ fun MainScreen(
   var apostleCreedShow by remember { mutableStateOf(false) }
   var lordsPrayerShow by remember { mutableStateOf(false) }
 
-  if (lordsPrayerShow) LordsPrayerDialog(state) { lordsPrayerShow = false }
-  if (apostleCreedShow) ApostleCreedDialog(state) { apostleCreedShow = false }
+  if (lordsPrayerShow) LordsPrayerDialog(state, onEvent) { lordsPrayerShow = false }
+  if (apostleCreedShow) ApostleCreedDialog(state, onEvent) { apostleCreedShow = false }
 
   LaunchedEffect(key1 = channelFlow) {
     lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
       channelFlow.collect { event ->
         when (event) {
-          MainChannelEvent.Language -> context.onTranslationChange(state.lang)
+          MainChannelEvent.Language -> context.onTranslationChange(state.translation)
         }
       }
     }
@@ -98,7 +98,7 @@ fun MainScreen(
   LaunchedEffect(state.searchQuery) { if (state.searchQuery.trim().isNotEmpty()) isFocused = true }
 
   BackHandler(enabled = state.searchQuery.trim().isNotEmpty() && !isImeVisible) {
-    onEvent(MainUiEvent.LyricUiEvent.ClearLyricUiQuery)
+    onEvent(MainUiEvent.LyricEvent.ClearSearchQuery)
   }
 
   Scaffold(
@@ -146,11 +146,9 @@ fun MainScreen(
         if (showFavDialog) FavoriteDialog(
           favorites = state.favorites,
           onEvent = {
-            if (it is MainUiEvent.Event)
+            if (it is MainUiEvent.GotoPreview) {
+              onEvent(MainUiEvent.AnalyticEvent.GotoPreviewFromFavorite(it.lyric))
               showFavDialog = false
-
-            if (it is MainUiEvent.Favorite) {
-              showFavDialog = state.favorites.isNotEmpty()
             }
 
             onEvent(it)
@@ -170,7 +168,7 @@ fun MainScreen(
               items(state.search, key = { it.query }) {
                 ElevatedCard(
                   onClick = {
-                    onEvent(MainUiEvent.LyricUiEvent.LyricUiQueryTag(it.query))
+                    onEvent(MainUiEvent.LyricEvent.QueryTag(it.query))
                     isFocused = true
                   },
                   elevation = CardDefaults.cardElevation(
@@ -202,7 +200,8 @@ fun MainScreen(
           LyricScreenItem(
             lyric = lyric,
             onEvent = { event ->
-              onEvent(MainUiEvent.LyricUiEvent.InsertLyricUiTag)
+              onEvent(MainUiEvent.LyricEvent.InsertSearchTag)
+              onEvent(MainUiEvent.AnalyticEvent.GotoPreviewFromSearch(lyric))
               onEvent(event)
             },
             modifier = Modifier.animateItem(),
@@ -214,6 +213,7 @@ fun MainScreen(
 
     if (isFocused && state.searchQuery.trim().isNotEmpty() && state.lyrics.isEmpty()) {
       SearchEmptyState(state = state, onEvent = onEvent, paddingValues = it)
+      onEvent(MainUiEvent.AnalyticEvent.SearchEmptyState(state.searchQuery.trim()))
     }
 
     if (state.searchQuery.trim().isEmpty()) {
@@ -233,8 +233,8 @@ fun MainScreen(
               .fillMaxWidth()
           )
           LazyRow(state = scrollState) {
-            items(state.uniquelyCrafted) {
-              UniquelyCraftedScreen(it, onEvent)
+            items(state.uniquelyCrafted) { lyric ->
+              UniquelyCraftedScreen(lyric, onEvent)
             }
           }
         }
@@ -256,7 +256,10 @@ fun MainScreen(
           state.diveInto.forEachIndexed { index, lyric ->
             LyricScreenItem(
               lyric = lyric,
-              onEvent = onEvent,
+              onEvent = { event ->
+                onEvent(MainUiEvent.AnalyticEvent.GotoPreviewFromDiveInto(lyric.number))
+                onEvent(event)
+              },
               modifier = Modifier,
               showDivider = index.plus(1) < state.diveInto.size
             )
@@ -267,6 +270,8 @@ fun MainScreen(
               LazyVerticalGrid(columns = GridCells.Fixed(1)) {
                 items(state.categories) { category ->
                   CategoryItem(category) { event ->
+                    onEvent(MainUiEvent.AnalyticEvent.GotoTheCategory(category))
+                    onEvent(event)
                     showSheet = false
                     onEvent(event)
                   }
@@ -275,12 +280,13 @@ fun MainScreen(
             }
           }
 
-          if (state.uniquelyCrafted.isNotEmpty()) {
+          if (state.categories.isNotEmpty()) {
             Row(
               verticalAlignment = Alignment.CenterVertically,
               modifier = Modifier
                 .clickable {
-                  onEvent(MainUiEvent.CategoryUiEvent.OnViewCategories)
+                  onEvent(MainUiEvent.FeaturedCategories)
+                  onEvent(MainUiEvent.AnalyticEvent.ShowFeaturedCategoriesDialog)
                   showSheet = true
                 }
                 .padding(horizontal = 8.dp, vertical = 26.dp)

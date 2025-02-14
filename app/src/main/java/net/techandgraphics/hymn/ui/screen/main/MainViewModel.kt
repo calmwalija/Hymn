@@ -1,6 +1,5 @@
 package net.techandgraphics.hymn.ui.screen.main
 
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -23,17 +22,15 @@ import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.domain.asModel
-import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.CategoryRepository
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.OtherRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import net.techandgraphics.hymn.firebase.Tag
+import net.techandgraphics.hymn.firebase.combined
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
 import net.techandgraphics.hymn.removeSymbols
-import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.Favorite
-import net.techandgraphics.hymn.ui.screen.main.MainUiEvent.Language
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,7 +61,7 @@ class MainViewModel @Inject constructor(
       .onEach {
         _state.update {
           it.copy(
-            lang = prefs.get(prefs.translationKey, Translation.EN.lowercase()),
+            translation = prefs.get(prefs.translationKey, Translation.EN.lowercase()),
             uniquelyCrafted = lyricRepo.uniquelyCrafted(),
             emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested(),
             categories = categoryRepo.query(_state.value.searchQuery),
@@ -98,61 +95,41 @@ class MainViewModel @Inject constructor(
 
   private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.put(prefs.translationKey, lang)
-    _state.update { it.copy(lang = lang) }
+    _state.update { it.copy(translation = lang) }
     prepareData()
     channel.send(MainChannelEvent.Language)
   }
 
-  fun favorite(lyric: Lyric) =
-    viewModelScope.launch {
-      with(lyric.copy(favorite = !lyric.favorite)) {
-        lyricRepo.favorite(favorite, number)
-      }
-    }
-
   fun onEvent(event: MainUiEvent) {
     when (event) {
-      is Favorite -> {
-        analytics.tagEvent(
-          if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-          bundleOf(Pair(Tag.MAIN_SCREEN, event.data.title))
-        )
-        favorite(event.data)
-      }
 
-      is Language -> {
-        analytics.tagEvent(Tag.BOOK_SWITCH, bundleOf(Pair(Tag.MAIN_SCREEN, event.lang)))
+      is MainUiEvent.ChangeTranslation -> {
+        analytics.tagEvent(Tag.TRANSLATION_OPTION, Pair(Tag.MAIN_SCREEN, event.lang))
         languageChange(event.lang)
       }
 
-      MainUiEvent.CategoryUiEvent.OnViewCategories ->
+      MainUiEvent.FeaturedCategories ->
         analytics.tagScreen(Tag.CATEGORY_SCREEN)
 
-      MainUiEvent.LyricUiEvent.ClearLyricUiQuery -> {
-        analytics.tagEvent(Tag.CLEAR_SEARCH_TAG, bundleOf())
+      MainUiEvent.LyricEvent.ClearSearchQuery -> {
+        analytics.tagEvent(
+          Tag.CLEAR_SEARCH_TAG,
+          Pair(Tag.APPEND_SEARCH_TAG, state.value.searchQuery.trim())
+        )
         clearSearchQuery()
       }
 
-      MainUiEvent.LyricUiEvent.InsertLyricUiTag -> {
-        analytics.tagEvent(
-          Tag.SEARCH_KEYWORD,
-          bundleOf(Pair(Tag.SEARCH_KEYWORD, state.value.searchQuery))
-        )
+      MainUiEvent.LyricEvent.InsertSearchTag -> {
+        analytics.tagEvent(Tag.SEARCH_KEYWORD, Pair(Tag.SEARCH_KEYWORD, state.value.searchQuery))
         onInsertSearchTag()
       }
 
-      is MainUiEvent.LyricUiEvent.LyricUiQueryTag -> {
-        analytics.tagEvent(
-          Tag.APPEND_SEARCH_TAG,
-          bundleOf(Pair(Tag.APPEND_SEARCH_TAG, event.searchQuery))
-        )
+      is MainUiEvent.LyricEvent.QueryTag -> {
+        analytics.tagEvent(Tag.APPEND_SEARCH_TAG, Pair(Tag.APPEND_SEARCH_TAG, event.searchQuery))
         searchTag(event.searchQuery)
       }
 
-      is MainUiEvent.LyricUiEvent.OnLongPress -> {
-      }
-
-      is MainUiEvent.LyricUiEvent.OnLyricUiQuery -> {
+      is MainUiEvent.LyricEvent.LyricSearch -> {
         _state.value =
           _state.value.copy(searchQuery = event.searchQuery, isSearching = true)
         searchJob?.cancel()
@@ -163,6 +140,8 @@ class MainViewModel @Inject constructor(
           _state.value = _state.value.copy(isSearching = false)
         }
       }
+
+      is MainUiEvent.AnalyticEvent -> onAnalyticEvent(event)
 
       else -> Unit
     }
@@ -176,7 +155,7 @@ class MainViewModel @Inject constructor(
           _state.value.copy(searchQuery = state.value.searchQuery + it.toString())
       } catch (_: Exception) {
       }
-      onEvent(MainUiEvent.LyricUiEvent.OnLyricUiQuery(state.value.searchQuery))
+      onEvent(MainUiEvent.LyricEvent.LyricSearch(state.value.searchQuery))
     }
   }
 
@@ -191,7 +170,7 @@ class MainViewModel @Inject constructor(
         } catch (_: Exception) {
         }
       }
-      onEvent(MainUiEvent.LyricUiEvent.OnLyricUiQuery(state.value.searchQuery))
+      onEvent(MainUiEvent.LyricEvent.LyricSearch(state.value.searchQuery))
     }
   }
 
@@ -206,23 +185,81 @@ class MainViewModel @Inject constructor(
     ).also { searchRepo.upsert(listOf(it)) }
   }
 
-  fun onAnalyticEvent(event: AnalyticEvent) {
+  private fun onAnalyticEvent(event: MainUiEvent.AnalyticEvent) {
     when (event) {
-      AnalyticEvent.GotoCategory -> {
-        analytics.tagEvent(Tag.CATEGORY_SCREEN, bundleOf(Pair(Tag.MAIN_SCREEN, null)))
-      }
 
-      AnalyticEvent.GotoSearch -> {
-        analytics.tagEvent(Tag.SEARCH_SCREEN, bundleOf(Pair(Tag.MAIN_SCREEN, null)))
-      }
+      is MainUiEvent.AnalyticEvent.KeyboardType ->
+        analytics.tagEvent(Tag.KEYBOARD_TYPE, Pair(Tag.KEYBOARD_TYPE, event.keyboardType))
 
-      is AnalyticEvent.DiveInto -> {
-        analytics.tagEvent(Tag.DIVE_INTO, bundleOf(Pair(Tag.MAIN_SCREEN, event.number)))
-      }
+      is MainUiEvent.AnalyticEvent.GotoPreviewFromDiveInto ->
+        analytics.tagEvent(
+          Tag.GOTO_PREVIEW_FROM_DIVE_INTO,
+          Pair(Tag.GOTO_PREVIEW_FROM_DIVE_INTO, event.theNumber),
+        )
 
-      is AnalyticEvent.Spotlight -> {
-        analytics.tagEvent(Tag.SPOTLIGHT, bundleOf(Pair(Tag.MAIN_SCREEN, event.categoryId)))
-      }
+      is MainUiEvent.AnalyticEvent.GotoPreviewFromFavorite ->
+        analytics.combined(
+          Tag.GOTO_PREVIEW_FROM_FAVORITE,
+          Pair(Tag.HYMN_TITLE, event.lyric.title),
+          Pair(Tag.HYMN_NUMBER, event.lyric.number),
+        )
+
+      is MainUiEvent.AnalyticEvent.GotoPreviewFromSearch ->
+        analytics.combined(
+          Tag.GOTO_PREVIEW_FROM_SEARCH,
+          Pair(Tag.HYMN_TITLE, event.lyric.title),
+          Pair(Tag.HYMN_NUMBER, event.lyric.number),
+        )
+
+      is MainUiEvent.AnalyticEvent.GotoPreviewFromUniquelyCrafted ->
+        analytics.combined(
+          Tag.GOTO_PREVIEW_FROM_UNIQUE_CRAFTED,
+          Pair(Tag.HYMN_TITLE, event.lyric.title),
+          Pair(Tag.HYMN_NUMBER, event.lyric.number),
+        )
+
+      is MainUiEvent.AnalyticEvent.GotoTheCategory ->
+        analytics.combined(
+          Tag.GOTO_THE_CATEGORY,
+          Pair(Tag.GOTO_THE_CATEGORY, event.category.lyric.categoryName),
+          Pair(Tag.GOTO_THE_CATEGORY, event.category.lyric.categoryId),
+        )
+
+      is MainUiEvent.AnalyticEvent.SearchEmptyState ->
+        analytics.tagEvent(
+          Tag.SEARCH_EMPTY_STATE,
+          Pair(Tag.SEARCH_EMPTY_STATE, event.keyword),
+        )
+
+      MainUiEvent.AnalyticEvent.GotoSettingScreen ->
+        analytics.tagEvent(
+          Tag.GOTO_SETTING_SCREEN,
+          Pair(Tag.TRANSLATION_DEFAULT, state.value.translation),
+        )
+
+      MainUiEvent.AnalyticEvent.ShowApostlesCreedDialog ->
+        analytics.tagEvent(
+          Tag.SHOW_APOSTLES_CREED_DIALOG,
+          Pair(Tag.SHOW_APOSTLES_CREED_DIALOG, true)
+        )
+
+      MainUiEvent.AnalyticEvent.ShowFavoriteDialog ->
+        analytics.tagEvent(Tag.SHOW_FAVORITE_DIALOG, Pair(Tag.SHOW_FAVORITE_DIALOG, true))
+
+      MainUiEvent.AnalyticEvent.ShowFeaturedCategoriesDialog ->
+        analytics.tagEvent(
+          Tag.SHOW_FEATURED_CATEGORIES_DIALOG,
+          Pair(Tag.SHOW_FEATURED_CATEGORIES_DIALOG, true)
+        )
+
+      MainUiEvent.AnalyticEvent.ShowLordsPrayerDialog ->
+        analytics.tagEvent(Tag.SHOW_LORDS_PRAYER_DIALOG, Pair(Tag.SHOW_LORDS_PRAYER_DIALOG, true))
+
+      MainUiEvent.AnalyticEvent.ShowMenuDialog ->
+        analytics.tagEvent(Tag.SHOW_MENU_DIALOG, Pair(Tag.SHOW_MENU_DIALOG, true))
+
+      MainUiEvent.AnalyticEvent.ShowTranslationDialog ->
+        analytics.tagEvent(Tag.SHOW_TRANSLATION_DIALOG, Pair(Tag.SHOW_TRANSLATION_DIALOG, true))
     }
   }
 }

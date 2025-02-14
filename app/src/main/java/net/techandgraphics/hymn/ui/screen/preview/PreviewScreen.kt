@@ -188,6 +188,7 @@ fun PreviewScreen(
                 isRevealed = false
                 delay(300)
                 onEvent(PreviewUiEvent.Invoke(state.gotToPrevHymn))
+                onEvent(PreviewUiEvent.Analytics.GotoPreviousHymn(state.gotToPrevHymn))
               }
             }
           ) {
@@ -209,6 +210,7 @@ fun PreviewScreen(
                 isRevealed = false
                 delay(300)
                 onEvent(PreviewUiEvent.Invoke(state.gotToNextHymn))
+                onEvent(PreviewUiEvent.Analytics.GotoNextHymn(state.gotToNextHymn))
               }
             }
           ) {
@@ -221,8 +223,14 @@ fun PreviewScreen(
           }
         }
       },
-      onRightExpanded = { isRevealed = true },
-      onLeftExpanded = { isRevealed = true },
+      onRightExpanded = {
+        isRevealed = true
+        onEvent(PreviewUiEvent.Analytics.SwipeToRight)
+      },
+      onLeftExpanded = {
+        isRevealed = true
+        onEvent(PreviewUiEvent.Analytics.SwipeToLeft)
+      },
     ) {
       AnimatedContent(targetState = state.lyricsWithIndex) { lyricsWithIndex ->
         Column(

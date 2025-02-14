@@ -44,7 +44,8 @@ fun FeaturedCategoryItem(
     ),
     shape = RoundedCornerShape(4),
     onClick = {
-      onEvent(MainUiEvent.Event(MainUiEvent.OfType.Category, category.lyric.categoryId))
+      onEvent(MainUiEvent.GotoCategory(category))
+      onEvent(MainUiEvent.AnalyticEvent.GotoTheCategory(category))
     }
   ) {
 

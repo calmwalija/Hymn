@@ -3,7 +3,6 @@ package net.techandgraphics.hymn.ui.screen.settings
 import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.text.font.FontFamily
-import androidx.core.os.bundleOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,17 +22,24 @@ import net.techandgraphics.hymn.data.local.entities.SearchEntity
 import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.dateFormat
-import net.techandgraphics.hymn.domain.model.Lyric
 import net.techandgraphics.hymn.domain.repository.LyricRepository
 import net.techandgraphics.hymn.domain.repository.SearchRepository
 import net.techandgraphics.hymn.domain.repository.TimeSpentRepository
 import net.techandgraphics.hymn.domain.repository.TimestampRepository
 import net.techandgraphics.hymn.firebase.Tag
+import net.techandgraphics.hymn.firebase.combined
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
 import net.techandgraphics.hymn.fontFile
 import net.techandgraphics.hymn.toast
-import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.Import
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.Progress
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.ProgressStatus
+import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.Status
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent.Analytics
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent.DynamicColor
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent.Export
+import net.techandgraphics.hymn.ui.screen.settings.SettingsEvent.FontStyle
 import net.techandgraphics.hymn.ui.screen.settings.export.ExportData
 import net.techandgraphics.hymn.ui.screen.settings.export.hash
 import net.techandgraphics.hymn.ui.screen.settings.export.toHash
@@ -59,7 +65,7 @@ class SettingsViewModel @Inject constructor(
   val channelFlow = channel.receiveAsFlow()
 
   init {
-    analytics.tagScreen(Tag.MISC_SCREEN)
+    analytics.tagScreen(Tag.SETTINGS_SCREEN)
     viewModelScope.launch {
       onQuery()
       _state.update {
@@ -114,14 +120,14 @@ class SettingsViewModel @Inject constructor(
   }
 
   private fun onImport(uri: Uri) = viewModelScope.launch {
-    channel.send(Import.Import(Import.Status.Wait))
+    channel.send(Import(Status.Wait))
     runCatching {
       val jsonString = getFile(uri).bufferedReader().use { it.readText() }
       Gson().fromJson(jsonString, ExportData::class.java)
     }.onSuccess { import ->
 
       if (import == null || import.currentTimeMillis.hash(import.toHash()) != import.hashable) {
-        channel.send(Import.Import(Import.Status.Invalid))
+        channel.send(Import(Status.Invalid))
         return@launch
       }
 
@@ -133,7 +139,7 @@ class SettingsViewModel @Inject constructor(
         import.search.forEach {
           searchRepo.upsert(listOf(SearchEntity(it.query, it.tag, it.lang)))
           currentProgress += 1
-          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+          channel.send(Progress(ProgressStatus(total, currentProgress)))
         }
 
         import.timestamp.forEach {
@@ -142,28 +148,30 @@ class SettingsViewModel @Inject constructor(
             lyricRepo.read(it.number, it.timestamp, it.lang)
 
           timestampRepo.import(it)
-          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+          channel.send(Progress(ProgressStatus(total, currentProgress)))
         }
 
         import.timeSpent.forEach {
           if (timeSpentRepo.getCount(it.toEntity()) == 0)
             timeSpentRepo.upsert(listOf(it.toEntity()))
           currentProgress += 1
-          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+          channel.send(Progress(ProgressStatus(total, currentProgress)))
         }
 
         import.favorites.forEach {
           currentProgress += 1
           lyricRepo.favorite(true, it)
-          channel.send(Import.Progress(Import.ProgressStatus(total, currentProgress)))
+          channel.send(Progress(ProgressStatus(total, currentProgress)))
         }
 
-        channel.send(Import.Import(Import.Status.Success))
+        channel.send(Import(Status.Success))
       } catch (e: Exception) {
-        channel.send(Import.Import(Import.Status.Invalid))
+        channel.send(Import(Status.Invalid))
       }
+      onAnalytics(Analytics.ImportData(Status.Success.name, uri.path.toString()))
     }.onFailure {
-      channel.send(Import.Import(Import.Status.Error))
+      onAnalytics(Analytics.ImportData(Status.Error.name, uri.path.toString()))
+      channel.send(Import(Status.Error))
     }
   }
 
@@ -181,6 +189,7 @@ class SettingsViewModel @Inject constructor(
       val hashable = currentTimeMillis.hash(toExportData.toHash())
       val jsonToExport = Gson().toJson(toExportData.copy(hashable = hashable))
       val file = prefs.context.write(jsonToExport, fileName)
+      onAnalytics(Analytics.ExportData(currentTimeMillis))
       channel.send(SettingsChannelEvent.Export.Export(file))
     }
   }
@@ -196,57 +205,50 @@ class SettingsViewModel @Inject constructor(
     }
   }
 
-  fun onEvent(event: SettingsUiEvent) {
+  fun onEvent(event: SettingsEvent) {
     when (event) {
-      is SettingsUiEvent.RemoveFav -> {
-        analytics.tagEvent(
-          if (event.data.favorite) Tag.ADD_FAVORITE else Tag.REMOVE_FAV,
-          bundleOf(Pair(Tag.MISC_SCREEN, event.data.title))
+      is SettingsEvent.Import -> onImport(event.uri)
+      is DynamicColor -> onDynamicColor(event.isEnabled)
+      is FontStyle -> onFont(event)
+      is Analytics -> onAnalytics(event)
+      Export -> onExport()
+    }
+  }
+
+  private fun onAnalytics(event: Analytics) {
+    when (event) {
+      is Analytics.Feedback ->
+        analytics.tagEvent(Tag.OPEN_FEEDBACK, Pair(Tag.OPEN_FEEDBACK, state.value.lang))
+
+      is Analytics.Rating ->
+        analytics.tagEvent(Tag.OPEN_RATING, Pair(Tag.OPEN_RATING, state.value.lang))
+
+      is Analytics.AppFontStyle ->
+        analytics.tagEvent(Tag.APP_FONT_STYLE, Pair(Tag.APP_FONT_STYLE, event.fontFamily))
+
+      is Analytics.ExportData ->
+        analytics.combined(
+          Tag.EXPORT_DATA,
+          Pair(Tag.EXPORT_DATA_DATE, dateFormat(event.timestamp)),
+          Pair(Tag.EXPORT_DATA_TIMESTAMP, event.timestamp),
         )
-        favorite(event.data)
-      }
 
-      is SettingsUiEvent.OpenCreed -> {
-        analytics.tagEvent(
-          Tag.OPEN_CREED,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
+      is Analytics.ImportData ->
+        analytics.combined(
+          Tag.IMPORT_DATA,
+          Pair(Tag.IMPORT_DATA_FILE, event.fileName),
+          Pair(Tag.IMPORT_DATA_STATUS, event.status),
         )
-      }
 
-      is SettingsUiEvent.OpenFavorite -> {
-        analytics.tagEvent(
-          Tag.OPEN_FAVORITE,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
-        )
-      }
+      is Analytics.ThemeColor ->
+        analytics.tagEvent(Tag.THEME_COLOR, Pair(Tag.THEME_COLOR, event.isEnabled))
+    }
+  }
 
-      is SettingsUiEvent.OpenFeedback -> {
-        analytics.tagEvent(
-          Tag.OPEN_FEEDBACK,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
-        )
-      }
-
-      is SettingsUiEvent.OpenLordsPrayer -> {
-        analytics.tagEvent(
-          Tag.OPEN_LORDS_PRAYER,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
-        )
-      }
-
-      is SettingsUiEvent.OpenRating -> {
-        analytics.tagEvent(
-          Tag.OPEN_RATING,
-          bundleOf(Pair(Tag.MISC_SCREEN, state.value.lang.lowercase()))
-        )
-      }
-
-      is SettingsUiEvent.Import -> onImport(event.uri)
-      SettingsUiEvent.Export -> onExport()
-      is SettingsUiEvent.DynamicColor -> onDynamicColor(event.isEnabled)
-      SettingsUiEvent.Font.Default -> onFontDefault()
-      is SettingsUiEvent.Font.Selected -> onFontSelected(event.fontFamily, event.fontName)
-
+  private fun onFont(event: FontStyle) {
+    when (event) {
+      FontStyle.Default -> onFontDefault()
+      is FontStyle.Selected -> onFontSelected(event.fontFamily, event.fontName)
       else -> Unit
     }
   }
@@ -254,6 +256,7 @@ class SettingsViewModel @Inject constructor(
   private fun onFontDefault() = viewModelScope.launch {
     runCatching { prefs.context.fontFile().delete() }
     _state.update { it.copy(fontFamily = null) }
+    onAnalytics(Analytics.AppFontStyle(FontFamily.Default.toString()))
     prefs.remove(stringPreferencesKey(prefs.fontStyleKey))
     channel.send(SettingsChannelEvent.FontStyle(null))
   }
@@ -264,7 +267,7 @@ class SettingsViewModel @Inject constructor(
       prefs.context.toast("The selected font is invalid. Please choose a valid font and try again.")
       return@launch
     }
-
+    fontName?.let { onAnalytics(Analytics.AppFontStyle(it)) }
     prefs.put(prefs.fontStyleKey, fontName)
     _state.update { it.copy(fontFamily = fontName) }
     channel.send(SettingsChannelEvent.FontStyle(fontFamily))
@@ -272,15 +275,9 @@ class SettingsViewModel @Inject constructor(
 
   private fun onDynamicColor(isEnabled: Boolean) = viewModelScope.launch {
     prefs.put(prefs.dynamicColorKey, isEnabled)
+    onAnalytics(Analytics.ThemeColor(isEnabled))
     _state.update {
       it.copy(dynamicColor = prefs.get<Boolean>(prefs.dynamicColorKey, true) ?: true)
     }
   }
-
-  private fun favorite(lyric: Lyric) =
-    viewModelScope.launch {
-      with(lyric.copy(favorite = !lyric.favorite)) {
-        lyricRepo.favorite(favorite, number)
-      }
-    }
 }

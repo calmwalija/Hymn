@@ -9,7 +9,7 @@ import net.techandgraphics.hymn.domain.model.Search
 data class MainUiState(
   val uniquelyCrafted: List<Lyric> = emptyList(),
   val diveInto: List<Lyric> = emptyList(),
-  val lang: String = Translation.EN.lowercase(),
+  val translation: String = Translation.EN.lowercase(),
   val categories: List<Category> = emptyList(),
   val lyrics: List<Lyric> = emptyList(),
   val favorites: List<Lyric> = emptyList(),

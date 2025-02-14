@@ -40,7 +40,7 @@ fun CategoryItem(
   Column(
     horizontalAlignment = Alignment.End,
     modifier = Modifier.clickable {
-      onEvent(MainUiEvent.CategoryUiEvent.GoTo(category))
+      onEvent(MainUiEvent.GotoCategory(category))
     }
   ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
