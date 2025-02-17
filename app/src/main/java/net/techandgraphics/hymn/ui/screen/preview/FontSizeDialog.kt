@@ -29,7 +29,7 @@ import androidx.compose.ui.window.Dialog
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.FontSize
 import net.techandgraphics.hymn.ui.theme.HymnTheme
 
-private const val MAX_FONT_SIZE = 32
+const val MAX_FONT_SIZE = 24
 
 @Composable
 fun FontSizeDialog(

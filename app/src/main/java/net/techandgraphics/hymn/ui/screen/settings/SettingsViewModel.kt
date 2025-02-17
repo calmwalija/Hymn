@@ -44,6 +44,7 @@ import net.techandgraphics.hymn.ui.screen.settings.export.ExportData
 import net.techandgraphics.hymn.ui.screen.settings.export.hash
 import net.techandgraphics.hymn.ui.screen.settings.export.toHash
 import net.techandgraphics.hymn.ui.screen.settings.export.write
+import net.techandgraphics.hymn.workingDir
 import java.io.File
 import javax.inject.Inject
 import kotlin.random.Random
@@ -110,7 +111,7 @@ class SettingsViewModel @Inject constructor(
   }
 
   private fun getFile(uri: Uri): File {
-    val tempFile = File(prefs.context.cacheDir, "HymnImport.json")
+    val tempFile = File(prefs.context.workingDir(), "HymnImport.json")
     prefs.context.contentResolver.openInputStream(uri)?.use { input ->
       tempFile.outputStream().use { output ->
         input.copyTo(output)
