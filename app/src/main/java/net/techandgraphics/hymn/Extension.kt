@@ -3,6 +3,7 @@ package net.techandgraphics.hymn
 import android.content.Context
 import android.widget.Toast
 import net.techandgraphics.hymn.domain.model.Lyric
+import net.techandgraphics.hymn.ui.screen.main.MenuTranslation
 import java.io.File
 
 infix fun Context.readJsonFromAssetToString(file: String): String? {
@@ -35,3 +36,14 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
 fun Context.fontFile() = File(workingDir(), "temp_font.ttf")
 
 fun Context.workingDir(): File = filesDir
+
+fun Context.currentTranslation(currentTranslation: String): MenuTranslation {
+  val translationEntries = resources.getStringArray(R.array.translation_entries)
+  val menuTranslations = listOf(
+    MenuTranslation(translationEntries.first(), R.drawable.im_translation_english),
+    MenuTranslation(translationEntries.last(), R.drawable.im_translation_chichewa),
+  )
+  return menuTranslations.first {
+    it.translation.contains(currentTranslation, ignoreCase = true).not()
+  }
+}
