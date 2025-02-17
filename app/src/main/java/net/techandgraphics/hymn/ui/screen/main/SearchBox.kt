@@ -4,9 +4,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -43,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchBox(
   state: MainUiState,
@@ -51,14 +56,16 @@ fun SearchBox(
 ) {
 
   var keyboardText by remember { mutableStateOf(false) }
+  var isFocused by remember { mutableStateOf(false) }
   val focusRequester = remember { FocusRequester() }
+  val isImeVisible = WindowInsets.isImeVisible
 
   Row(verticalAlignment = Alignment.CenterVertically) {
     Card(
       modifier = Modifier
         .weight(1f)
         .focusRequester(focusRequester)
-        .onFocusChanged { onFocusRequester(it.isFocused) }
+        .onFocusChanged { onFocusRequester(it.isFocused); isFocused = it.isFocused }
         .padding(horizontal = 8.dp),
       shape = RoundedCornerShape(50),
       colors = CardDefaults.elevatedCardColors(),
@@ -145,29 +152,36 @@ fun SearchBox(
             }
 
             Spacer(modifier = Modifier.width(2.dp))
-
-            IconButton(
-              onClick = {
-                event(
-                  MainUiEvent.AnalyticEvent.KeyboardType(
-                    if (!keyboardText) KeyboardType.Number.toString() else
-                      KeyboardType.Text.toString()
-                  )
-                )
-                keyboardText = !keyboardText
-              },
-              modifier = Modifier.size(24.dp)
-            ) {
-              Icon(
-                painter = painterResource(id = if (!keyboardText) R.drawable.ic_dialpad else R.drawable.ic_keyboard),
-                contentDescription = null,
-                modifier = Modifier.padding(2.dp),
-              )
-            }
           }
         },
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
       )
+    }
+
+    AnimatedVisibility(visible = isImeVisible) {
+      ElevatedCard(
+        colors = CardDefaults.elevatedCardColors(),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(50),
+        onClick = {
+          event(
+            MainUiEvent.AnalyticEvent.KeyboardType(
+              if (!keyboardText) KeyboardType.Number.toString() else
+                KeyboardType.Text.toString()
+            )
+          )
+          keyboardText = !keyboardText
+        },
+      ) {
+        Icon(
+          painter = painterResource(id = if (!keyboardText) R.drawable.ic_dialpad else R.drawable.ic_keyboard),
+          contentDescription = null,
+          modifier = Modifier
+            .padding(8.dp)
+            .size(32.dp)
+            .padding(6.dp),
+        )
+      }
     }
 
     Spacer(modifier = Modifier.width(8.dp))
