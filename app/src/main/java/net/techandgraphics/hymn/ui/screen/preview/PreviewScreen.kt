@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -232,10 +235,21 @@ fun PreviewScreen(
         onEvent(PreviewUiEvent.Analytics.SwipeToLeft)
       },
     ) {
+
+      var fontSize by remember { mutableIntStateOf(state.fontSize) }
       AnimatedContent(targetState = state.lyricsWithIndex) { lyricsWithIndex ->
         Column(
           modifier = Modifier
             .fillMaxWidth()
+            .pointerInput(Unit) {
+              detectTapGestures(
+                onDoubleTap = {
+                  fontSize =
+                    if (fontSize == MAX_FONT_SIZE) 1 else (fontSize + 4).coerceIn(1, MAX_FONT_SIZE)
+                  onEvent(PreviewUiEvent.FontSize(fontSize))
+                }
+              )
+            }
             .verticalScroll(rememberScrollState())
             .padding(paddingValues)
         ) {
@@ -249,7 +263,9 @@ fun PreviewScreen(
               Text(
                 text = lyric.index,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall,
+                style = MaterialTheme.typography.displaySmall.copy(
+                  fontSize = state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD).times(2).sp
+                ),
                 color = MaterialTheme.colorScheme.primary
               )
               Text(
