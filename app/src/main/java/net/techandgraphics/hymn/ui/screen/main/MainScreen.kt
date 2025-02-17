@@ -101,6 +101,11 @@ fun MainScreen(
     onEvent(MainUiEvent.LyricEvent.ClearSearchQuery)
   }
 
+  LaunchedEffect(Unit) {
+    if (state.searchQuery.trim().isNotEmpty())
+      onEvent(MainUiEvent.LyricEvent.LyricSearch(state.searchQuery))
+  }
+
   Scaffold(
     topBar = {
       Column {
