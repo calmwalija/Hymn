@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -86,14 +87,14 @@ fun PreviewScreen(
             ElevatedCard(
               enabled = state.currentTranslation == state.defaultTranslation,
               shape = CircleShape,
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+              modifier = Modifier.padding(vertical = 4.dp),
               onClick = { onEvent(PreviewUiEvent.GoToTheCategory) }
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                  .fillMaxSize()
+                  .padding(8.dp)
               ) {
                 AsyncImage(
                   model = Constant.images[currentLyric.categoryId].drawableRes,
