@@ -32,4 +32,6 @@ infix fun Context.addRemoveFavoriteToast(lyric: Lyric) {
   this toast msg
 }
 
-fun Context.fontFile() = File(cacheDir, "temp_font.ttf")
+fun Context.fontFile() = File(workingDir(), "temp_font.ttf")
+
+fun Context.workingDir(): File = filesDir

@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -44,6 +46,7 @@ class PreviewViewModel @Inject constructor(
   private val maxTimeSpent: Long = 60_000.times(2)
   private val identifier = "identifier"
   private val defaultFontSize = "1"
+  private var fontJob: Job? = null
 
   private suspend fun getTranslation() = prefs.get(prefs.translationKey, Translation.EN.lowercase())
   private suspend fun get(theNumber: Int) = lyricRepo.queryByNumber(theNumber).firstOrNull()
@@ -195,14 +198,18 @@ class PreviewViewModel @Inject constructor(
     )
   }
 
-  private fun onChangeFontSize(fontSize: Int) = viewModelScope.launch {
+  private fun onChangeFontSize(fontSize: Int) {
     _state.update { it.copy(fontSize = fontSize) }
-    prefs.put(prefs.fontKey, "$fontSize")
-    analytics.combined(
-      name = Tag.FONT_SIZE,
-      Pair(Tag.FONT_SIZE, fontSize),
-      Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
-    )
+    fontJob?.cancel()
+    fontJob = viewModelScope.launch {
+      delay(500)
+      prefs.put(prefs.fontKey, "$fontSize")
+      analytics.combined(
+        name = Tag.FONT_SIZE,
+        Pair(Tag.FONT_SIZE, fontSize),
+        Pair(Tag.TRANSLATION_DEFAULT, state.value.defaultTranslation),
+      )
+    }
   }
 
   override fun onCleared() {
