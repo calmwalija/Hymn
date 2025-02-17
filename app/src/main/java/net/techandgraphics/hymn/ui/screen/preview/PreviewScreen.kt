@@ -2,8 +2,15 @@ package net.techandgraphics.hymn.ui.screen.preview
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,7 +48,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -58,13 +66,14 @@ import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.addRemoveFavoriteToast
+import net.techandgraphics.hymn.currentTranslation
 import net.techandgraphics.hymn.toNumber
 import net.techandgraphics.hymn.ui.screen.component.SwipeBothDir4Action
 
 const val READ_FONT_SIZE_THRESH_HOLD = 15
 const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun PreviewScreen(
   state: PreviewUiState,
@@ -152,12 +161,30 @@ fun PreviewScreen(
           }
 
           if (state.translations.size == 2) {
-            IconButton(onClick = { onEvent(PreviewUiEvent.ChangeTranslation) }) {
-              Icon(
-                painter = painterResource(id = R.drawable.ic_toggle_translation),
-                contentDescription = "Translation",
-                modifier = Modifier.rotate(rotateDegree)
-              )
+            Card(
+              onClick = { onEvent(PreviewUiEvent.ChangeTranslation) },
+              shape = CircleShape,
+              colors = CardDefaults.cardColors(containerColor = Color.White),
+              elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp)
+            ) {
+              AnimatedContent(
+                targetState = context.currentTranslation(state.currentTranslation),
+                transitionSpec = {
+                  (slideInHorizontally { fullWidth -> fullWidth } + fadeIn()).togetherWith(
+                    slideOutHorizontally { fullWidth -> -fullWidth } + fadeOut()
+                  )
+                }
+              ) {
+                Image(
+                  painter = painterResource(it.icon),
+                  contentDescription = null,
+                  modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .size(28.dp)
+                    .padding(6.dp),
+                  contentScale = ContentScale.Inside
+                )
+              }
             }
           }
           IconButton(
