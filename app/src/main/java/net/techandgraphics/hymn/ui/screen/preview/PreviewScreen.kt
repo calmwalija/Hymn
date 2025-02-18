@@ -3,13 +3,12 @@ package net.techandgraphics.hymn.ui.screen.preview
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -30,11 +29,11 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -82,18 +81,14 @@ fun PreviewScreen(
 
   val context = LocalContext.current
   var fontSizeShow by remember { mutableStateOf(false) }
-  val rotateDegree by animateFloatAsState(
-    targetValue = if (state.currentTranslation == state.defaultTranslation) 0f else 180f,
-    label = "Default Translation",
-    animationSpec = tween(durationMillis = 1000, delayMillis = 400),
-  )
 
   Scaffold(
     topBar = {
       TopAppBar(
         title = {
           Crossfade(state.currentLyric!!) { currentLyric ->
-            ElevatedCard(
+            OutlinedCard(
+              border = BorderStroke(0.dp, Color.Transparent),
               enabled = state.currentTranslation == state.defaultTranslation,
               shape = CircleShape,
               modifier = Modifier.padding(vertical = 4.dp),

@@ -1,7 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.settings
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.ui.text.font.FontFamily
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
-import net.techandgraphics.hymn.data.local.entities.TimeSpentEntity
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.dateFormat
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -47,7 +45,6 @@ import net.techandgraphics.hymn.ui.screen.settings.export.write
 import net.techandgraphics.hymn.workingDir
 import java.io.File
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -82,32 +79,6 @@ class SettingsViewModel @Inject constructor(
         )
       }.launchIn(this)
     }
-  }
-
-  private fun stressTest() {
-    Log.e("TAG", " ====================== stressTest Insert Started ======================")
-
-    lyricRepo.query("").onEach { lyrics ->
-      lyrics.forEachIndexed { index, lyric ->
-
-        Log.e(
-          "TAG",
-          " ====================== stressTest at $index  of ${lyrics.size} Done ======================"
-        )
-
-        repeat(Random.nextInt(5, 20)) {
-
-          val timeSpent = TimeSpentEntity(
-            number = lyric.number,
-            timeSpent = Random.nextLong(30000, 900000),
-            lang = lyric.lang
-          )
-          timeSpentRepo.run { upsert(listOf((timeSpent))) }
-        }
-      }
-    }.launchIn(viewModelScope)
-
-    Log.e("TAG", " ====================== stressTest Insert Done ======================")
   }
 
   private fun getFile(uri: Uri): File {
