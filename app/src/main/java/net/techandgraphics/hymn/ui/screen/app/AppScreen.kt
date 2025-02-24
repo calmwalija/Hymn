@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,7 +44,7 @@ fun AppScreen(
 
     composable<Route.Home> {
       with(hiltViewModel<MainViewModel>()) {
-        val state = state.collectAsState().value
+        val state = state.collectAsStateWithLifecycle().value
         MainScreen(state = state, channelFlow = channelFlow) { event ->
           when (event) {
             is MainUiEvent.GotoPreview ->
@@ -63,7 +63,7 @@ fun AppScreen(
 
     composable<Route.Settings> {
       with(hiltViewModel<SettingsViewModel>()) {
-        val state = state.collectAsState().value
+        val state = state.collectAsStateWithLifecycle().value
         SettingsScreen(
           state = state,
           onEvent = {
@@ -83,7 +83,7 @@ fun AppScreen(
     composable<Route.Preview> {
       with(hiltViewModel<PreviewViewModel>()) {
         LaunchedEffect(Unit) { invoke(it.toRoute<Route.Preview>().id) }
-        val state = state.collectAsState().value
+        val state = state.collectAsStateWithLifecycle().value
         state.currentLyric
           .takeIf { it != null }
           ?.let {
@@ -93,6 +93,7 @@ fun AppScreen(
                   onEvent(PreviewUiEvent.Analytics.GotoTheCategory)
                   navController.navigate(Route.TheCategory(state.categoryId))
                 }
+
                 PopBackStack -> navController.popBackStack()
                 else -> onEvent(event)
               }
@@ -104,7 +105,7 @@ fun AppScreen(
     composable<Route.TheCategory> {
       with(hiltViewModel<TheCategoryViewModel>()) {
         LaunchedEffect(Unit) { invoke(it.toRoute<Route.TheCategory>().id) }
-        val state = state.collectAsState().value
+        val state = state.collectAsStateWithLifecycle().value
         TheCategoryScreen(state = state) { event ->
           when (event) {
             is Favorite -> onEvent(event)
