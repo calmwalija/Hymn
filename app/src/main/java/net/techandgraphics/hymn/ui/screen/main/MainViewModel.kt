@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -50,54 +52,63 @@ class MainViewModel @Inject constructor(
   private val channel = Channel<MainChannelEvent>()
   val channelFlow = channel.receiveAsFlow()
 
+  private var dataJob: Job? = null
+  private var prepareDataJob: Job? = null
+
   init {
     prepareData()
+    observeData()
   }
 
-  private fun prepareData() = viewModelScope.launch {
-    analytics.tagScreen(Tag.MAIN_SCREEN)
-    prefs.getAsFlow<String>(prefs.jsonBuildKey, "")
-      .filterNotNull()
-      .onEach {
-        _state.update {
-          it.copy(
-            translation = prefs.get(prefs.translationKey, Translation.EN.lowercase()),
-            uniquelyCrafted = lyricRepo.uniquelyCrafted(),
-            emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested(),
-            categories = categoryRepo.query(_state.value.searchQuery),
-            theCreedAndLordsPrayer = otherRepo.query(),
-            fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
-          )
-        }
-      }.launchIn(viewModelScope)
-    observeData()
+  @OptIn(FlowPreview::class)
+  private fun prepareData() {
+    prepareDataJob?.cancel()
+    prepareDataJob = viewModelScope.launch {
+      analytics.tagScreen(Tag.MAIN_SCREEN)
+      prefs.getAsFlow<String>(prefs.jsonBuildKey, "")
+        .filterNotNull()
+        .debounce(500)
+        .onEach {
+          _state.update {
+            it.copy(
+              translation = prefs.get(prefs.translationKey, Translation.EN.lowercase()),
+              uniquelyCrafted = lyricRepo.uniquelyCrafted(),
+              emptyStateSuggestedLyrics = lyricRepo.emptyStateSuggested(),
+              categories = categoryRepo.query(_state.value.searchQuery),
+              theCreedAndLordsPrayer = otherRepo.query(),
+              fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
+            )
+          }
+        }.launchIn(viewModelScope)
+    }
   }
 
   private fun onQueryChange() = lyricRepo.query(_state.value.searchQuery.trim())
     .onEach { _state.value = _state.value.copy(lyrics = it) }
     .launchIn(viewModelScope)
 
-  private fun observeData() = combine(
-    lyricRepo.query(_state.value.searchQuery.trim()),
-    searchRepo.query().map { it.map { search -> search.asModel() } },
-    lyricRepo.diveInto(),
-    lyricRepo.favorites()
-  ) { lyrics, search, diveInto, favorites ->
-    _state.update {
-      it.copy(
+  private fun observeData() {
+    dataJob?.cancel()
+    dataJob = combine(
+      lyricRepo.query(_state.value.searchQuery.trim()),
+      searchRepo.query().map { it.map { search -> search.asModel() } },
+      lyricRepo.diveInto(),
+      lyricRepo.favorites()
+    ) { lyrics, search, diveInto, favorites ->
+      _state.value = _state.value.copy(
         lyrics = lyrics,
         search = search,
         diveInto = diveInto,
         favorites = favorites,
       )
-    }
-  }.launchIn(viewModelScope)
+    }.launchIn(viewModelScope)
+  }
 
   private fun languageChange(lang: String) = viewModelScope.launch {
     prefs.put(prefs.translationKey, lang)
     _state.update { it.copy(translation = lang) }
-    prepareData()
     channel.send(MainChannelEvent.Language)
+    observeData()
   }
 
   fun onEvent(event: MainUiEvent) {
@@ -261,5 +272,11 @@ class MainViewModel @Inject constructor(
       MainUiEvent.AnalyticEvent.ShowTranslationDialog ->
         analytics.tagEvent(Tag.SHOW_TRANSLATION_DIALOG, Pair(Tag.SHOW_TRANSLATION_DIALOG, true))
     }
+  }
+
+  override fun onCleared() {
+    super.onCleared()
+    dataJob?.cancel()
+    prepareDataJob?.cancel()
   }
 }
