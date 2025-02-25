@@ -179,7 +179,7 @@ fun SearchBox(
           modifier = Modifier
             .padding(8.dp)
             .size(32.dp)
-            .padding(6.dp),
+            .padding(if (!keyboardText) 10.dp else 6.dp),
         )
       }
     }
