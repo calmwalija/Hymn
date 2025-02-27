@@ -12,8 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -72,12 +70,10 @@ class SettingsViewModel @Inject constructor(
           fontFamily = prefs.get<String?>(prefs.fontStyleKey, null)
         )
       }
-      lyricRepo.favorites().onEach { favorites ->
-        _state.value = _state.value.copy(
-          favorites = favorites,
-          fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt()
-        )
-      }.launchIn(this)
+      _state.value = _state.value.copy(
+        fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt(),
+        hymnCount = lyricRepo.getHymnCount()
+      )
     }
   }
 
@@ -190,10 +186,10 @@ class SettingsViewModel @Inject constructor(
   private fun onAnalytics(event: Analytics) {
     when (event) {
       is Analytics.Feedback ->
-        analytics.tagEvent(Tag.OPEN_FEEDBACK, Pair(Tag.OPEN_FEEDBACK, state.value.lang))
+        analytics.tagEvent(Tag.OPEN_FEEDBACK, Pair(Tag.OPEN_FEEDBACK, state.value.translation))
 
       is Analytics.Rating ->
-        analytics.tagEvent(Tag.OPEN_RATING, Pair(Tag.OPEN_RATING, state.value.lang))
+        analytics.tagEvent(Tag.OPEN_RATING, Pair(Tag.OPEN_RATING, state.value.translation))
 
       is Analytics.AppFontStyle ->
         analytics.tagEvent(Tag.APP_FONT_STYLE, Pair(Tag.APP_FONT_STYLE, event.fontFamily))
