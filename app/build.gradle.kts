@@ -30,7 +30,7 @@ android {
     applicationId = "net.techandgraphics.hymn"
     minSdk = 21
     targetSdk = 35
-    versionCode = 22
+    versionCode = 23
     versionName = "4.0.0.${SimpleDateFormat("ddMMyy").format(Date())}-rc1"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
