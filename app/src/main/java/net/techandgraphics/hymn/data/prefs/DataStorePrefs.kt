@@ -27,7 +27,7 @@ class DataStorePrefs @Inject constructor(
   val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFS_NAME)
 
   companion object {
-    const val JSON_BUILD_KEY = 5.toString()
+    const val JSON_BUILD_KEY = 6.toString()
     const val PREFS_NAME = "net.techandgraphics.hymn.data.prefs"
   }
 

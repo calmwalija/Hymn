@@ -15,6 +15,6 @@ interface LyricRepository {
   suspend fun uniquelyCrafted(): List<Lyric>
   suspend fun favorite(favorite: Boolean, number: Int)
   suspend fun read(number: Int, timestamp: Long, lang: String?)
-  suspend fun getLastHymn(lang: String): Int
+  suspend fun getHymnCount(): Int
   suspend fun emptyStateSuggested(): List<Lyric>
 }

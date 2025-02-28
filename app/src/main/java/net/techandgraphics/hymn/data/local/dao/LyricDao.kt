@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
-import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.data.local.entities.LyricEntity
 import net.techandgraphics.hymn.domain.model.Lyric
 
@@ -54,8 +53,7 @@ interface LyricDao {
   @Query("SELECT * FROM lyric WHERE timestamp > 0 OR favorite = 1")
   suspend fun backup(): List<LyricEntity>
 
-  @Query("SELECT number FROM lyric WHERE lang=:lang ORDER BY number DESC LIMIT 1")
-  suspend fun getLastHymn(lang: String = Translation.CH.lowercase()): Int
+  @Query("SELECT COUNT(*) FROM lyric") suspend fun getHymnCount(): Int
 
   @Query("SELECT DISTINCT number FROM lyric WHERE favorite = 1 GROUP BY number ")
   suspend fun toExport(): List<Int>

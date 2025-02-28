@@ -147,7 +147,7 @@ fun SettingsScreen(
         SettingsTextComp(
           drawableRes = R.drawable.ic_info,
           title = "App Info",
-          description = "Version ${it.name}.3725",
+          description = "Version ${it.name}.${state.hymnCount}",
         )
       }
     }
