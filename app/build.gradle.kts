@@ -1,4 +1,6 @@
 import com.google.gms.googleservices.GoogleServicesTask
+import java.text.SimpleDateFormat
+import java.util.Date
 
 plugins {
   alias(libs.plugins.androidApplication)
@@ -29,8 +31,7 @@ android {
     minSdk = 21
     targetSdk = 35
     versionCode = 22
-    versionName = "3.1.0"
-
+    versionName = "4.0.0.${SimpleDateFormat("ddMMyy").format(Date())}-rc1"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
     vectorDrawables {
