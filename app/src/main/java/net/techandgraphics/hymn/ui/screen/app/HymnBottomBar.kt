@@ -1,10 +1,10 @@
 package net.techandgraphics.hymn.ui.screen.app
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Insights
-import androidx.compose.material.icons.outlined.LibraryMusic
-import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -21,9 +21,9 @@ data class BottomTab(
 
 val HymnBottomTabs = listOf(
   BottomTab(Route.Home, "Home", Icons.Outlined.Home),
-  BottomTab(Route.Browse, "Browse", Icons.Outlined.MenuBook),
-  BottomTab(Route.Insights, "Insights", Icons.Outlined.Insights),
-  BottomTab(Route.Library, "Library", Icons.Outlined.LibraryMusic),
+  BottomTab(Route.Browse, "Browse", Icons.Outlined.Search),
+  BottomTab(Route.Insights, "Insights", Icons.Outlined.Star),
+  BottomTab(Route.Library, "Library", Icons.Outlined.FavoriteBorder),
 )
 
 @Composable
