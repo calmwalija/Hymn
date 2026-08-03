@@ -8,6 +8,7 @@ import net.techandgraphics.hymn.data.local.Translation
 data class TimeSpentEntity(
   val number: Int,
   val lang: String = Translation.EN.lowercase(),
-  val timeSpent: Long = System.currentTimeMillis(),
+  val timeSpent: Long = 0,
+  val createdAt: Long = System.currentTimeMillis(),
   @PrimaryKey(autoGenerate = true) val id: Int = 0,
 )

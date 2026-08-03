@@ -219,7 +219,8 @@ class PreviewViewModel @Inject constructor(
     val timeSpent = TimeSpentEntity(
       number = currentLyric.number,
       timeSpent = if (timeSpentMills > maxTimeSpent) maxTimeSpent else timeSpentMills,
-      lang = currentLyric.lang
+      lang = currentLyric.lang,
+      createdAt = System.currentTimeMillis(),
     )
     runBlocking { withContext(Dispatchers.IO) { timeSpentRepo.upsert(listOf(timeSpent)) } }
   }

@@ -102,4 +102,12 @@ object Migration {
       db.execSQL("CREATE TABLE time_spent (lang TEXT NOT NULL,timeSpent INTEGER NOT NULL, number INTEGER NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(id))")
     }
   }
+
+  val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+      db.execSQL(
+        "ALTER TABLE time_spent ADD COLUMN createdAt INTEGER NOT NULL DEFAULT 0"
+      )
+    }
+  }
 }
