@@ -47,6 +47,8 @@ import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryScreen
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.Favorite
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.ToPreview
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryViewModel
+import net.techandgraphics.hymn.ui.screen.wrapped.WrappedViewModel
+import net.techandgraphics.hymn.ui.screen.wrapped.YearInHymnsScreen
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
 import java.util.Calendar
 
@@ -184,8 +186,13 @@ fun AppScreen(
       }
 
       composable<Route.YearInHymns> {
-        val year = it.toRoute<Route.YearInHymns>().year
-        PlaceholderScreen(title = "Year in Hymns · $year")
+        with(hiltViewModel<WrappedViewModel>()) {
+          val state = state.collectAsStateWithLifecycle().value
+          YearInHymnsScreen(
+            state = state,
+            onClose = { navController.popBackStack() },
+          )
+        }
       }
 
       composable<Route.Settings> {
