@@ -35,4 +35,4 @@ jobs:
         run: ./gradlew spotlessCheck --no-daemon
 
       - name: Assemble debug
-        run: ./gradlew assembleDevDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon
