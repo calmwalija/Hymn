@@ -18,6 +18,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.techandgraphics.hymn.ui.Route
+import net.techandgraphics.hymn.ui.screen.browse.BrowseScreen
+import net.techandgraphics.hymn.ui.screen.browse.BrowseUiEvent
+import net.techandgraphics.hymn.ui.screen.browse.BrowseViewModel
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
@@ -34,7 +37,6 @@ import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.Favorit
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.ToPreview
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryViewModel
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
-import java.util.Calendar
 
 @Composable
 fun AppScreen(
@@ -98,10 +100,20 @@ fun AppScreen(
       }
 
       composable<Route.Browse> {
-        PlaceholderScreen(
-          title = "Browse",
-          subtitle = "All hymns will appear here next",
-        )
+        with(hiltViewModel<BrowseViewModel>()) {
+          val state = state.collectAsStateWithLifecycle().value
+          BrowseScreen(state = state) { event ->
+            when (event) {
+              is BrowseUiEvent.OpenHymn ->
+                navController.navigate(Route.Preview(event.number))
+
+              is BrowseUiEvent.OpenCategory ->
+                navController.navigate(Route.TheCategory(event.categoryId))
+
+              else -> onEvent(event)
+            }
+          }
+        }
       }
 
       composable<Route.Insights> {
@@ -187,6 +199,3 @@ fun AppScreen(
     }
   }
 }
-
-/** Helper for Insights CTA in a later PR. */
-fun currentYear(): Int = Calendar.getInstance().get(Calendar.YEAR)
