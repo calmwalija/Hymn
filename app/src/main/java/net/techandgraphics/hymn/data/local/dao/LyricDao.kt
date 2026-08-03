@@ -32,6 +32,26 @@ interface LyricDao {
   @Query("SELECT * FROM lyric  WHERE  lang=:lang GROUP BY number ORDER BY timestamp DESC LIMIT 5")
   fun diveInto(lang: String): Flow<List<LyricEntity>>
 
+  @Query(
+    """
+    SELECT * FROM lyric WHERE lang=:lang AND timestamp > 0
+    GROUP BY number ORDER BY timestamp DESC LIMIT :limit
+    """
+  )
+  fun recentHistory(lang: String, limit: Int): Flow<List<LyricEntity>>
+
+  @Query(
+    """
+    SELECT * FROM lyric WHERE
+      (content LIKE'%' || :query || '%'  OR
+      title LIKE'%' || :query || '%'  OR
+      number LIKE'%' || :query || '%'  OR
+      categoryName  LIKE'%' || :query || '%' )
+      AND lang=:lang GROUP BY number HAVING MIN(number) ORDER BY title COLLATE NOCASE ASC
+    """
+  )
+  fun queryByTitle(query: String = "", lang: String): Flow<List<LyricEntity>>
+
   @Query("SELECT * FROM lyric WHERE lyricId=:lyricId")
   fun queryById(lyricId: Int): Flow<List<LyricEntity>>
 

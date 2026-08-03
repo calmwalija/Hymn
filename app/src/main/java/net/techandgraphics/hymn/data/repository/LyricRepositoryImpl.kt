@@ -38,6 +38,18 @@ class LyricRepositoryImpl @Inject constructor(
     }
   }
 
+  override fun recentHistory(limit: Int): Flow<List<Lyric>> {
+    return runBlocking {
+      dao.recentHistory(getLang(), limit).map { data -> data.map { it.asModel() } }
+    }
+  }
+
+  override fun queryByTitle(query: String): Flow<List<Lyric>> {
+    return runBlocking {
+      dao.queryByTitle(query, getLang()).map { it.map { data -> data.asModel() } }
+    }
+  }
+
   override suspend fun toExport(): List<Int> {
     return dao.toExport()
   }

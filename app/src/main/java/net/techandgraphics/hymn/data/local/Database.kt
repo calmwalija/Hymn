@@ -16,7 +16,7 @@ import net.techandgraphics.hymn.data.local.entities.TimestampEntity
 
 @Database(
   entities = [LyricEntity::class, SearchEntity::class, OtherEntity::class, TimestampEntity::class, TimeSpentEntity::class],
-  version = 5,
+  version = 6,
   exportSchema = false
 )
 abstract class Database : RoomDatabase() {

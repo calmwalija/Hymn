@@ -7,6 +7,8 @@ interface LyricRepository {
   fun query(query: String): Flow<List<Lyric>>
   fun queryByCategory(id: Int): Flow<List<Lyric>>
   fun diveInto(): Flow<List<Lyric>>
+  fun recentHistory(limit: Int = 50): Flow<List<Lyric>>
+  fun queryByTitle(query: String): Flow<List<Lyric>>
   suspend fun toExport(): List<Int>
   fun queryById(lyricId: Int): Flow<List<Lyric>>
   fun favorites(): Flow<List<Lyric>>
