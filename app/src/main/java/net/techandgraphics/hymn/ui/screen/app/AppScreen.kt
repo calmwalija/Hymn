@@ -24,6 +24,8 @@ import net.techandgraphics.hymn.ui.Route
 import net.techandgraphics.hymn.ui.screen.browse.BrowseScreen
 import net.techandgraphics.hymn.ui.screen.browse.BrowseUiEvent
 import net.techandgraphics.hymn.ui.screen.browse.BrowseViewModel
+import net.techandgraphics.hymn.ui.screen.insights.InsightsScreen
+import net.techandgraphics.hymn.ui.screen.insights.InsightsViewModel
 import net.techandgraphics.hymn.ui.screen.library.FavoritesViewModel
 import net.techandgraphics.hymn.ui.screen.library.HistoryViewModel
 import net.techandgraphics.hymn.ui.screen.library.HymnSimpleList
@@ -46,6 +48,7 @@ import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.Favorit
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryUiEvent.ToPreview
 import net.techandgraphics.hymn.ui.screen.theCategory.TheCategoryViewModel
 import net.techandgraphics.hymn.ui.theme.ThemeConfigs
+import java.util.Calendar
 
 @Composable
 fun AppScreen(
@@ -126,10 +129,17 @@ fun AppScreen(
       }
 
       composable<Route.Insights> {
-        PlaceholderScreen(
-          title = "Insights",
-          subtitle = "Tap through to Year in Hymns soon",
-        )
+        with(hiltViewModel<InsightsViewModel>()) {
+          val state = state.collectAsStateWithLifecycle().value
+          InsightsScreen(
+            state = state,
+            onToggleYear = ::toggleYear,
+            onOpenHymn = { navController.navigate(Route.Preview(it)) },
+            onYearInHymns = {
+              navController.navigate(Route.YearInHymns(Calendar.getInstance().get(Calendar.YEAR)))
+            },
+          )
+        }
       }
 
       composable<Route.Library> {
