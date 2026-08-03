@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Hymn repository
+    url: https://github.com/calmwalija/Hymn
+    about: Offline bilingual hymn reader (English + Chichewa)
+  - name: AI issue / PR prompts
+    url: https://github.com/calmwalija/Hymn/blob/main/.github/prompts/README.md
+    about: Cursor prompts for drafting issues and pull requests
