@@ -1,0 +1,73 @@
+name: Bug report
+description: Report a defect in the Hymn Android app
+title: "[Area] "
+labels: ["bug"]
+assignees:
+  - calmwalija
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Do **not** paste secrets (`local.properties`, keys, tokens).
+        Repo: [calmwalija/Hymn](https://github.com/calmwalija/Hymn) — Compose, Room, bilingual EN/CH.
+        For AI-assisted drafting, see [`.github/prompts/create-issue.md`](https://github.com/calmwalija/Hymn/blob/main/.github/prompts/create-issue.md).
+
+  - type: checkboxes
+    id: area
+    attributes:
+      label: Area
+      options:
+        - label: ui
+        - label: data
+        - label: both
+        - label: docs / infra
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong and why it matters
+      placeholder: e.g. Favorite toggle does not persist after restart
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps, environment, versions
+      placeholder: |
+        1. ...
+        2. ...
+        Environment: local / Play
+        Android version:
+        App version:
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Redact tokens and personal data
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] ...

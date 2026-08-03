@@ -1,0 +1,52 @@
+name: Feature request
+description: Propose new behavior for the Hymn Android app
+title: "[Area] "
+labels: ["enhancement"]
+assignees:
+  - calmwalija
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem and proposed solution. Do **not** paste secrets (`local.properties`, keys, tokens).
+        For AI-assisted drafting, see [`.github/prompts/create-issue.md`](https://github.com/calmwalija/Hymn/blob/main/.github/prompts/create-issue.md).
+
+  - type: checkboxes
+    id: area
+    attributes:
+      label: Area
+      options:
+        - label: ui
+        - label: data
+        - label: both
+        - label: docs / infra
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: Who needs this and why?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      placeholder: What this issue explicitly does not include
