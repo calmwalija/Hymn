@@ -6,6 +6,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,9 +24,15 @@ import net.techandgraphics.hymn.ui.Route
 import net.techandgraphics.hymn.ui.screen.browse.BrowseScreen
 import net.techandgraphics.hymn.ui.screen.browse.BrowseUiEvent
 import net.techandgraphics.hymn.ui.screen.browse.BrowseViewModel
+import net.techandgraphics.hymn.ui.screen.library.FavoritesViewModel
+import net.techandgraphics.hymn.ui.screen.library.HistoryViewModel
+import net.techandgraphics.hymn.ui.screen.library.HymnSimpleList
+import net.techandgraphics.hymn.ui.screen.library.LibraryScreen
 import net.techandgraphics.hymn.ui.screen.main.MainScreen
 import net.techandgraphics.hymn.ui.screen.main.MainUiEvent
 import net.techandgraphics.hymn.ui.screen.main.MainViewModel
+import net.techandgraphics.hymn.ui.screen.main.components.ApostleCreedDialog
+import net.techandgraphics.hymn.ui.screen.main.components.LordsPrayerDialog
 import net.techandgraphics.hymn.ui.screen.preview.PreviewScreen
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent
 import net.techandgraphics.hymn.ui.screen.preview.PreviewUiEvent.GoToTheCategory
@@ -124,18 +133,44 @@ fun AppScreen(
       }
 
       composable<Route.Library> {
-        PlaceholderScreen(
-          title = "Library",
-          subtitle = "Favorites, history, and settings hub",
-        )
+        with(hiltViewModel<MainViewModel>()) {
+          val state = state.collectAsStateWithLifecycle().value
+          var showCreed by remember { mutableStateOf(false) }
+          var showPrayer by remember { mutableStateOf(false) }
+          if (showCreed) ApostleCreedDialog(state, ::onEvent) { showCreed = false }
+          if (showPrayer) LordsPrayerDialog(state, ::onEvent) { showPrayer = false }
+          LibraryScreen(
+            onFavorites = { navController.navigate(Route.Favorites) },
+            onHistory = { navController.navigate(Route.History) },
+            onSettings = { navController.navigate(Route.Settings) },
+            onCreed = { showCreed = true },
+            onPrayer = { showPrayer = true },
+          )
+        }
       }
 
       composable<Route.Favorites> {
-        PlaceholderScreen(title = "Favorites")
+        with(hiltViewModel<FavoritesViewModel>()) {
+          val favorites = favorites.collectAsStateWithLifecycle().value
+          HymnSimpleList(
+            title = "Favorites",
+            hymns = favorites,
+            emptyMessage = "No favorites yet. Heart a hymn while reading.",
+            onOpen = { navController.navigate(Route.Preview(it)) },
+          )
+        }
       }
 
       composable<Route.History> {
-        PlaceholderScreen(title = "History")
+        with(hiltViewModel<HistoryViewModel>()) {
+          val history = history.collectAsStateWithLifecycle().value
+          HymnSimpleList(
+            title = "History",
+            hymns = history,
+            emptyMessage = "Open a hymn to start building your history.",
+            onOpen = { navController.navigate(Route.Preview(it)) },
+          )
+        }
       }
 
       composable<Route.YearInHymns> {
