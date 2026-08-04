@@ -3,44 +3,50 @@ package net.techandgraphics.hymn.ui.screen.main
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import net.techandgraphics.hymn.R
+import net.techandgraphics.hymn.ui.theme.HymnTheme
 
 data class MenuTranslation(val translation: String, @DrawableRes val icon: Int)
 
+/**
+ * Home app-bar actions: a flag button that switches translation and an overflow
+ * for the creed, prayer and settings. Both dropdowns now hang off their own
+ * button rather than being nested inside another `IconButton`'s content, which
+ * made the flag's whole hit area open a menu unexpectedly.
+ */
 @Composable
 fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
   var expanded by remember { mutableStateOf(false) }
@@ -52,42 +58,37 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
     MenuTranslation(translationEntries.first(), R.drawable.im_translation_english),
     MenuTranslation(translationEntries.last(), R.drawable.im_translation_chichewa),
   )
-  val currentTranslation = menuTranslations.first {
+  val currentTranslation = menuTranslations.firstOrNull {
     it.translation.contains(state.translation, ignoreCase = true)
-  }
+  } ?: menuTranslations.first()
 
-  IconButton(
-    onClick = {
-      translationExpanded = true
-      onEvent(MainUiEvent.AnalyticEvent.ShowTranslationDialog)
-    }
-  ) {
-    Card(
-      shape = CircleShape,
-      colors = CardDefaults.cardColors(containerColor = Color.White),
-      elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp)
+  Box {
+    IconButton(
+      onClick = {
+        translationExpanded = true
+        onEvent(MainUiEvent.AnalyticEvent.ShowTranslationDialog)
+      },
     ) {
       Image(
         painter = painterResource(currentTranslation.icon),
-        contentDescription = null,
+        contentDescription = stringResource(R.string.action_switch_translation),
         modifier = Modifier
-          .clip(RoundedCornerShape(50))
           .size(28.dp)
-          .padding(6.dp),
-        contentScale = ContentScale.Inside
+          .clip(CircleShape)
+          .background(Color.White)
+          .padding(4.dp),
+        contentScale = ContentScale.Inside,
       )
     }
 
     DropdownMenu(
       expanded = translationExpanded,
-      onDismissRequest = { translationExpanded = false }
+      onDismissRequest = { translationExpanded = false },
     ) {
       menuTranslations.forEach { translation ->
+        val selected = currentTranslation == translation
         DropdownMenuItem(
-          colors = MenuDefaults.itemColors(
-            disabledTextColor = if (currentTranslation == translation) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-          ),
-          enabled = currentTranslation != translation,
+          enabled = !selected,
           text = { Text(translation.translation) },
           onClick = {
             onEvent(MainUiEvent.ChangeTranslation(translation.translation.take(2).lowercase()))
@@ -98,33 +99,40 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
               painter = painterResource(translation.icon),
               contentDescription = null,
               modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(Color.White)
                 .size(24.dp)
+                .clip(CircleShape)
+                .background(Color.White)
                 .padding(4.dp),
-              contentScale = ContentScale.Inside
+              contentScale = ContentScale.Inside,
             )
           },
           trailingIcon = {
-            if (currentTranslation == translation) Icon(
-              imageVector = Icons.Default.CheckCircle,
-              tint = MaterialTheme.colorScheme.onSurface,
-              contentDescription = null
-            )
-          }
+            if (selected) {
+              Icon(
+                imageVector = Icons.Rounded.CheckCircle,
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null,
+              )
+            }
+          },
         )
       }
     }
   }
 
-  IconButton(onClick = { expanded = true; onEvent(MainUiEvent.AnalyticEvent.ShowMenuDialog) }) {
-    BadgedBox(badge = { if (state.favorites.isNotEmpty()) Badge() }) {
-      Icon(Icons.Default.MoreVert, contentDescription = "MoreVert")
+  Box {
+    IconButton(
+      onClick = {
+        expanded = true
+        onEvent(MainUiEvent.AnalyticEvent.ShowMenuDialog)
+      },
+    ) {
+      Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.nav_settings))
     }
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
 
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
       DropdownMenuItem(
-        text = { Text("Favorite Hymns") },
+        text = { Text(stringResource(R.string.favorites)) },
         onClick = {
           expanded = false
           onEvent(MainUiEvent.AnalyticEvent.ShowFavoriteDialog)
@@ -134,66 +142,66 @@ fun MainMenuItem(state: MainUiState, onEvent: (MainUiEvent) -> Unit) {
           BadgedBox(
             badge = {
               if (state.favorites.isNotEmpty()) Badge { Text(state.favorites.size.toString()) }
-            }
+            },
           ) {
             Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
           }
         },
-        trailingIcon = { }
       )
 
       HorizontalDivider()
 
       DropdownMenuItem(
-        text = { Text("Apostles Creed") },
+        text = { Text(stringResource(R.string.library_creed)) },
         onClick = {
           expanded = false
-          onEvent(MainUiEvent.AnalyticEvent.ShowApostlesCreedDialog)
           onEvent(MainUiEvent.MenuItem.ApostlesCreed)
         },
         leadingIcon = {
           Icon(
             painter = painterResource(R.drawable.ic_creed),
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
           )
         },
-        trailingIcon = {}
       )
 
       DropdownMenuItem(
-        text = { Text("Lords Prayer") },
+        text = { Text(stringResource(R.string.library_prayer)) },
         onClick = {
           expanded = false
-          onEvent(MainUiEvent.AnalyticEvent.ShowLordsPrayerDialog)
           onEvent(MainUiEvent.MenuItem.LordsPrayer)
         },
         leadingIcon = {
           Icon(
             painter = painterResource(R.drawable.ic_prayer),
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
           )
         },
-        trailingIcon = {}
       )
 
       HorizontalDivider()
 
       DropdownMenuItem(
-        text = { Text("Settings") },
+        text = { Text(stringResource(R.string.nav_settings)) },
         onClick = {
           expanded = false
           onEvent(MainUiEvent.AnalyticEvent.GotoSettingScreen)
           onEvent(MainUiEvent.MenuItem.Settings)
         },
         leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-        trailingIcon = {}
       )
     }
   }
 }
 
-@Preview @Composable fun MainMenuItemPreview() {
-  MainMenuItem(state = MainUiState(), onEvent = {})
+@PreviewLightDark
+@Composable
+private fun MainMenuItemPreview() {
+  HymnTheme {
+    Box(contentAlignment = Alignment.Center) {
+      MainMenuItem(state = MainUiState(), onEvent = {})
+    }
+  }
 }

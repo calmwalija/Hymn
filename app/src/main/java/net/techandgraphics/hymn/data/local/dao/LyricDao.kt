@@ -73,7 +73,13 @@ interface LyricDao {
   @Query("SELECT * FROM lyric WHERE timestamp > 0 OR favorite = 1")
   suspend fun backup(): List<LyricEntity>
 
-  @Query("SELECT COUNT(*) FROM lyric") suspend fun getHymnCount(): Int
+  /**
+   * Number of hymns, not lyric rows. Each hymn has one row per verse and one
+   * set per translation, so a plain `COUNT(*)` reported ~3700 for a 405-hymn
+   * book.
+   */
+  @Query("SELECT COUNT(DISTINCT number) FROM lyric WHERE lang = :lang")
+  suspend fun getHymnCount(lang: String): Int
 
   @Query("SELECT DISTINCT number FROM lyric WHERE favorite = 1 GROUP BY number ")
   suspend fun toExport(): List<Int>
