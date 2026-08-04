@@ -146,4 +146,13 @@ object Constant {
     SearchEntity(query = "pokhala mtendere", tag = "pokhalamtendere", lang = CH.lowercase()),
     SearchEntity(query = "mtima wa mbuyako", tag = "mtimawambuyako", lang = CH.lowercase()),
   )
+
+  /**
+   * Artwork for a category, looked up by [categoryId] rather than by list
+   * position. Indexing positionally returned the *next* category's image (the
+   * list starts at id 1, not 0) and went out of bounds on the highest id.
+   */
+  @DrawableRes
+  fun imageFor(categoryId: Int): Int =
+    (images.firstOrNull { it.categoryId == categoryId } ?: images.first()).drawableRes
 }

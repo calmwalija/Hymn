@@ -30,7 +30,7 @@ android {
     applicationId = "net.techandgraphics.hymn"
     minSdk = 21
     targetSdk = 36
-    versionCode = 23
+    versionCode = 25
     versionName = "4.0.0.${SimpleDateFormat("ddMMyy").format(Date())}-rc1"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -193,9 +193,6 @@ dependencies {
 
   // Splash Screen
   implementation(libs.androidx.core.splashscreen)
-
-
-  implementation(libs.accompanist.systemuicontroller)
 
 
   //Coil
