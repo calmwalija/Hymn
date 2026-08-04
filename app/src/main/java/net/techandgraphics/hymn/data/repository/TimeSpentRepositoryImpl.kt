@@ -25,4 +25,8 @@ class TimeSpentRepositoryImpl @Inject constructor(database: Database) : TimeSpen
   override suspend fun delete(item: TimeSpentEntity) {
     dao.delete(item)
   }
+
+  override suspend fun clearAll() {
+    dao.clearAll()
+  }
 }

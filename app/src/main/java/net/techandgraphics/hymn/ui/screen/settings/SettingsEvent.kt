@@ -2,18 +2,22 @@ package net.techandgraphics.hymn.ui.screen.settings
 
 import android.net.Uri
 import androidx.compose.ui.text.font.FontFamily
+import net.techandgraphics.hymn.data.local.Translation
+import net.techandgraphics.hymn.ui.theme.AppTheme
 
 sealed interface SettingsEvent {
 
   class Import(val uri: Uri) : SettingsEvent
   data class DynamicColor(val isEnabled: Boolean) : SettingsEvent
   data object Export : SettingsEvent
+  data object ResetListeningStats : SettingsEvent
+  data class ThemeMode(val theme: AppTheme) : SettingsEvent
+  data class LyricSize(val size: Int) : SettingsEvent
+  data class ChangeTranslation(val translation: Translation) : SettingsEvent
 
   sealed interface FontStyle : SettingsEvent {
-    data class Selected(val fontFamily: FontFamily?, val fontName: String?) : FontStyle
+    data class Selected(val fontName: String) : FontStyle
     data class Apply(val fontFamily: FontFamily?) : FontStyle
-    data object Default : FontStyle
-    data object Choose : FontStyle
   }
 
   sealed interface Analytics : SettingsEvent {

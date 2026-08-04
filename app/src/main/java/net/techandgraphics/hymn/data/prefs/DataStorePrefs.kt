@@ -38,6 +38,7 @@ class DataStorePrefs @Inject constructor(
   val uniquelyCraftedMills = context.getString(R.string.uniquely_crafted_mills_key)
   val dynamicColorKey = context.getString(R.string.dynamic_color)
   val fontStyleKey = context.getString(R.string.font_style_enabled)
+  val appThemeKey = "app_theme"
 
   val englishSuggestedForTheWeekKey = "suggestedForTheWeekKey"
   val chichewaSuggestedForTheWeekKey = "chichewaSuggestedForTheWeekKey"

@@ -1,8 +1,6 @@
 package net.techandgraphics.hymn.ui.screen.settings
 
 import android.net.Uri
-import androidx.compose.ui.text.font.FontFamily
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -15,7 +13,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.techandgraphics.hymn.data.local.Translation
 import net.techandgraphics.hymn.data.local.entities.SearchEntity
+import net.techandgraphics.hymn.data.local.toLang
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
 import net.techandgraphics.hymn.dateFormat
 import net.techandgraphics.hymn.domain.repository.LyricRepository
@@ -26,8 +26,6 @@ import net.techandgraphics.hymn.firebase.Tag
 import net.techandgraphics.hymn.firebase.combined
 import net.techandgraphics.hymn.firebase.tagEvent
 import net.techandgraphics.hymn.firebase.tagScreen
-import net.techandgraphics.hymn.fontFile
-import net.techandgraphics.hymn.toast
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.Import
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.Progress
 import net.techandgraphics.hymn.ui.screen.settings.SettingsChannelEvent.Import.ProgressStatus
@@ -40,6 +38,8 @@ import net.techandgraphics.hymn.ui.screen.settings.export.ExportData
 import net.techandgraphics.hymn.ui.screen.settings.export.hash
 import net.techandgraphics.hymn.ui.screen.settings.export.toHash
 import net.techandgraphics.hymn.ui.screen.settings.export.write
+import net.techandgraphics.hymn.ui.theme.AppTheme
+import net.techandgraphics.hymn.ui.theme.FontManager
 import net.techandgraphics.hymn.workingDir
 import java.io.File
 import javax.inject.Inject
@@ -64,16 +64,19 @@ class SettingsViewModel @Inject constructor(
     analytics.tagScreen(Tag.SETTINGS_SCREEN)
     viewModelScope.launch {
       onQuery()
+      val storedFont = prefs.get(prefs.fontStyleKey, FontManager.Font.Default.font)
+        .ifBlank { FontManager.Font.Default.font }
       _state.update {
         it.copy(
           dynamicColor = prefs.get<Boolean>(prefs.dynamicColorKey, true) ?: true,
-          fontFamily = prefs.get<String?>(prefs.fontStyleKey, null)
+          fontFamily = storedFont,
+          appTheme = AppTheme.fromStorage(prefs.get(prefs.appThemeKey, AppTheme.SYSTEM.name)),
+          fontSize = prefs.get(prefs.fontKey, LyricSizePreset.MEDIUM.toString()).toIntOrNull()
+            ?: LyricSizePreset.MEDIUM,
+          translation = prefs.get(prefs.translationKey, Translation.EN.lowercase()).toLang(),
+          hymnCount = lyricRepo.getHymnCount(),
         )
       }
-      _state.value = _state.value.copy(
-        fontSize = prefs.get(prefs.fontKey, 1.toString()).toInt(),
-        hymnCount = lyricRepo.getHymnCount()
-      )
     }
   }
 
@@ -103,7 +106,6 @@ class SettingsViewModel @Inject constructor(
       var currentProgress = 0
 
       try {
-
         import.search.forEach {
           searchRepo.upsert(listOf(SearchEntity(it.query, it.tag, it.lang)))
           currentProgress += 1
@@ -133,7 +135,7 @@ class SettingsViewModel @Inject constructor(
         }
 
         channel.send(Import(Status.Success))
-      } catch (e: Exception) {
+      } catch (_: Exception) {
         channel.send(Import(Status.Invalid))
       }
       onAnalytics(Analytics.ImportData(Status.Success.name, uri.path.toString()))
@@ -168,7 +170,7 @@ class SettingsViewModel @Inject constructor(
         timeSpentExport = timeSpentRepo.toExport(),
         timeStampExport = timestampRepo.toExport(),
         searchExport = searchRepo.toExport(),
-        favExport = lyricRepo.toExport()
+        favExport = lyricRepo.toExport(),
       )
     }
   }
@@ -180,7 +182,32 @@ class SettingsViewModel @Inject constructor(
       is FontStyle -> onFont(event)
       is Analytics -> onAnalytics(event)
       Export -> onExport()
+      SettingsEvent.ResetListeningStats -> onResetListeningStats()
+      is SettingsEvent.ThemeMode -> onThemeMode(event.theme)
+      is SettingsEvent.LyricSize -> onLyricSize(event.size)
+      is SettingsEvent.ChangeTranslation -> onTranslation(event.translation)
     }
+  }
+
+  private fun onResetListeningStats() = viewModelScope.launch {
+    timeSpentRepo.clearAll()
+    timestampRepo.clearAll()
+    onQuery()
+  }
+
+  private fun onThemeMode(theme: AppTheme) = viewModelScope.launch {
+    prefs.put(prefs.appThemeKey, theme.name.lowercase())
+    _state.update { it.copy(appTheme = theme) }
+  }
+
+  private fun onLyricSize(size: Int) = viewModelScope.launch {
+    prefs.put(prefs.fontKey, size.toString())
+    _state.update { it.copy(fontSize = size) }
+  }
+
+  private fun onTranslation(translation: Translation) = viewModelScope.launch {
+    prefs.put(prefs.translationKey, translation.lowercase())
+    _state.update { it.copy(translation = translation) }
   }
 
   private fun onAnalytics(event: Analytics) {
@@ -215,30 +242,17 @@ class SettingsViewModel @Inject constructor(
 
   private fun onFont(event: FontStyle) {
     when (event) {
-      FontStyle.Default -> onFontDefault()
-      is FontStyle.Selected -> onFontSelected(event.fontFamily, event.fontName)
-      else -> Unit
+      is FontStyle.Selected -> onFontSelected(event.fontName)
+      is FontStyle.Apply -> Unit
     }
   }
 
-  private fun onFontDefault() = viewModelScope.launch {
-    runCatching { prefs.context.fontFile().delete() }
-    _state.update { it.copy(fontFamily = null) }
-    onAnalytics(Analytics.AppFontStyle(FontFamily.Default.toString()))
-    prefs.remove(stringPreferencesKey(prefs.fontStyleKey))
-    channel.send(SettingsChannelEvent.FontStyle(null))
-  }
-
-  private fun onFontSelected(fontFamily: FontFamily?, fontName: String?) = viewModelScope.launch {
-    if (fontFamily == null) {
-      onFontDefault()
-      prefs.context.toast("The selected font is invalid. Please choose a valid font and try again.")
-      return@launch
-    }
-    fontName?.let { onAnalytics(Analytics.AppFontStyle(it)) }
+  private fun onFontSelected(fontName: String) = viewModelScope.launch {
+    val family = FontManager.getFontFamilyFromName(fontName, prefs.context)
+    onAnalytics(Analytics.AppFontStyle(fontName))
     prefs.put(prefs.fontStyleKey, fontName)
     _state.update { it.copy(fontFamily = fontName) }
-    channel.send(SettingsChannelEvent.FontStyle(fontFamily))
+    channel.send(SettingsChannelEvent.FontStyle(family))
   }
 
   private fun onDynamicColor(isEnabled: Boolean) = viewModelScope.launch {

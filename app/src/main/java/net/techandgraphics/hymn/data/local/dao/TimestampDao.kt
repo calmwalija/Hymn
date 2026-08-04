@@ -88,4 +88,7 @@ interface TimestampDao : BaseDao<TimestampEntity> {
     """
   )
   suspend fun recentVisits(lang: String, limit: Int): List<TimestampEntity>
+
+  @Query("DELETE FROM timestamp")
+  suspend fun clearAll()
 }

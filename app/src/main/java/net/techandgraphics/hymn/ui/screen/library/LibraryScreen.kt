@@ -1,125 +1,197 @@
 package net.techandgraphics.hymn.ui.screen.library
 
-import androidx.compose.foundation.clickable
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.domain.model.Lyric
-import net.techandgraphics.hymn.toNumber
+import net.techandgraphics.hymn.ui.components.EmptyState
+import net.techandgraphics.hymn.ui.components.HymnListItem
+import net.techandgraphics.hymn.ui.components.HymnTopAppBar
+import net.techandgraphics.hymn.ui.components.NavigationRow
+import net.techandgraphics.hymn.ui.components.NoAppBarInsets
+import net.techandgraphics.hymn.ui.theme.Sizes
+import net.techandgraphics.hymn.ui.theme.Space
 
+/**
+ * The Library hub. This screen already existed in the navigation graph but had
+ * no entry point anywhere in the app; it is now a bottom-navigation tab and the
+ * home for Settings and About.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
   onFavorites: () -> Unit,
   onHistory: () -> Unit,
+  onCategories: () -> Unit,
   onSettings: () -> Unit,
+  onAbout: () -> Unit,
   onCreed: () -> Unit,
   onPrayer: () -> Unit,
 ) {
-  Column(modifier = Modifier.fillMaxSize()) {
-    Text(
-      text = "Library",
-      style = MaterialTheme.typography.headlineSmall,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.padding(16.dp),
-    )
-    LibraryRow("Favorites", "Saved hymns", onFavorites)
-    LibraryRow("History", "Recently opened", onHistory)
-    LibraryRow("Apostles' Creed", "Read the creed", onCreed)
-    LibraryRow("Lord's Prayer", "Read the prayer", onPrayer)
-    LibraryRow("Settings", "Appearance and backup", onSettings)
-  }
-}
+  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-@Composable
-private fun LibraryRow(title: String, subtitle: String, onClick: () -> Unit) {
-  Column(modifier = Modifier.clickable(onClick = onClick)) {
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
+  Scaffold(
+    contentWindowInsets = NoAppBarInsets,
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      HymnTopAppBar(
+        title = stringResource(R.string.nav_library),
+        scrollBehavior = scrollBehavior,
+      )
+    },
+  ) { padding ->
+    Column(
       modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 14.dp),
+        .fillMaxSize()
+        .padding(padding)
+        .verticalScroll(rememberScrollState()),
     ) {
-      Column(modifier = Modifier.weight(1f)) {
-        Text(text = title, fontWeight = FontWeight.SemiBold)
-        Text(
-          text = subtitle,
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-      Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+      NavigationRow(
+        title = stringResource(R.string.favorites),
+        subtitle = stringResource(R.string.library_favorites_subtitle),
+        icon = Icons.Outlined.FavoriteBorder,
+        onClick = onFavorites,
+      )
+      NavigationRow(
+        title = stringResource(R.string.history),
+        subtitle = stringResource(R.string.library_history_subtitle),
+        icon = Icons.Outlined.DateRange,
+        onClick = onHistory,
+      )
+      NavigationRow(
+        title = stringResource(R.string.categories_title),
+        subtitle = stringResource(R.string.library_themes_subtitle),
+        icon = Icons.AutoMirrored.Rounded.List,
+        onClick = onCategories,
+      )
+
+      HorizontalDivider(modifier = Modifier.padding(vertical = Space.xs))
+
+      NavigationRow(
+        title = stringResource(R.string.library_creed),
+        subtitle = stringResource(R.string.library_creed_subtitle),
+        leading = { RowIcon(R.drawable.ic_creed) },
+        onClick = onCreed,
+      )
+      NavigationRow(
+        title = stringResource(R.string.library_prayer),
+        subtitle = stringResource(R.string.library_prayer_subtitle),
+        leading = { RowIcon(R.drawable.ic_prayer) },
+        onClick = onPrayer,
+      )
+
+      HorizontalDivider(modifier = Modifier.padding(vertical = Space.xs))
+
+      NavigationRow(
+        title = stringResource(R.string.nav_settings),
+        subtitle = stringResource(R.string.library_settings_subtitle),
+        icon = Icons.Outlined.Settings,
+        onClick = onSettings,
+      )
+      NavigationRow(
+        title = stringResource(R.string.library_about),
+        subtitle = stringResource(R.string.library_about_subtitle),
+        icon = Icons.Outlined.Info,
+        onClick = onAbout,
+      )
     }
-    HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
   }
 }
 
 @Composable
-fun HymnSimpleList(
+private fun RowIcon(@DrawableRes id: Int) {
+  Icon(
+    painter = painterResource(id),
+    contentDescription = null,
+    tint = MaterialTheme.colorScheme.primary,
+    modifier = Modifier.size(Sizes.icon),
+  )
+}
+
+/**
+ * Shared collection screen for Favorites and History — same chrome, same row
+ * treatment, different data and empty copy.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HymnCollectionScreen(
   title: String,
   hymns: List<Lyric>,
+  emptyTitle: String,
   emptyMessage: String,
   onOpen: (Int) -> Unit,
+  onBack: () -> Unit,
 ) {
-  Column(modifier = Modifier.fillMaxSize()) {
-    Text(
-      text = title,
-      style = MaterialTheme.typography.headlineSmall,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.padding(16.dp),
-    )
-    if (hymns.isEmpty()) {
-      Text(
-        text = emptyMessage,
-        modifier = Modifier.padding(16.dp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+  val scrollBehavior =
+    TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+  Scaffold(
+    contentWindowInsets = NoAppBarInsets,
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      HymnTopAppBar(
+        title = title,
+        onBack = onBack,
+        scrollBehavior = scrollBehavior,
       )
-    } else {
-      LazyColumn {
-        items(hymns, key = { it.number }) { lyric ->
-          Column(modifier = Modifier.clickable { onOpen(lyric.number) }) {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            ) {
-              Text(
-                text = lyric.toNumber(),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(end = 12.dp),
-              )
-              Column {
-                Text(
-                  text = lyric.title,
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                  color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                  text = lyric.categoryName,
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                  style = MaterialTheme.typography.bodySmall,
-                )
-              }
-            }
-            HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
-          }
-        }
+    },
+  ) { padding ->
+    if (hymns.isEmpty()) {
+      EmptyState(
+        icon = Icons.Outlined.FavoriteBorder,
+        title = emptyTitle,
+        message = emptyMessage,
+        modifier = Modifier.padding(padding),
+      )
+      return@Scaffold
+    }
+
+    LazyColumn(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
+      contentPadding = PaddingValues(bottom = Space.lg),
+    ) {
+      item {
+        Text(
+          text = stringResource(R.string.hymn_count_label, hymns.size),
+          style = MaterialTheme.typography.labelMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.padding(horizontal = Space.md, vertical = Space.xxs),
+        )
+      }
+      items(hymns, key = { it.number }) { lyric ->
+        HymnListItem(
+          lyric = lyric,
+          onClick = { onOpen(lyric.number) },
+        )
       }
     }
   }
