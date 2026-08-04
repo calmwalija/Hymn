@@ -2,33 +2,28 @@ package net.techandgraphics.hymn.ui.screen.preview
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -38,140 +33,129 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.techandgraphics.hymn.Constant
 import net.techandgraphics.hymn.R
 import net.techandgraphics.hymn.addRemoveFavoriteToast
-import net.techandgraphics.hymn.currentTranslation
 import net.techandgraphics.hymn.toNumber
+import net.techandgraphics.hymn.ui.components.BackButton
+import net.techandgraphics.hymn.ui.components.CategoryArtwork
+import net.techandgraphics.hymn.ui.components.NoAppBarInsets
 import net.techandgraphics.hymn.ui.screen.component.SwipeBothDir4Action
+import net.techandgraphics.hymn.ui.theme.Space
 
 const val READ_FONT_SIZE_THRESH_HOLD = 15
 const val READ_LINE_HEIGHT_THRESH_HOLD = 20
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+/**
+ * The reader.
+ *
+ * The top app bar carries only identity and the favourite toggle. Text size and
+ * the translation switch moved down to the reader bar — previously five actions
+ * competed for the bar and squeezed the title to a few characters on a phone.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewScreen(
   state: PreviewUiState,
-  onEvent: (PreviewUiEvent) -> Unit
+  onEvent: (PreviewUiEvent) -> Unit,
 ) {
-
   val context = LocalContext.current
+  val currentLyric = state.currentLyric ?: return
   var fontSizeShow by remember { mutableStateOf(false) }
+  val sameTranslation = state.currentTranslation == state.defaultTranslation
 
   Scaffold(
+    contentWindowInsets = NoAppBarInsets,
     topBar = {
       TopAppBar(
         title = {
-          Crossfade(state.currentLyric!!) { currentLyric ->
-            OutlinedCard(
-              border = BorderStroke(0.dp, Color.Transparent),
-              enabled = state.currentTranslation == state.defaultTranslation,
-              shape = CircleShape,
-              modifier = Modifier.padding(vertical = 4.dp),
-              onClick = { onEvent(PreviewUiEvent.GoToTheCategory) }
+          Crossfade(currentLyric, label = "readerTitle") { lyric ->
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier
+                .fillMaxWidth()
+                .let { base ->
+                  if (sameTranslation) {
+                    base.clickable { onEvent(PreviewUiEvent.GoToTheCategory) }
+                  } else {
+                    base
+                  }
+                },
             ) {
-              Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                  .fillMaxSize()
-                  .padding(8.dp)
-              ) {
-                AsyncImage(
-                  model = Constant.images[currentLyric.categoryId].drawableRes,
-                  contentDescription = state.currentLyric.title,
-                  contentScale = ContentScale.Crop,
-                  modifier = Modifier
-                    .padding(horizontal = 4.dp)
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(50))
+              CategoryArtwork(
+                categoryId = lyric.categoryId,
+                modifier = Modifier.size(36.dp),
+              )
+              Column(modifier = Modifier.padding(start = Space.xs)) {
+                Text(
+                  text = lyric.title,
+                  style = MaterialTheme.typography.titleSmall,
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
                 )
-                Column {
-                  Text(
-                    text = currentLyric.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.padding(end = 8.dp)
-                  )
-                  Text(
-                    text = currentLyric.toNumber(),
-                    style = MaterialTheme.typography.bodySmall
-                  )
-                }
+                Text(
+                  text = lyric.categoryName,
+                  style = MaterialTheme.typography.bodySmall,
+                  color = MaterialTheme.colorScheme.onSurfaceVariant,
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
+                )
               }
             }
           }
         },
         navigationIcon = {
-          IconButton(onClick = { onEvent(PreviewUiEvent.PopBackStack) }) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = "Go Back"
-            )
-          }
+          BackButton(onBack = { onEvent(PreviewUiEvent.PopBackStack) })
         },
         actions = {
-          Crossfade(
-            targetState = if (state.currentLyric!!.favorite)
-              Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-          ) { imageVector ->
+          Crossfade(currentLyric.favorite, label = "readerFavorite") { favorite ->
             IconButton(
-              enabled = state.currentTranslation == state.defaultTranslation,
+              enabled = sameTranslation,
               onClick = {
-                context addRemoveFavoriteToast state.currentLyric
-                onEvent(PreviewUiEvent.Favorite(state.currentLyric))
+                context addRemoveFavoriteToast currentLyric
+                onEvent(PreviewUiEvent.Favorite(currentLyric))
               },
             ) {
               Icon(
-                imageVector = imageVector,
-                contentDescription = "Favorite",
-                modifier = Modifier.size(22.dp)
+                imageVector = if (favorite) Icons.Rounded.Favorite
+                else Icons.Rounded.FavoriteBorder,
+                contentDescription = stringResource(
+                  if (favorite) R.string.action_remove_favorite
+                  else R.string.action_add_favorite,
+                ),
+                tint = if (favorite) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurfaceVariant,
               )
             }
           }
-
-          if (state.translations.size == 2) {
-            TranslationChip(
-              currentTranslation = state.currentTranslation,
-              enabled = true,
-              onChange = { onEvent(PreviewUiEvent.ChangeTranslation) },
-            )
-          }
-          IconButton(
-            onClick = { fontSizeShow = true },
-            modifier = Modifier.padding(end = 4.dp)
-          ) {
-            Icon(
-              painter = painterResource(id = R.drawable.ic_font_size),
-              contentDescription = "Font",
-              modifier = Modifier.size(22.dp)
-            )
-          }
         },
-        windowInsets = WindowInsets(top = 0.dp),
+        windowInsets = NoAppBarInsets,
+        colors = TopAppBarDefaults.topAppBarColors(
+          containerColor = MaterialTheme.colorScheme.surface,
+        ),
       )
     },
     bottomBar = {
       VerseNavigationBar(
-        hymnLabel = state.currentLyric!!.toNumber(),
+        hymnLabel = currentLyric.toNumber(),
         canGoPrev = state.gotToPrevHymn != -1,
         canGoNext = state.gotToNextHymn != -1,
+        currentTranslation = state.currentTranslation,
+        showTranslationToggle = state.translations.size == 2,
+        translationEnabled = true,
+        onTranslationChange = { onEvent(PreviewUiEvent.ChangeTranslation) },
+        onTextSize = { fontSizeShow = true },
         onPrev = {
           onEvent(PreviewUiEvent.Invoke(state.gotToPrevHymn))
           onEvent(PreviewUiEvent.Analytics.GotoPreviousHymn(state.gotToPrevHymn))
@@ -184,54 +168,41 @@ fun PreviewScreen(
     },
   ) { paddingValues ->
     if (fontSizeShow) FontSizeDialog(state = state, onEvent = onEvent) { fontSizeShow = false }
+
     var isRevealed by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     SwipeBothDir4Action(
       isRevealed = isRevealed,
       leftActions = {
-        Box(modifier = Modifier.padding(24.dp)) {
-          IconButton(
-            enabled = state.gotToPrevHymn != -1,
-            onClick = {
-              scope.launch {
-                isRevealed = false
-                delay(300)
-                onEvent(PreviewUiEvent.Invoke(state.gotToPrevHymn))
-                onEvent(PreviewUiEvent.Analytics.GotoPreviousHymn(state.gotToPrevHymn))
-              }
+        SwipeAction(
+          enabled = state.gotToPrevHymn != -1,
+          iconRes = R.drawable.ic_double_arrow_left,
+          contentDescription = stringResource(R.string.reader_previous),
+          onClick = {
+            scope.launch {
+              isRevealed = false
+              delay(300)
+              onEvent(PreviewUiEvent.Invoke(state.gotToPrevHymn))
+              onEvent(PreviewUiEvent.Analytics.GotoPreviousHymn(state.gotToPrevHymn))
             }
-          ) {
-            Icon(
-              painter = painterResource(R.drawable.ic_double_arrow_left),
-              contentDescription = null,
-              modifier = Modifier.size(42.dp),
-              tint = tint(state.gotToPrevHymn != -1)
-            )
-          }
-        }
+          },
+        )
       },
       rightActions = {
-        Box(modifier = Modifier.padding(24.dp)) {
-          IconButton(
-            enabled = state.gotToNextHymn != -1,
-            onClick = {
-              scope.launch {
-                isRevealed = false
-                delay(300)
-                onEvent(PreviewUiEvent.Invoke(state.gotToNextHymn))
-                onEvent(PreviewUiEvent.Analytics.GotoNextHymn(state.gotToNextHymn))
-              }
+        SwipeAction(
+          enabled = state.gotToNextHymn != -1,
+          iconRes = R.drawable.ic_double_arrow_right,
+          contentDescription = stringResource(R.string.reader_next),
+          onClick = {
+            scope.launch {
+              isRevealed = false
+              delay(300)
+              onEvent(PreviewUiEvent.Invoke(state.gotToNextHymn))
+              onEvent(PreviewUiEvent.Analytics.GotoNextHymn(state.gotToNextHymn))
             }
-          ) {
-            Icon(
-              painter = painterResource(R.drawable.ic_double_arrow_right),
-              contentDescription = null,
-              modifier = Modifier.size(42.dp),
-              tint = tint(state.gotToNextHymn != -1)
-            )
-          }
-        }
+          },
+        )
       },
       onRightExpanded = {
         isRevealed = true
@@ -242,48 +213,48 @@ fun PreviewScreen(
         onEvent(PreviewUiEvent.Analytics.SwipeToLeft)
       },
     ) {
-
       var fontSize by remember { mutableIntStateOf(state.fontSize) }
-      AnimatedContent(targetState = state.lyricsWithIndex) { lyricsWithIndex ->
+      AnimatedContent(targetState = state.lyricsWithIndex, label = "readerVerses") { verses ->
         Column(
           modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .pointerInput(Unit) {
               detectTapGestures(
                 onDoubleTap = {
-                  fontSize =
-                    if (fontSize == MAX_FONT_SIZE) 1 else (fontSize + 4).coerceIn(1, MAX_FONT_SIZE)
+                  fontSize = if (fontSize == MAX_FONT_SIZE) 1
+                  else (fontSize + 4).coerceIn(1, MAX_FONT_SIZE)
                   onEvent(PreviewUiEvent.FontSize(fontSize))
-                }
+                },
               )
             }
             .verticalScroll(rememberScrollState())
             .padding(paddingValues)
+            .padding(bottom = Space.lg),
         ) {
-          lyricsWithIndex.forEach { lyric ->
+          verses.forEach { verse ->
             Column(
-              modifier = Modifier
-                .padding(top = 16.dp)
-                .padding(horizontal = 16.dp),
               horizontalAlignment = Alignment.CenterHorizontally,
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Space.md, vertical = Space.sm),
             ) {
               Text(
-                text = lyric.index,
+                text = verse.index,
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall.copy(
-                  fontSize = state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD).times(2).sp
-                ),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
               )
               Text(
-                text = lyric.lyric.content,
-                fontStyle = if (lyric.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+                text = verse.lyric.content,
+                fontStyle = if (verse.lyric.chorus == 1) FontStyle.Italic else FontStyle.Normal,
+                color = if (verse.lyric.chorus == 1) MaterialTheme.colorScheme.onSurfaceVariant
+                else MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
                 lineHeight = state.fontSize.plus(READ_LINE_HEIGHT_THRESH_HOLD).sp,
-                fontSize = (state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD)).sp
+                fontSize = state.fontSize.plus(READ_FONT_SIZE_THRESH_HOLD).sp,
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = Space.md, vertical = Space.xs),
               )
             }
           }
@@ -294,5 +265,21 @@ fun PreviewScreen(
 }
 
 @Composable
-private fun tint(goTo: Boolean) =
-  if (!goTo) Color.LightGray.copy(alpha = .5f) else MaterialTheme.colorScheme.primary
+private fun SwipeAction(
+  enabled: Boolean,
+  iconRes: Int,
+  contentDescription: String,
+  onClick: () -> Unit,
+) {
+  Box(modifier = Modifier.padding(Space.lg)) {
+    IconButton(enabled = enabled, onClick = onClick) {
+      Icon(
+        painter = painterResource(iconRes),
+        contentDescription = contentDescription,
+        modifier = Modifier.size(40.dp),
+        tint = if (enabled) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+      )
+    }
+  }
+}
