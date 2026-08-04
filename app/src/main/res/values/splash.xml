@@ -4,5 +4,12 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/Theme.Hymn</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <!--
+          Without these the window keeps a title bar showing the app label
+          ("Hymn Book"/"Hymn Dev") until postSplashScreenTheme is swapped in,
+          and on some OS builds that swap doesn't happen reliably.
+        -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 </resources>

@@ -1,4 +1,7 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Hymn" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Hymn" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
 </resources>

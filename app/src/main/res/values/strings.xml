@@ -10,12 +10,142 @@
     <string name="nav_home">Home</string>
     <string name="nav_browse">Browse</string>
     <string name="nav_insights">Insights</string>
+    <string name="nav_stats">Stats</string>
     <string name="nav_library">Library</string>
+    <string name="nav_settings">Settings</string>
     <string name="year_in_hymns">Year in Hymns</string>
     <string name="favorites">Favorites</string>
     <string name="history">History</string>
     <string name="search_hymns">Search hymns</string>
     <string name="insights_empty">Open a few hymns to unlock your insights.</string>
+
+    <!-- Actions -->
+    <string name="action_back">Back</string>
+    <string name="action_add_favorite">Add to favorites</string>
+    <string name="action_remove_favorite">Remove from favorites</string>
+    <string name="action_see_all">See all</string>
+    <string name="action_clear">Clear search</string>
+    <string name="action_share">Share</string>
+    <string name="action_close">Close</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_text_size">Text size</string>
+    <string name="action_switch_translation">Switch translation</string>
+
+    <!-- Home -->
+    <string name="home_greeting_morning">Good morning</string>
+    <string name="home_greeting_afternoon">Good afternoon</string>
+    <string name="home_greeting_evening">Good evening</string>
+    <string name="home_subtitle">Find a hymn to sing</string>
+    <string name="home_search_hint">Search by number or keyword</string>
+    <string name="home_continue">Pick up where you left off</string>
+    <string name="home_featured">Featured hymns</string>
+    <string name="home_recent">Recently sung</string>
+    <string name="home_categories">Browse by theme</string>
+    <string name="home_suggested_searches">Try searching</string>
+    <string name="hymn_of_the_day">Hymn of the day</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">No hymns found</string>
+    <string name="search_empty_message">Nothing matched that search. Here are a few hymns you might like instead.</string>
+    <string name="search_results_count">%1$d results</string>
+
+    <!-- Browse -->
+    <string name="browse_sort_number">Number</string>
+    <string name="browse_sort_title">Title</string>
+    <string name="browse_sort_categories">Themes</string>
+    <string name="browse_favorites_only">Favorites</string>
+    <string name="browse_empty_title">Nothing here yet</string>
+    <string name="browse_empty_message">Try a different search, or turn off the favorites filter.</string>
+
+    <!-- Categories -->
+    <string name="categories_title">Themes</string>
+    <string name="categories_empty_title">No themes yet</string>
+    <string name="categories_empty_message">Themes appear once the hymnal has finished loading.</string>
+
+    <!-- Library -->
+    <string name="library_favorites_subtitle">Hymns you have saved</string>
+    <string name="library_history_subtitle">Recently opened</string>
+    <string name="library_themes_subtitle">All hymnal themes</string>
+    <string name="library_creed">Apostles’ Creed</string>
+    <string name="library_creed_subtitle">Read the creed</string>
+    <string name="library_prayer">Lord’s Prayer</string>
+    <string name="library_prayer_subtitle">Read the prayer</string>
+    <string name="library_settings_subtitle">Appearance, reading and backup</string>
+    <string name="library_about">About</string>
+    <string name="library_about_subtitle">Credits and app version</string>
+
+    <string name="favorites_empty_title">No favorites yet</string>
+    <string name="favorites_empty_message">Tap the heart while reading a hymn and it will show up here.</string>
+    <string name="history_empty_title">Nothing read yet</string>
+    <string name="history_empty_message">Open a hymn and it will be added to your history.</string>
+    <string name="hymn_count_label">%1$d hymns</string>
+
+    <!-- Insights -->
+    <string name="insights_all_time">All time</string>
+    <string name="insights_this_year">This year</string>
+    <string name="insights_empty_title">No stats yet</string>
+    <string name="insights_opens">Opens</string>
+    <string name="insights_hymns">Hymns</string>
+    <string name="insights_time">Time reading</string>
+    <string name="insights_streak">Day streak</string>
+    <string name="insights_active_days">Active days</string>
+    <string name="insights_most_visited">Most visited</string>
+    <string name="insights_longest">Longest time with</string>
+    <string name="insights_themes">Your themes</string>
+    <string name="insights_wrapped_cta">See your Year in Hymns</string>
+
+    <!-- Year in Hymns -->
+    <string name="wrapped_loading">Gathering your year…</string>
+    <string name="wrapped_empty_title">Not enough reading yet</string>
+    <string name="wrapped_empty_message">Open a few more hymns this year and your story will be waiting.</string>
+    <string name="wrapped_share_title">Share your Year in Hymns</string>
+
+    <!-- Reader -->
+    <string name="reader_previous">Previous hymn</string>
+    <string name="reader_next">Next hymn</string>
+    <string name="reader_open_theme">Open theme</string>
+
+    <!-- Settings -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_dynamic_color">Dynamic color</string>
+    <string name="settings_dynamic_color_subtitle">Match the colors of your wallpaper</string>
+    <string name="settings_font">Font</string>
+    <string name="settings_reading">Reading</string>
+    <string name="settings_lyric_size">Lyric size</string>
+    <string name="settings_size_small">Small</string>
+    <string name="settings_size_medium">Medium</string>
+    <string name="settings_size_large">Large</string>
+    <string name="settings_translation">Translation</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_reset_stats">Reset listening stats</string>
+    <string name="settings_reset">Reset</string>
+    <string name="settings_reset_confirm_title">Reset listening stats?</string>
+    <string name="settings_reset_confirm_message">This clears visit history and time spent. Favorites and backups are not removed.</string>
+    <string name="settings_backup">Create backup</string>
+    <string name="settings_backup_subtitle">Favorites, history, searches, time spent</string>
+    <string name="settings_restore">Restore backup</string>
+    <string name="settings_restore_subtitle">Merge from a Hymn backup file</string>
+    <string name="settings_restoring">Restoring…</string>
+    <string name="settings_support">Support</string>
+    <string name="settings_feedback">Send feedback</string>
+    <string name="settings_rate">Rate the app</string>
+    <string name="settings_choose_font">Choose a font</string>
+    <string name="settings_font_preview">Preview</string>
+    <string name="settings_font_available">Available fonts</string>
+    <string name="settings_apply">Apply</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="font_pangram">The quick brown fox jumps over the lazy dog</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_tagline">A hymnal for everyday singing</string>
+    <string name="about_credits">Credits</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_hymn_count">%1$d hymns in this edition</string>
 
     <!-- Preferences -->
     <string name="font_key">font_key</string>
