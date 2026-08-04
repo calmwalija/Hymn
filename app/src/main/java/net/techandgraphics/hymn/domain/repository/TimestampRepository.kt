@@ -8,4 +8,5 @@ interface TimestampRepository : BaseRepository<TimestampEntity> {
   suspend fun toExport(): List<TimestampExport>
   suspend fun import(timestamp: TimestampExport)
   suspend fun ifExist(timestampEntity: TimestampEntity): Int
+  suspend fun clearAll()
 }

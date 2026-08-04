@@ -7,4 +7,5 @@ import net.techandgraphics.hymn.ui.screen.settings.export.TimeSpentExport
 interface TimeSpentRepository : BaseRepository<TimeSpentEntity> {
   suspend fun toExport(): List<TimeSpentExport>
   suspend fun getCount(timeSpentEntity: TimeSpentEntity): Int
+  suspend fun clearAll()
 }

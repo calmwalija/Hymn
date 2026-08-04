@@ -10,6 +10,7 @@ sealed interface MainUiEvent {
   data class GotoPreview(val lyric: Lyric) : MainUiEvent
   data class GotoCategory(val category: Category) : MainUiEvent
   data object FeaturedCategories : MainUiEvent
+  data object GotoCategories : MainUiEvent
 
   sealed class MenuItem {
     data object Settings : MainUiEvent

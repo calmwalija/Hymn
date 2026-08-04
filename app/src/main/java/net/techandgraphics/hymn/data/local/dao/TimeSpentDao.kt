@@ -42,4 +42,7 @@ interface TimeSpentDao : BaseDao<TimeSpentEntity> {
     """
   )
   suspend fun totalTimeMs(lang: String, fromMs: Long, toMs: Long): Long
+
+  @Query("DELETE FROM time_spent")
+  suspend fun clearAll()
 }

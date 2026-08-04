@@ -31,4 +31,8 @@ class TimestampRepositoryImpl @Inject constructor(database: Database) : Timestam
   override suspend fun ifExist(timestampEntity: TimestampEntity): Int {
     return dao.ifExist(timestampEntity.lang, timestampEntity.number, timestampEntity.timestamp)
   }
+
+  override suspend fun clearAll() {
+    dao.clearAll()
+  }
 }

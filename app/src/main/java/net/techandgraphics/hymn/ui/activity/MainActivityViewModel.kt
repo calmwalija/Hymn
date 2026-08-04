@@ -1,8 +1,5 @@
 package net.techandgraphics.hymn.ui.activity
 
-import android.graphics.Typeface
-import androidx.compose.ui.text.font.FontFamily
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,32 +10,38 @@ import kotlinx.coroutines.launch
 import net.techandgraphics.hymn.data.parser.LyricParser
 import net.techandgraphics.hymn.data.parser.OtherParser
 import net.techandgraphics.hymn.data.prefs.DataStorePrefs
-import net.techandgraphics.hymn.fontFile
+import net.techandgraphics.hymn.ui.theme.AppTheme
+import net.techandgraphics.hymn.ui.theme.FontManager
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
   private val lyricParser: LyricParser,
   private val otherParser: OtherParser,
-  private val prefs: DataStorePrefs
+  private val prefs: DataStorePrefs,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(MainActivityState())
   val state = _state.asStateFlow()
 
   init {
-    prefs.apply { onFontStyle(); onInitialize() }
+    prefs.apply {
+      onFontStyle()
+      onThemeMode()
+      onInitialize()
+    }
   }
 
   private fun DataStorePrefs.onFontStyle() = viewModelScope.launch {
-    val isFontAvailable = get<String?>(fontStyleKey, null)
-    val fontFamily = if (isFontAvailable != null) try {
-      FontFamily(Typeface.createFromFile(prefs.context.fontFile()))
-    } catch (e: Exception) {
-      remove(stringSetPreferencesKey(fontStyleKey))
-      FontFamily.Default
-    } else FontFamily.Default
+    val fontName = get(fontStyleKey, FontManager.Font.Default.font)
+      .ifBlank { FontManager.Font.Default.font }
+    val fontFamily = FontManager.getFontFamilyFromName(fontName, context)
     _state.update { it.copy(fontFamily = fontFamily) }
+  }
+
+  private fun DataStorePrefs.onThemeMode() = viewModelScope.launch {
+    val theme = AppTheme.fromStorage(get(appThemeKey, AppTheme.SYSTEM.name))
+    _state.update { it.copy(appTheme = theme) }
   }
 
   private fun DataStorePrefs.onInitialize() {
@@ -64,11 +67,20 @@ class MainActivityViewModel @Inject constructor(
   fun onEvent(event: MainActivityUiEvent) {
     when (event) {
       is MainActivityUiEvent.DynamicColor -> viewModelScope.launch {
-        prefs.get(prefs.dynamicColorKey, event.isEnabled)
+        prefs.put(prefs.dynamicColorKey, event.isEnabled)
         _state.update { it.copy(dynamicColorEnabled = event.isEnabled) }
       }
 
-      is MainActivityUiEvent.FontStyle -> prefs.onFontStyle()
+      is MainActivityUiEvent.FontStyle -> {
+        event.fontFamily?.let { family ->
+          _state.update { it.copy(fontFamily = family) }
+        } ?: prefs.onFontStyle()
+      }
+
+      is MainActivityUiEvent.ThemeMode -> viewModelScope.launch {
+        prefs.put(prefs.appThemeKey, event.theme.name.lowercase())
+        _state.update { it.copy(appTheme = event.theme) }
+      }
     }
   }
 }
